@@ -1,0 +1,65 @@
+{
+  "root": true,
+  "ignorePatterns": ["dist/", "node_modules/", "coverage/", "tmp/"],
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates",
+        "plugin:prettier/recommended"
+      ],
+      "parser": "@typescript-eslint/parser",
+      "parserOptions": {
+        "project": ["tsconfig.json", "tsconfig.app.json", "tsconfig.spec.json"],
+        "sourceType": "module"
+      },
+      "rules": {
+        "@angular-eslint/prefer-on-push-component-change-detection": "error",
+        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/explicit-function-return-type": [
+          "error",
+          {
+            "allowExpressions": true,
+            "allowTypedFunctionExpressions": true,
+            "allowHigherOrderFunctions": true
+          }
+        ],
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-floating-promises": "error",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "ignoreRestSiblings": true
+          }
+        ],
+        "no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@angular/core",
+                "importNames": ["HostBinding", "HostListener"],
+                "message": "Use host metadata instead of HostBinding/HostListener per repository guidance."
+              }
+            ]
+          }
+        ],
+        "prettier/prettier": "error"
+      }
+    },
+    {
+      "files": ["**/*.html"],
+      "extends": ["plugin:@angular-eslint/template/recommended"],
+      "rules": {
+        "@angular-eslint/template/no-any": "error",
+        "@angular-eslint/template/prefer-control-flow": "error",
+        "@angular-eslint/template/use-track-by-function": "error"
+      }
+    }
+  ]
+}
