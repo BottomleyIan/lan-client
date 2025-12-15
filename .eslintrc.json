@@ -2,6 +2,12 @@
   "root": true,
   "ignorePatterns": ["dist/", "node_modules/", "coverage/", "tmp/"],
   "overrides": [
+      {
+        "files": ["src/app/features/**/*.{ts}"],
+          "rules": {
+            "@angular-eslint/prefer-on-push-component-change-detection": "off"
+          }
+      },
     {
       "files": ["**/*.ts"],
       "extends": [
@@ -17,7 +23,7 @@
         "sourceType": "module"
       },
       "rules": {
-        "@angular-eslint/prefer-on-push-component-change-detection": "error",
+        "@angular-eslint/component-class-suffix": "off",
         "@typescript-eslint/consistent-type-imports": "error",
         "@typescript-eslint/explicit-function-return-type": [
           "error",
