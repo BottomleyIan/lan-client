@@ -13,6 +13,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 - Lint: `npm run lint` (Angular ESLint with OnPush enforcement, template control flow, and host binding restrictions).
 - Auto-fix: `npm run lint:fix`.
 - Format: `npm run format` (or `npm run format:check` to verify) using the repo Prettier config.
+- Pre-commit hook: commits run `npm run format` (write) and `npm run lint`; set `SKIP_PRECOMMIT_LINT=1` to bypass in emergencies.
 
 ## Development server
 
