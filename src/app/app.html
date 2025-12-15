@@ -1,26 +1,26 @@
-    <div class="min-h-screen bg-gray-950 text-gray-100">
-      <header class="border-b border-gray-800">
-        <div class="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
-          <h1 class="text-lg font-semibold tracking-tight">My Music Player</h1>
+<div class="min-h-screen bg-gray-950 text-gray-100">
+  <header class="border-b border-gray-800">
+    <div class="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
+      <h1 class="text-lg font-semibold tracking-tight">My Music Player</h1>
 
-          <nav class="flex gap-2 text-sm">
-            <a
-              routerLink="/playlists"
-              routerLinkActive="bg-gray-800 text-white"
-              class="rounded px-3 py-1.5 text-gray-300 hover:text-white hover:bg-gray-900"
-              >Playlists</a
-            >
-            <a
-              routerLink="/artists"
-              routerLinkActive="bg-gray-800 text-white"
-              class="rounded px-3 py-1.5 text-gray-300 hover:text-white hover:bg-gray-900"
-              >Artists</a
-            >
-          </nav>
-        </div>
-      </header>
-
-      <main class="mx-auto max-w-5xl px-4 py-6">
-        <router-outlet />
-      </main>
+      <nav class="flex gap-2 text-sm">
+        <a
+          routerLink="/playlists"
+          routerLinkActive="bg-gray-800 text-white"
+          class="rounded px-3 py-1.5 text-gray-300 hover:text-white hover:bg-gray-900"
+          >Playlists</a
+        >
+        <a
+          routerLink="/artists"
+          routerLinkActive="bg-gray-800 text-white"
+          class="rounded px-3 py-1.5 text-gray-300 hover:text-white hover:bg-gray-900"
+          >Artists</a
+        >
+      </nav>
     </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-6">
+    <router-outlet />
+  </main>
+</div>

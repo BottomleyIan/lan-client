@@ -2,12 +2,12 @@
   "root": true,
   "ignorePatterns": ["dist/", "node_modules/", "coverage/", "tmp/"],
   "overrides": [
-      {
-        "files": ["src/app/features/**/*.{ts}"],
-          "rules": {
-            "@angular-eslint/prefer-on-push-component-change-detection": "off"
-          }
-      },
+    {
+      "files": ["src/app/features/**/*.{ts}"],
+      "rules": {
+        "@angular-eslint/prefer-on-push-component-change-detection": "off"
+      }
+    },
     {
       "files": ["**/*.ts"],
       "extends": [
