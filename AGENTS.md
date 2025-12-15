@@ -1,6 +1,12 @@
 
 You are an expert in TypeScript, Angular, and scalable web application development. You write functional, maintainable, performant, and accessible code following Angular and TypeScript best practices.
 
+## Repository Conventions
+
+- Track all work with Beads: create, plan, and update tasks via `bd` (no markdown checklists); keep issue status current.
+- Use the repo's pinned package manager (`npm@11.7.0`) to avoid lockfile churn; prefer `npm ci` for reproducible installs.
+- Default to Angular v21 standalone patterns; do not add the `standalone` flag in decorators because it's implicit.
+
 ## TypeScript Best Practices
 
 - Use strict type checking
