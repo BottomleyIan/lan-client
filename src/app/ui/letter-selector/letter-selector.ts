@@ -48,27 +48,7 @@ type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 @Component({
   selector: 'app-letter-selector',
   imports: [CommonModule],
-  template: `
-    <div class="flex flex-col gap-2 pl-2" aria-hidden="false">
-      @for (letter of letters(); track letter) {
-        <button
-          type="button"
-          class="group last-mb-2 relative flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm font-semibold text-slate-100 transition first:mt-2 hover:border-cyan-300/60 hover:text-cyan-100 focus-visible:ring-2 focus-visible:ring-cyan-400/80 focus-visible:ring-offset-0 focus-visible:outline-none"
-          [attr.id]="optionId(letter)"
-          role="option"
-          [attr.aria-selected]="isSelected(letter)"
-          [attr.aria-label]="letter === ' ' ? 'Space' : letter"
-          [attr.tabindex]="-1"
-          [attr.data-selected]="isSelected(letter)"
-          (click)="select(letter)"
-        >
-          <span class="drop-shadow-[0_0_8px_rgba(34,211,238,0.45)]">
-            {{ letter === ' ' ? '␣' : letter }}
-          </span>
-        </button>
-      }
-    </div>
-  `,
+  templateUrl: './letter-selector.html',
   styles: [
     `
       :host {
