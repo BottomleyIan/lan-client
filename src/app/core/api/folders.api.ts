@@ -14,4 +14,9 @@ export class FoldersApi {
   getFolders(): Observable<HandlersFolderDTO[]> {
     return this.http.get<HandlersFolderDTO[]>(apiUrl('api/folders'));
   }
+
+  /** DELETE /folders/:id */
+  deleteFolder(id: number): Observable<void> {
+    return this.http.delete<void>(apiUrl(`api/folders/${id}`));
+  }
 }

@@ -59,3 +59,8 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Icons
+
+- Add or edit icons in `src/app/ui/icon/icons.ts` (define `viewBox` and `paths` arrays); the `IconName` union derives from this file.
+- Use `<app-icon>` for inline icons and `<app-icon-button>` for icon-only actions; always pass a descriptive `label` to `app-icon-button` for screen readers.

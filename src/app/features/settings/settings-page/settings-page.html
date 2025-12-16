@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between gap-3">
       <h2 class="text-xl font-semibold text-slate-100">Music Folders</h2>
       @if (folders$ | async; as folders) {
-        <span class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+        <span class="text-xs font-semibold tracking-[0.12em] text-slate-400 uppercase">
           {{ folders.length }} folders
         </span>
       }
@@ -14,8 +14,11 @@
         <p class="text-sm text-slate-300">No folders added yet.</p>
       } @else {
         <div class="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-          <table class="min-w-full border-separate border-spacing-0 text-sm" aria-label="Music folders">
-            <thead class="bg-white/5 text-left text-xs uppercase tracking-[0.16em] text-slate-400">
+          <table
+            class="min-w-full border-separate border-spacing-0 text-sm"
+            aria-label="Music folders"
+          >
+            <thead class="bg-white/5 text-left text-xs tracking-[0.16em] text-slate-400 uppercase">
               <tr>
                 <th scope="col" class="px-4 py-3 font-semibold">Path</th>
                 <th scope="col" class="px-4 py-3 font-semibold">Availability</th>
@@ -35,8 +38,12 @@
                     </div>
                   </td>
                   <td class="px-4 py-3 text-right text-slate-500">
-                    <span aria-hidden="true">—</span>
-                    <span class="sr-only">Actions coming soon</span>
+                    <app-icon-button
+                      icon="trash"
+                      [label]="'Delete folder ' + folder.path"
+                      [disabled]="folder.folderId === null || isDeleting(folder.id)"
+                      (pressed)="deleteFolder(folder)"
+                    />
                   </td>
                 </tr>
               }
