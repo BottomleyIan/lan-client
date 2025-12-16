@@ -1,5 +1,51 @@
 <app-panel label="Settings">
-  <div class="px-5 py-4">
-    <h2 class="text-xl font-semibold text-slate-100">Music Folders</h2>
+  <div class="flex flex-col gap-4 px-5 py-4">
+    <div class="flex items-center justify-between gap-3">
+      <h2 class="text-xl font-semibold text-slate-100">Music Folders</h2>
+      @if (folders$ | async; as folders) {
+        <span class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+          {{ folders.length }} folders
+        </span>
+      }
+    </div>
+
+    @if (folders$ | async; as folders) {
+      @if (folders.length === 0) {
+        <p class="text-sm text-slate-300">No folders added yet.</p>
+      } @else {
+        <div class="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+          <table class="min-w-full border-separate border-spacing-0 text-sm" aria-label="Music folders">
+            <thead class="bg-white/5 text-left text-xs uppercase tracking-[0.16em] text-slate-400">
+              <tr>
+                <th scope="col" class="px-4 py-3 font-semibold">Path</th>
+                <th scope="col" class="px-4 py-3 font-semibold">Availability</th>
+                <th scope="col" class="px-4 py-3 font-semibold">Last Scan</th>
+                <th scope="col" class="px-4 py-3 text-right font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/10">
+              @for (folder of folders; track folder.id) {
+                <tr class="transition-colors hover:bg-white/5">
+                  <td class="px-4 py-3 font-medium text-slate-100">{{ folder.path }}</td>
+                  <td class="px-4 py-3 text-slate-300">{{ folder.availability }}</td>
+                  <td class="px-4 py-3 text-slate-300">
+                    <div class="flex flex-col leading-tight">
+                      <span>{{ folder.lastScanStatus }}</span>
+                      <span class="text-xs text-slate-500">{{ folder.lastScanAt }}</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 text-right text-slate-500">
+                    <span aria-hidden="true">—</span>
+                    <span class="sr-only">Actions coming soon</span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    } @else {
+      <p class="text-sm text-slate-400" aria-live="polite">Loading folders…</p>
+    }
   </div>
 </app-panel>
