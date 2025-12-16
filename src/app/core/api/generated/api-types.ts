@@ -105,6 +105,7 @@ export interface HandlersTrackDTO {
   rating?: number;
   rel_path?: string;
   size_bytes?: number;
+  title?: string;
   updated_at?: string;
   year?: number;
 }

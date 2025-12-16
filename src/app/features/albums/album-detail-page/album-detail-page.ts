@@ -5,10 +5,13 @@ import type { Observable } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute } from '@angular/router';
-import type { HandlersAlbumDTO, HandlersTrackDTO } from '../../../core/api/generated/api-types';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AlbumsApi } from '../../../core/api/albums.api';
+
+import type { HandlersAlbumDTO, HandlersTrackDTO } from '../../../core/api/generated/api-types';
+
 import { albumImageUrl } from '../../../core/api/album-image';
+import { trackImageUrl } from '../../../core/api/track-image';
 
 type AlbumDetailVm = {
   id: string;
@@ -18,6 +21,15 @@ type AlbumDetailVm = {
   coverUrl?: string;
 };
 
+type TrackDetailVm = {
+  id: string;
+  title: string;
+  artist?: string;
+  genre?: string;
+  year?: number;
+  imageUrl?: string;
+};
+
 @Component({
   standalone: true,
   imports: [CommonModule],
@@ -25,31 +37,52 @@ type AlbumDetailVm = {
 })
 export class AlbumDetailPage {
   vm$: Observable<AlbumDetailVm>;
-  tracks$: Observable<HandlersTrackDTO[]>;
+  tracksVm$: Observable<TrackDetailVm[]>;
 
   constructor(
     private route: ActivatedRoute,
     private albumsApi: AlbumsApi,
   ) {
-    this.vm$ = this.route.paramMap.pipe(
+    const id$ = this.route.paramMap.pipe(
       map((p) => p.get('id')),
       filter((id): id is string => !!id),
       distinctUntilChanged(),
-      switchMap((id) => this.albumsApi.getAlbum(id).pipe(map((a) => this.toVm(id, a)))),
     );
-    this.tracks$ = this.route.paramMap.pipe(
-      map((p) => p.get('id')),
-      filter((id): id is string => !!id),
-      distinctUntilChanged(),
-      switchMap((id) => this.albumsApi.getAlbumTracks(id)),
+
+    this.vm$ = id$.pipe(
+      switchMap((id) =>
+        this.albumsApi.getAlbum(id).pipe(map((album) => this.toAlbumVm(id, album))),
+      ),
+    );
+
+    this.tracksVm$ = id$.pipe(
+      switchMap((id) =>
+        this.albumsApi.getAlbumTracks(id).pipe(map((tracks) => this.toTracksVm(tracks))),
+      ),
     );
   }
-  private toVm(id: string, a: HandlersAlbumDTO): AlbumDetailVm {
+
+  private toAlbumVm(id: string, a: HandlersAlbumDTO): AlbumDetailVm {
     return {
       id,
-      title: String(a.title),
-      artist: String(a.artist?.name ?? 'Unknown artist'),
+      title: a.title?.trim() || 'Untitled',
+      artist: a.artist?.name?.trim() || 'Unknown artist',
       coverUrl: albumImageUrl(id),
     };
+  }
+
+  private toTracksVm(tracks: HandlersTrackDTO[]): TrackDetailVm[] {
+    return tracks
+      .filter((t): t is HandlersTrackDTO & { id: number } => typeof t.id === 'number')
+      .map(
+        (t): TrackDetailVm => ({
+          id: String(t.id),
+          title: t.title?.trim() || t.filename?.trim() || 'Untitled',
+          artist: t.artist?.name?.trim() || undefined,
+          genre: t.genre ?? undefined,
+          year: typeof t.year === 'number' ? t.year : undefined,
+          imageUrl: trackImageUrl(t.id),
+        }),
+      );
   }
 }
