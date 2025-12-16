@@ -1,0 +1,213 @@
+import { CommonModule } from '@angular/common';
+import type { OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+
+const LETTERS = [
+  '*',
+  ...Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index)),
+] as const;
+type LetterOption = (typeof LETTERS)[number];
+
+@Component({
+  selector: 'app-letter-selector',
+  imports: [CommonModule],
+  template: `
+    <div class="flex flex-col gap-2" aria-hidden="false">
+      @for (letter of letters; track letter) {
+        <button
+          type="button"
+          class="group relative flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/60 hover:text-cyan-100 focus-visible:ring-2 focus-visible:ring-cyan-400/80 focus-visible:ring-offset-0 focus-visible:outline-none"
+          [attr.id]="optionId(letter)"
+          role="option"
+          [attr.aria-selected]="isSelected(letter)"
+          [attr.tabindex]="-1"
+          [attr.data-selected]="isSelected(letter)"
+          (click)="select(letter)"
+        >
+          <span class="drop-shadow-[0_0_8px_rgba(34,211,238,0.45)]">{{ letter }}</span>
+        </button>
+      }
+    </div>
+  `,
+  styles: [
+    `
+      :host {
+        display: block;
+      }
+
+      button[data-selected='true'] {
+        border-color: rgba(34, 211, 238, 0.65);
+        background: linear-gradient(180deg, rgba(34, 211, 238, 0.18), rgba(236, 72, 153, 0.12));
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+          0 8px 28px rgba(0, 0, 0, 0.35);
+      }
+
+      button[data-selected='true'] span {
+        filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.75));
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    role: 'listbox',
+    '[id]': 'field()',
+    '[attr.aria-label]': 'ariaLabel()',
+    'aria-orientation': 'vertical',
+    '[attr.aria-activedescendant]': 'activeDescendantId()',
+    tabindex: '0',
+    '(keydown)': 'onKeydown($event)',
+  },
+})
+export class LetterSelector implements OnDestroy {
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly host = inject(ElementRef<HTMLElement>);
+  private debounceId: ReturnType<typeof setTimeout> | null = null;
+
+  readonly field = input.required<string>();
+  readonly previous = input<(() => void) | undefined>(undefined);
+  readonly next = input<(() => void) | undefined>(undefined);
+
+  protected readonly letters = LETTERS;
+  protected readonly selected = signal<LetterOption>(LETTERS[0]);
+
+  protected readonly selectedDisplay = computed(() =>
+    this.selected() === '*' ? 'Any' : this.selected(),
+  );
+  protected readonly activeDescendantId = computed(() => this.optionId(this.selected()));
+  protected readonly ariaLabel = computed(() => `Filter ${this.field()} by starting letter`);
+
+  private readonly syncInitialFromQuery = effect(() => {
+    const existing = this.route.snapshot.queryParamMap.get(this.field());
+    if (existing && LETTERS.includes(existing as LetterOption)) {
+      this.selected.set(existing as LetterOption);
+    }
+  });
+
+  protected select(letter: LetterOption): void {
+    if (this.selected() === letter) {
+      return;
+    }
+    this.selected.set(letter);
+    this.queueQueryUpdate();
+  }
+
+  protected isSelected(letter: LetterOption): boolean {
+    return this.selected() === letter;
+  }
+
+  protected optionId(letter: LetterOption): string {
+    const suffix = letter === '*' ? 'any' : letter.toLowerCase();
+    return `${this.field()}-letter-option-${suffix}`;
+  }
+
+  protected onKeydown(event: KeyboardEvent): void {
+    const { key } = event;
+    if (key === 'ArrowDown') {
+      event.preventDefault();
+      this.shiftSelection(1);
+      return;
+    }
+    if (key === 'ArrowUp') {
+      event.preventDefault();
+      this.shiftSelection(-1);
+      return;
+    }
+    if (key === 'ArrowRight') {
+      const next = this.next();
+      if (next) {
+        event.preventDefault();
+        next();
+      }
+      return;
+    }
+    if (key === 'ArrowLeft') {
+      const previous = this.previous();
+      if (previous) {
+        event.preventDefault();
+        previous();
+      }
+      return;
+    }
+    if (key === 'Home') {
+      event.preventDefault();
+      this.selected.set(LETTERS[0]);
+      this.queueQueryUpdate();
+      return;
+    }
+    if (key === 'End') {
+      event.preventDefault();
+      this.selected.set(LETTERS[LETTERS.length - 1]);
+      this.queueQueryUpdate();
+      return;
+    }
+    if (key.length === 1) {
+      const upper = key.toUpperCase();
+      const match = LETTERS.find((letter) => letter === upper);
+      if (match) {
+        this.selected.set(match);
+        this.queueQueryUpdate();
+      } else if (key === '*') {
+        this.selected.set('*');
+        this.queueQueryUpdate();
+      }
+    }
+  }
+
+  focus(): void {
+    this.host.nativeElement.focus();
+  }
+
+  ngOnDestroy(): void {
+    if (this.debounceId) {
+      clearTimeout(this.debounceId);
+      this.debounceId = null;
+    }
+    this.syncInitialFromQuery.destroy();
+  }
+
+  private shiftSelection(offset: 1 | -1): void {
+    this.selected.update((current) => {
+      const index = LETTERS.indexOf(current);
+      const nextIndex = (index + offset + LETTERS.length) % LETTERS.length;
+      return LETTERS[nextIndex];
+    });
+    this.queueQueryUpdate();
+  }
+
+  private queueQueryUpdate(): void {
+    if (this.debounceId) {
+      clearTimeout(this.debounceId);
+    }
+    this.debounceId = setTimeout(() => {
+      this.debounceId = null;
+      this.writeQueryParam();
+    }, 200);
+  }
+
+  private writeQueryParam(): void {
+    const field = this.field();
+    const value = this.selected();
+    const current = this.route.snapshot.queryParamMap.get(field);
+    if (current === value) {
+      return;
+    }
+    void this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { [field]: value },
+      queryParamsHandling: 'merge',
+      replaceUrl: true,
+    });
+  }
+}

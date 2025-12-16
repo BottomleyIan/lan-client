@@ -1,11 +1,18 @@
 <div class="flex h-full flex-row gap-4">
-  <app-panel label="First">
-    <div>Filter</div>
+  <app-panel label="L1">
+    <app-letter-selector #letter1Ref field="letter1" [next]="focusLetter2" />
   </app-panel>
-  <app-panel label="Second">
-    <div>Filter</div>
+
+  <app-panel label="L2">
+    <app-letter-selector #letter2Ref field="letter2" [previous]="focusLetter1" />
   </app-panel>
-  <app-panel label="Albums" badge="alpha" meta="Explore your collection">
+
+  <app-panel
+    class="md:col-span-2 lg:col-span-1"
+    label="Albums"
+    badge="Alpha"
+    meta="Explore your collection"
+  >
     @if (albums$ | async; as albums) {
       <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         @for (album of albums; track album.id) {
