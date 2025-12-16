@@ -1,11 +1,4 @@
-<h2 class="text-xl font-semibold">Artists</h2>
-<p class="text-sm text-gray-500">This is the albums route.</p>
 @if (albums$ | async; as albums) {
-  <div class="flex items-baseline justify-between mb-4">
-    <h2 class="text-xl font-semibold">Albums</h2>
-    <div class="text-sm text-gray-400">{{ albums.length }} total</div>
-  </div>
-
   <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
     @for (album of albums; track album.id) {
       <a

@@ -16,6 +16,7 @@
     "format:check": "prettier --check ."
   },
   "prettier": {
+    "plugins": ["prettier-plugin-tailwindcss"],
     "printWidth": 100,
     "singleQuote": true,
     "overrides": [
@@ -57,6 +58,7 @@
     "jsdom": "^27.1.0",
     "postcss": "^8.5.3",
     "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "swagger-typescript-api": "^13.2.16",
     "tailwindcss": "^4.1.12",
     "typescript": "~5.9.2",
