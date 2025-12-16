@@ -1,9 +1,18 @@
-<a class="relative inline-flex items-center gap-1.5 text-lg font-[vt323] tracking-wide text-slate-400 no-underline transition duration-150 ease-out after:ml-3 after:inline-block after:h-1 after:w-1 after:rounded-full after:bg-slate-500/60 after:content-[''] last:after:hidden hover:text-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300/70"
-  [routerLink]="routerLink()" #rla="routerLinkActive" [routerLinkActiveOptions]="routerLinkActiveOptions()"
-  routerLinkActive="text-white" [class.text-white]="rla.isActive" [class.before\:absolute]="rla.isActive"
-  [class.before\:inset-0]="rla.isActive" [class.before\:-z-10]="rla.isActive"
-  [class.before\:rounded-full]="rla.isActive" [class.before\:bg-cyan-400\/30]="rla.isActive"
-  [class.before\:blur-xl]="rla.isActive" [class.before\:content-\[''\]]="rla.isActive"
-  [attr.aria-current]="rla.isActive ? 'page' : null">
+<a
+  class="relative inline-flex items-center gap-1.5 text-lg font-[vt323] tracking-wide text-slate-400 no-underline transition duration-150 ease-out after:ml-3 after:inline-block after:h-1 after:w-1 after:rounded-full after:bg-slate-500/60 after:content-[''] last:after:hidden hover:text-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300/70"
+  [routerLink]="routerLink()"
+  #rla="routerLinkActive"
+  [routerLinkActiveOptions]="routerLinkActiveOptions()"
+  routerLinkActive="text-white"
+  [class.text-white]="rla.isActive"
+  [class.before\:absolute]="rla.isActive"
+  [class.before\:inset-0]="rla.isActive"
+  [class.before\:-z-10]="rla.isActive"
+  [class.before\:rounded-full]="rla.isActive"
+  [class.before\:bg-cyan-400\/30]="rla.isActive"
+  [class.before\:blur-xl]="rla.isActive"
+  [class.before\:content-\[''\]]="rla.isActive"
+  [attr.aria-current]="rla.isActive ? 'page' : null"
+>
   {{ label() }}
 </a>
