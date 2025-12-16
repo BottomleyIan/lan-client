@@ -1,17 +1,19 @@
 <article
-  class="group overflow-hidden flex flex-col @sm:flex-row rounded-xl border border-gray-800 bg-gray-900/40 transition hover:bg-gray-900/70"
+  class="group flex flex-col overflow-hidden rounded-xl border border-gray-800 bg-gray-900/40 transition hover:bg-gray-900/70 @sm:flex-row"
 >
   <div class="aspect-square bg-gray-800">
     @if (album.coverUrl && !imageFailed) {
       <img
         [src]="album.coverUrl"
         [alt]="album.title"
-        class="w-full object-cover aspect-square @sm:w-24"
+        class="aspect-square w-full object-cover @sm:w-24"
         loading="lazy"
         (error)="onImageError()"
       />
     } @else {
-      <div class="grid w-full aspect-square @sm:w-24 place-items-center text-sm text-gray-400">No cover</div>
+      <div class="grid aspect-square w-full place-items-center text-sm text-gray-400 @sm:w-24">
+        No cover
+      </div>
     }
   </div>
 
