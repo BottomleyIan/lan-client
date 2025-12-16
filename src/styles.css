@@ -8,6 +8,7 @@
     --accent-pink: #ec4899;
     --surface: #0b0b16;
     --surface-strong: #0f1020;
+    --nav-icon-color: color-mix(in srgb, var(--accent-cyan) 80%, #e2e8f0);
   }
 
   * {

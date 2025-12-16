@@ -14,5 +14,8 @@
   [class.before\:content-\[''\]]="rla.isActive"
   [attr.aria-current]="rla.isActive ? 'page' : null"
 >
+  @if (iconName(); as icon) {
+    <app-icon [name]="icon" [colorVar]="iconColorVar()" />
+  }
   {{ label() }}
 </a>

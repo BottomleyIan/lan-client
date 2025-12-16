@@ -10,5 +10,10 @@ export const routes: Routes = [
   { path: 'artists', component: ArtistsPage },
   { path: 'albums', component: AlbumsPage },
   { path: 'albums/:id', component: AlbumDetailPage },
+  {
+    path: 'settings',
+    loadComponent: () =>
+      import('./features/settings/settings-page/settings-page').then((c) => c.SettingsPage),
+  },
   { path: '**', redirectTo: 'playlists' },
 ];
