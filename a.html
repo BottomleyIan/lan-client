@@ -1,0 +1,886 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LAN Music — Arcade Mock</title>
+  <style>
+    :root{
+      --bg: #07070b;
+      --panel: rgba(10, 10, 18, 0.72);
+      --panel2: rgba(14, 14, 26, 0.72);
+      --text: rgba(240,240,255,.92);
+      --muted: rgba(210,210,255,.55);
+      --dim: rgba(200,200,255,.25);
+
+      --neonA: #ff2bd6; /* magenta */
+      --neonB: #20f7ff; /* cyan */
+      --neonC: #7cff3a; /* lime */
+      --warn:  #ffd34f;
+
+      --grid: rgba(60,255,220,.06);
+      --glass: rgba(255,255,255,.06);
+      --glass2: rgba(255,255,255,.03);
+
+      --radius: 18px;
+      --border: rgba(120, 255, 230, .18);
+
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 700px at 20% 20%, rgba(255,43,214,.12), transparent 60%),
+                  radial-gradient(1000px 650px at 85% 25%, rgba(32,247,255,.10), transparent 60%),
+                  radial-gradient(1200px 800px at 40% 90%, rgba(124,255,58,.08), transparent 65%),
+                  linear-gradient(180deg, #05050a, #080812 50%, #05050a);
+      color: var(--text);
+      font-family: var(--font);
+      overflow:hidden;
+    }
+
+    /* Subtle scanlines + vignette */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        repeating-linear-gradient(180deg,
+          rgba(255,255,255,.04) 0px,
+          rgba(255,255,255,.02) 1px,
+          rgba(0,0,0,.00) 3px,
+          rgba(0,0,0,.00) 6px
+        );
+      opacity:.25;
+      pointer-events:none;
+      mix-blend-mode: overlay;
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:-40px;
+      background: radial-gradient(1200px 800px at 50% 40%, transparent 50%, rgba(0,0,0,.55) 78%, rgba(0,0,0,.85) 100%);
+      pointer-events:none;
+    }
+
+    .wrap{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      padding:22px 22px 18px;
+      gap:14px;
+    }
+
+    /* Header */
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+    }
+    .brand{
+      display:flex;
+      align-items:baseline;
+      gap:12px;
+      user-select:none;
+    }
+    .brand .title{
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      font-size:18px;
+      filter: drop-shadow(0 0 10px rgba(32,247,255,.25));
+    }
+    .brand .subtitle{
+      font-family: var(--mono);
+      font-size:12px;
+      color: var(--muted);
+      letter-spacing:.08em;
+    }
+
+    .status{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-family: var(--mono);
+      font-size:12px;
+      color: var(--muted);
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      background: rgba(8,8,14,.55);
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 12px 40px rgba(0,0,0,.35);
+    }
+    .dot{
+      width:8px; height:8px; border-radius:50%;
+      background: var(--neonB);
+      box-shadow: 0 0 10px rgba(32,247,255,.7), 0 0 22px rgba(32,247,255,.35);
+    }
+    .kbdhint{
+      color: var(--dim);
+    }
+
+    /* Main grid */
+    .main{
+      flex:1;
+      min-height:0;
+      display:grid;
+      grid-template-columns: 110px 110px 1.1fr 1.2fr;
+      gap:14px;
+    }
+
+    .panel{
+      position:relative;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, var(--panel), var(--panel2));
+      backdrop-filter: blur(10px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.03) inset,
+        0 18px 60px rgba(0,0,0,.45);
+      overflow:hidden;
+    }
+
+    /* Neon corner flourish */
+    .panel::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(180px 80px at 20% 0%, rgba(255,43,214,.22), transparent 60%),
+        radial-gradient(160px 80px at 80% 0%, rgba(32,247,255,.18), transparent 60%);
+      opacity:.55;
+      pointer-events:none;
+    }
+
+    /* Retro grid floor */
+    .panel::after{
+      content:"";
+      position:absolute;
+      left:-30%; right:-30%;
+      bottom:-35%;
+      height:75%;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.65)),
+        repeating-linear-gradient(90deg, var(--grid) 0, var(--grid) 1px, transparent 24px, transparent 26px),
+        repeating-linear-gradient(0deg,  var(--grid) 0, var(--grid) 1px, transparent 22px, transparent 24px);
+      transform: perspective(700px) rotateX(55deg);
+      transform-origin: bottom;
+      opacity:.55;
+      pointer-events:none;
+      filter: blur(.2px);
+    }
+
+    .panelHeader{
+      position:relative;
+      z-index:2;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:14px 14px 10px;
+      gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.00));
+    }
+    .panelHeader .label{
+      font-family: var(--mono);
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      font-size:12px;
+      color: var(--muted);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+    .badge{
+      font-family: var(--mono);
+      font-size:11px;
+      letter-spacing:.10em;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.25);
+      color: rgba(240,240,255,.75);
+      user-select:none;
+    }
+
+    .panelBody{
+      position:relative;
+      z-index:2;
+      height: calc(100% - 52px);
+      padding: 10px 10px 12px;
+      min-height:0;
+    }
+
+    /* Lists */
+    .list{
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      overflow:auto;
+      padding-right:4px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(32,247,255,.35) rgba(255,255,255,.06);
+    }
+    .list::-webkit-scrollbar{ width:10px; }
+    .list::-webkit-scrollbar-track{ background: rgba(255,255,255,.05); border-radius:999px; }
+    .list::-webkit-scrollbar-thumb{
+      background: linear-gradient(180deg, rgba(255,43,214,.55), rgba(32,247,255,.55));
+      border-radius:999px;
+      border:2px solid rgba(0,0,0,.25);
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 10px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.06);
+      background: rgba(255,255,255,.03);
+      color: rgba(240,240,255,.78);
+      user-select:none;
+      position:relative;
+      transition: transform .06s ease, border-color .12s ease, background .12s ease;
+    }
+    .row .mono{ font-family: var(--mono); opacity:.9; }
+    .row .sub{ color: var(--muted); font-family: var(--mono); font-size:11px; letter-spacing:.06em; }
+
+    /* Focused panel gets marquee glow */
+    .panel.focused{
+      border-color: rgba(32,247,255,.35);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 0 28px rgba(32,247,255,.10),
+        0 0 80px rgba(255,43,214,.06),
+        0 18px 60px rgba(0,0,0,.45);
+    }
+
+    /* Selected row */
+    .row.selected{
+      background: linear-gradient(90deg, rgba(32,247,255,.16), rgba(255,43,214,.10));
+      border-color: rgba(255,255,255,.18);
+      color: rgba(255,255,255,.95);
+      transform: translateY(-1px);
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.06) inset,
+        0 10px 30px rgba(0,0,0,.35),
+        0 0 22px rgba(32,247,255,.10);
+    }
+    .row.selected::before{
+      content:"";
+      position:absolute;
+      left:10px; top:8px; bottom:8px;
+      width:3px;
+      border-radius:999px;
+      background: linear-gradient(180deg, var(--neonB), var(--neonA));
+      box-shadow: 0 0 14px rgba(32,247,255,.45);
+    }
+    .row .big{
+      font-weight:900;
+      letter-spacing:.08em;
+      font-size:20px;
+      width: 38px;
+      text-align:center;
+      filter: drop-shadow(0 0 10px rgba(255,43,214,.15));
+    }
+
+    /* Letter rows special styling */
+    .row.letter{
+      justify-content:center;
+      padding:12px 8px;
+    }
+    .row.letter .big{
+      width:auto;
+      font-size:22px;
+    }
+    .row.letter.star .big{
+      color: var(--warn);
+      text-shadow: 0 0 12px rgba(255,211,79,.20);
+    }
+
+    /* Artist/Track rows */
+    .row.item{
+      justify-content:space-between;
+    }
+    .leftStack{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
+    }
+    .name{
+      font-weight:800;
+      letter-spacing:.02em;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .meta{
+      font-size:11px;
+      color: var(--muted);
+      font-family: var(--mono);
+      letter-spacing:.06em;
+    }
+    .pill{
+      font-family: var(--mono);
+      font-size:11px;
+      letter-spacing:.06em;
+      padding:6px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(0,0,0,.22);
+      color: rgba(240,240,255,.65);
+      flex:0 0 auto;
+    }
+
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform: translateX(-50%);
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(6,6,12,.65);
+      backdrop-filter: blur(10px);
+      color: rgba(255,255,255,.9);
+      font-family: var(--mono);
+      letter-spacing:.08em;
+      font-size:12px;
+      box-shadow:
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 16px 50px rgba(0,0,0,.45);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-6px);
+    }
+
+    /* Footer hints */
+    .footer{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      font-family: var(--mono);
+      color: var(--dim);
+      letter-spacing:.06em;
+      font-size:12px;
+      user-select:none;
+      padding:0 6px;
+    }
+    .footer b{
+      color: rgba(240,240,255,.85);
+      font-weight:800;
+    }
+
+    /* Tiny CRT flicker */
+    @keyframes flicker {
+      0%,100%{ opacity:1; }
+      50%{ opacity:.96; }
+      70%{ opacity:.99; }
+      90%{ opacity:.97; }
+    }
+    .wrap{ animation: flicker 3.2s infinite; }
+
+    /* Responsive fallback */
+    @media (max-width: 980px){
+      .main{ grid-template-columns: 90px 90px 1fr; grid-template-rows: 1fr 1fr; }
+      .tracks{ grid-column: 1 / -1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="topbar">
+      <div class="brand">
+        <div class="title">LAN MUSIC TERMINAL</div>
+        <div class="subtitle">INSERT COIN ▸ SELECT LETTER ▸ PICK ARTIST ▸ PLAY</div>
+      </div>
+      <div class="status">
+        <span class="dot"></span>
+        <span><span id="mode">CLIENT</span> • <span id="conn">Connected</span> • <span id="counts">—</span></span>
+        <span class="kbdhint">[←/→ focus • ↑/↓ move • A–Z jump • ⌫ = * • Enter play]</span>
+      </div>
+    </div>
+
+    <div class="main">
+      <!-- Column 1 -->
+      <section class="panel" id="p1">
+        <div class="panelHeader">
+          <div class="label">L1 <span class="badge">FIRST</span></div>
+          <div class="badge" id="l1Badge">*</div>
+        </div>
+        <div class="panelBody">
+          <div class="list" id="listL1"></div>
+        </div>
+      </section>
+
+      <!-- Column 2 -->
+      <section class="panel" id="p2">
+        <div class="panelHeader">
+          <div class="label">L2 <span class="badge">SECOND</span></div>
+          <div class="badge" id="l2Badge">*</div>
+        </div>
+        <div class="panelBody">
+          <div class="list" id="listL2"></div>
+        </div>
+      </section>
+
+      <!-- Artists -->
+      <section class="panel" id="p3">
+        <div class="panelHeader">
+          <div class="label">ARTIST <span class="badge">ROSTER</span></div>
+          <div class="badge" id="artistBadge">—</div>
+        </div>
+        <div class="panelBody">
+          <div class="list" id="listArtists"></div>
+        </div>
+      </section>
+
+      <!-- Tracks -->
+      <section class="panel tracks" id="p4">
+        <div class="panelHeader">
+          <div class="label">TRACK <span class="badge">QUEUE</span></div>
+          <div class="badge" id="trackBadge">—</div>
+        </div>
+        <div class="panelBody">
+          <div class="list" id="listTracks"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="footer">
+      <div>FOCUS: <b id="focusLabel">L1</b> • FILTER: <b id="filterLabel">*</b></div>
+      <div>Tip: smash letters like an arcade initials screen. Backspace nukes to <b>*</b>.</div>
+    </div>
+
+    <div class="toast" id="toast">PLAY</div>
+  </div>
+
+  <script>
+    // ---------- Data (fake) ----------
+    // Enough variety to show letter filtering. Replace with your LAN server data later.
+    const DATA = [
+      { artist:"AUTECHRE", tracks:["Gantz Graf","Rae","Eutow","Clipper","Stud","Rsdio"] },
+      { artist:"APHEX TWIN", tracks:["Xtal","4","Windowlicker","Come To Daddy","Avril 14th"] },
+      { artist:"AIR", tracks:["La Femme d'Argent","Sexy Boy","All I Need","Kelly Watch the Stars"] },
+      { artist:"BAD RELIGION", tracks:["Sorrow","Generator","American Jesus","Infected"] },
+      { artist:"BATTLES", tracks:["Atlas","Tonto","Fort Greene Park","Futura"] },
+      { artist:"CABARET VOLTAIRE", tracks:["Nag Nag Nag","Yashar","Sensoria"] },
+      { artist:"CARPENTER BRUT", tracks:["Turbo Killer","Le Perv","Paradise Warfare"] },
+      { artist:"DAFT PUNK", tracks:["Aerodynamic","Digital Love","One More Time","Robot Rock"] },
+      { artist:"DEPECHE MODE", tracks:["Enjoy the Silence","Strangelove","Policy of Truth"] },
+      { artist:"ELUVIUM", tracks:["Prelude for Time Feelers","Indoor Swimming at the Space Station"] },
+      { artist:"FUGAZI", tracks:["Waiting Room","Merchandise","Repeater"] },
+      { artist:"GUNSHIP", tracks:["Tech Noir","The Midnight (feat.)","Dark All Day"] },
+      { artist:"HEALTH", tracks:["STONEFIST","FEEL NOTHING","TEARS"] },
+      { artist:"IN FLAMES", tracks:["Only For the Weak","Cloud Connected","My Sweet Shadow"] },
+      { artist:"JAPAN", tracks:["Ghosts","Quiet Life","Gentlemen Take Polaroids"] },
+      { artist:"JOY DIVISION", tracks:["Disorder","She's Lost Control","Atmosphere"] },
+      { artist:"KAVINSKY", tracks:["Nightcall","Odd Look","Testarossa Autodrive"] },
+      { artist:"KRAFTWERK", tracks:["The Robots","Computer Love","Autobahn"] },
+      { artist:"LCD SOUNDSYSTEM", tracks:["Dance Yrself Clean","All My Friends","Someone Great"] },
+      { artist:"METALLICA", tracks:["One","Master of Puppets","Battery"] },
+      { artist:"NINE INCH NAILS", tracks:["Hurt","March of the Pigs","The Hand That Feeds"] },
+      { artist:"OASIS", tracks:["Supersonic","Wonderwall","Live Forever"] },
+      { artist:"PORTISHEAD", tracks:["Roads","Sour Times","Glory Box"] },
+      { artist:"QUEENS OF THE STONE AGE", tracks:["No One Knows","Go With the Flow","Little Sister"] },
+      { artist:"RADIOHEAD", tracks:["Everything In Its Right Place","Paranoid Android","Idioteque"] },
+      { artist:"SQUAREPUSHER", tracks:["My Red Hot Car","Come On My Selector","Beep Street"] },
+      { artist:"THE CURE", tracks:["Just Like Heaven","Lovesong","A Forest"] },
+      { artist:"ULTRAVOX", tracks:["Vienna","Dancing with Tears in My Eyes"] },
+      { artist:"VANGELIS", tracks:["Blade Runner Blues","Rachel's Song"] },
+      { artist:"YAZOO", tracks:["Only You","Don't Go"] },
+      { artist:"ZZ TOP", tracks:["Sharp Dressed Man","La Grange"] },
+    ];
+
+    // ---------- UI State ----------
+    const letters = ["*"].concat(Array.from({length:26}, (_,i)=>String.fromCharCode(65+i)));
+    const state = {
+      focus: 0,        // 0=L1, 1=L2, 2=Artists, 3=Tracks
+      l1: "*",
+      l2: "*",
+      artistIndex: 0,
+      trackIndex: 0
+    };
+
+    // ---------- Elements ----------
+    const panels = [ "p1","p2","p3","p4" ].map(id => document.getElementById(id));
+    const listL1 = document.getElementById("listL1");
+    const listL2 = document.getElementById("listL2");
+    const listArtists = document.getElementById("listArtists");
+    const listTracks = document.getElementById("listTracks");
+
+    const l1Badge = document.getElementById("l1Badge");
+    const l2Badge = document.getElementById("l2Badge");
+    const artistBadge = document.getElementById("artistBadge");
+    const trackBadge = document.getElementById("trackBadge");
+    const focusLabel = document.getElementById("focusLabel");
+    const filterLabel = document.getElementById("filterLabel");
+    const counts = document.getElementById("counts");
+    const toast = document.getElementById("toast");
+
+    function toastMsg(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(toast._t);
+      toast._t = setTimeout(()=>toast.classList.remove("show"), 850);
+    }
+
+    // ---------- Filtering ----------
+    function currentFilter(){
+      // If L1 is '*', L2 is forced '*'
+      const l1 = state.l1;
+      const l2 = (l1 === "*") ? "*" : state.l2;
+      return { l1, l2 };
+    }
+
+    function filteredArtists(){
+      const { l1, l2 } = currentFilter();
+      const norm = s => s.toUpperCase();
+
+      return DATA
+        .map(d => ({...d, _norm: norm(d.artist)}))
+        .filter(d => {
+          if (l1 === "*") return true;
+          if (!d._norm.startsWith(l1)) return false;
+          if (l2 === "*") return true;
+          return d._norm.length >= 2 && d._norm[1] === l2;
+        })
+        .sort((a,b)=>a._norm.localeCompare(b._norm));
+    }
+
+    // ---------- Rendering ----------
+    function renderLetters(container, selectedValue){
+      container.innerHTML = "";
+      letters.forEach(val => {
+        const row = document.createElement("div");
+        row.className = "row letter" + (val==="*" ? " star" : "");
+        row.dataset.value = val;
+
+        const big = document.createElement("div");
+        big.className = "big";
+        big.textContent = val;
+
+        row.appendChild(big);
+
+        if (val === selectedValue) row.classList.add("selected");
+
+        row.addEventListener("click", ()=>{
+          if (container === listL1) setL1(val);
+          else setL2(val);
+          // clicking sets focus too
+          state.focus = (container === listL1) ? 0 : 1;
+          renderAll();
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    function renderArtists(){
+      const arts = filteredArtists();
+      listArtists.innerHTML = "";
+
+      counts.textContent = `${arts.length} artists • ${DATA.reduce((n,d)=>n + d.tracks.length, 0)} tracks`;
+
+      if (state.artistIndex >= arts.length) state.artistIndex = Math.max(0, arts.length - 1);
+      if (arts.length === 0){
+        artistBadge.textContent = "0";
+        trackBadge.textContent = "0";
+        listTracks.innerHTML = "";
+        const empty = document.createElement("div");
+        empty.className = "row item";
+        empty.innerHTML = `<div class="leftStack"><div class="name">NO MATCHES</div><div class="meta">Try * or change letters</div></div><div class="pill">—</div>`;
+        listArtists.appendChild(empty);
+        return;
+      }
+
+      artistBadge.textContent = `${state.artistIndex+1}/${arts.length}`;
+
+      arts.forEach((a, idx) => {
+        const row = document.createElement("div");
+        row.className = "row item" + (idx===state.artistIndex ? " selected" : "");
+        row.innerHTML = `
+          <div class="leftStack">
+            <div class="name">${escapeHtml(a.artist)}</div>
+            <div class="meta">${a.tracks.length} TRACKS</div>
+          </div>
+          <div class="pill">${a.artist.slice(0,2).toUpperCase().replace(/[^A-Z]/g,"·")}</div>
+        `;
+        row.addEventListener("click", ()=>{
+          state.focus = 2;
+          state.artistIndex = idx;
+          state.trackIndex = 0;
+          renderAll(true);
+        });
+        listArtists.appendChild(row);
+      });
+
+      // Render tracks for selected artist
+      renderTracks(arts[state.artistIndex]);
+    }
+
+    function renderTracks(artistObj){
+      listTracks.innerHTML = "";
+      const tracks = artistObj?.tracks ?? [];
+      if (state.trackIndex >= tracks.length) state.trackIndex = Math.max(0, tracks.length - 1);
+      trackBadge.textContent = `${tracks.length ? (state.trackIndex+1)+"/"+tracks.length : "0"}`;
+
+      tracks.forEach((t, idx) => {
+        const row = document.createElement("div");
+        row.className = "row item" + (idx===state.trackIndex ? " selected" : "");
+        row.innerHTML = `
+          <div class="leftStack">
+            <div class="name">${escapeHtml(t)}</div>
+            <div class="meta">${escapeHtml(artistObj.artist)}</div>
+          </div>
+          <div class="pill">#${String(idx+1).padStart(2,"0")}</div>
+        `;
+        row.addEventListener("click", ()=>{
+          state.focus = 3;
+          state.trackIndex = idx;
+          renderAll(true);
+        });
+        listTracks.appendChild(row);
+      });
+    }
+
+    function renderFocus(){
+      panels.forEach((p,i)=>p.classList.toggle("focused", i===state.focus));
+      focusLabel.textContent = ["L1","L2","ARTIST","TRACK"][state.focus];
+
+      const { l1, l2 } = currentFilter();
+      filterLabel.textContent = (l1==="*") ? "*" : (l2==="*" ? `${l1}*` : `${l1}${l2}`);
+
+      // Keep L2 forced when L1 is *
+      if (state.l1 === "*" && state.l2 !== "*") state.l2 = "*";
+    }
+
+    function renderAll(scrollSelected=false){
+      renderLetters(listL1, state.l1);
+      renderLetters(listL2, (state.l1==="*") ? "*" : state.l2);
+      l1Badge.textContent = state.l1;
+      l2Badge.textContent = (state.l1==="*") ? "*" : state.l2;
+      renderArtists();
+      renderFocus();
+
+      if (scrollSelected){
+        scrollToSelected(listL1);
+        scrollToSelected(listL2);
+        scrollToSelected(listArtists);
+        scrollToSelected(listTracks);
+      }
+    }
+
+    function scrollToSelected(container){
+      const sel = container.querySelector(".row.selected");
+      if (!sel) return;
+      sel.scrollIntoView({ block:"nearest" });
+    }
+
+    // ---------- State mutators ----------
+    function setL1(val){
+      state.l1 = val;
+      // Reset L2 when L1 changes
+      state.l2 = "*";
+      state.artistIndex = 0;
+      state.trackIndex = 0;
+    }
+    function setL2(val){
+      if (state.l1 === "*"){
+        state.l2 = "*";
+        return;
+      }
+      state.l2 = val;
+      state.artistIndex = 0;
+      state.trackIndex = 0;
+    }
+
+    // ---------- Keyboard ----------
+    function isAZ(key){
+      return key.length===1 && key >= "a" && key <= "z";
+    }
+
+    function jumpLetterInColumn(colIdx, letter){
+      if (colIdx === 0){
+        setL1(letter);
+      } else if (colIdx === 1){
+        setL2(letter);
+      }
+      toastMsg(`LETTER ${letter === "*" ? "ALL (*)" : letter}`);
+      renderAll(true);
+    }
+
+    function quickJumpList(container, items, getLabel, letter){
+      // Jump to first item starting with letter
+      const L = letter.toUpperCase();
+      const idx = items.findIndex(x => getLabel(x).toUpperCase().startsWith(L));
+      if (idx >= 0){
+        if (container === "artists"){
+          state.artistIndex = idx;
+          state.trackIndex = 0;
+        } else {
+          state.trackIndex = idx;
+        }
+        renderAll(true);
+      } else {
+        toastMsg(`NO ${L}…`);
+      }
+    }
+
+    window.addEventListener("keydown", (e)=>{
+      const key = e.key;
+
+      // Prevent browser back on Backspace
+      if (key === "Backspace") e.preventDefault();
+
+      // Focus switching
+      if (key === "Tab"){
+        e.preventDefault();
+        state.focus = (state.focus + (e.shiftKey ? 3 : 1)) % 4;
+        renderAll(false);
+        return;
+      }
+      if (key === "ArrowLeft"){
+        e.preventDefault();
+        state.focus = (state.focus + 3) % 4;
+        renderAll(false);
+        return;
+      }
+      if (key === "ArrowRight"){
+        e.preventDefault();
+        state.focus = (state.focus + 1) % 4;
+        renderAll(false);
+        return;
+      }
+      if (key === "Escape"){
+        state.focus = 0;
+        renderAll(false);
+        return;
+      }
+
+      // Backspace: set focused letter column to '*'
+      if (key === "Backspace"){
+        if (state.focus === 0){
+          jumpLetterInColumn(0, "*");
+        } else if (state.focus === 1){
+          jumpLetterInColumn(1, "*");
+        } else {
+          // optional: go left one focus level
+          state.focus = Math.max(0, state.focus - 1);
+          renderAll(false);
+        }
+        return;
+      }
+
+      // A–Z typing
+      if (isAZ(key)){
+        const L = key.toUpperCase();
+        if (state.focus === 0) return jumpLetterInColumn(0, L);
+        if (state.focus === 1) return jumpLetterInColumn(1, L);
+
+        // In artist/track panels: quick jump
+        const arts = filteredArtists();
+        if (arts.length === 0) return;
+
+        if (state.focus === 2){
+          quickJumpList("artists", arts, a => a.artist, L);
+          return;
+        }
+        if (state.focus === 3){
+          const tracks = arts[state.artistIndex]?.tracks ?? [];
+          quickJumpList("tracks", tracks, t => t, L);
+          return;
+        }
+      }
+
+      // Up/down navigation
+      if (key === "ArrowUp" || key === "ArrowDown"){
+        e.preventDefault();
+        const dir = (key === "ArrowUp") ? -1 : 1;
+
+        if (state.focus === 0){
+          const idx = letters.indexOf(state.l1);
+          const next = (idx + dir + letters.length) % letters.length;
+          setL1(letters[next]);
+          toastMsg(`L1 ${letters[next]}`);
+          renderAll(true);
+          return;
+        }
+
+        if (state.focus === 1){
+          const current = (state.l1==="*") ? "*" : state.l2;
+          const idx = letters.indexOf(current);
+          const next = (idx + dir + letters.length) % letters.length;
+          setL2(letters[next]);
+          toastMsg(`L2 ${state.l1==="*" ? "*" : state.l2}`);
+          renderAll(true);
+          return;
+        }
+
+        const arts = filteredArtists();
+        if (arts.length === 0) return;
+
+        if (state.focus === 2){
+          state.artistIndex = clamp(state.artistIndex + dir, 0, arts.length - 1);
+          state.trackIndex = 0;
+          renderAll(true);
+          return;
+        }
+
+        if (state.focus === 3){
+          const tracks = arts[state.artistIndex]?.tracks ?? [];
+          if (tracks.length === 0) return;
+          state.trackIndex = clamp(state.trackIndex + dir, 0, tracks.length - 1);
+          renderAll(true);
+          return;
+        }
+      }
+
+      // Enter = play (only on track column)
+      if (key === "Enter"){
+        const arts = filteredArtists();
+        const a = arts[state.artistIndex];
+        if (!a) return;
+
+        if (state.focus === 2){
+          state.focus = 3;
+          renderAll(true);
+          return;
+        }
+
+        if (state.focus === 3){
+          const t = a.tracks[state.trackIndex];
+          if (!t) return;
+          toastMsg(`PLAY ▸ ${a.artist} ▸ ${t}`);
+          return;
+        }
+      }
+    });
+
+    function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, (c)=>({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
+    }
+
+    // Init
+    renderAll(true);
+    toastMsg("READY");
+  </script>
+</body>
+</html>

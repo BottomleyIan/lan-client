@@ -1,0 +1,25 @@
+@if (vm$ | async; as vm) {
+<div class="flex items-start gap-5">
+  <div class="w-40 shrink-0">
+    <div class="aspect-square rounded-xl overflow-hidden bg-gray-800">
+      <img [src]="vm.coverUrl" [alt]="vm.title" class="h-full w-full object-cover" loading="lazy" />
+    </div>
+  </div>
+
+  <div class="min-w-0">
+    <div class="text-sm text-gray-400">Album</div>
+    <h2 class="text-2xl font-semibold leading-tight mt-1">{{ vm.title }}</h2>
+
+    <div class="mt-2 text-gray-300">
+      <span class="font-medium">{{ vm.artist }}</span>
+      @if (vm.year) {
+      <span class="text-gray-500"> · {{ vm.year }}</span>
+      }
+    </div>
+
+    <div class="mt-4 text-sm text-gray-400">
+      Tracks will go here
+    </div>
+  </div>
+</div>
+}

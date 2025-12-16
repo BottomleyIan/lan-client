@@ -1,0 +1,44 @@
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+
+@Component({
+  selector: 'app-panel',
+  imports: [],
+  template: `
+    <section
+      class="relative overflow-hidden rounded-2xl border border-cyan-200/20 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/80 text-slate-100 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset,0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+      role="group"
+      [attr.aria-label]="ariaLabel()"
+    >
+      <div
+        class="pointer-events-none absolute inset-0 opacity-70 [background:radial-gradient(180px_80px_at_20%_0%,rgba(236,72,153,0.2),transparent_60%),radial-gradient(160px_80px_at_80%_0%,rgba(34,211,238,0.2),transparent_60%)]"
+        aria-hidden="true"
+      ></div>
+
+      <div class="relative z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-white/5 px-5 pb-3 pt-4">
+        <div class="flex items-center gap-3 text-[12px] uppercase tracking-[0.12em] text-slate-400">
+          <span>{{ label() }}</span>
+          @if (badge()) {
+            <span
+              class="rounded-full border border-white/15 bg-black/25 px-2.5 py-1 font-mono text-[11px] font-semibold tracking-[0.08em] text-slate-200"
+              >{{ badge() }}</span
+            >
+          }
+        </div>
+        @if (meta()) {
+          <div class="text-xs text-slate-400">{{ meta() }}</div>
+        }
+      </div>
+      <div class="relative z-10 min-h-[420px] p-5">
+        <ng-content />
+      </div>
+    </section>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class Panel {
+  readonly label = input<string>('Panel');
+  readonly badge = input<string | null>('alpha');
+  readonly meta = input<string | null>(null);
+
+  protected readonly ariaLabel = computed(() => this.label());
+}

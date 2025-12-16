@@ -7,6 +7,7 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 - Work tracking: use the Beads CLI (`bd`) for all task creation and status updates; keep issues descriptive and up to date.
 - Package manager: stick to the pinned `npm@11.7.0` (Node 22) to avoid lockfile drift; install dependencies with `npm ci`.
 - Angular style: the app uses Angular v21 standalone components by default—do not add the `standalone` flag to component decorators.
+- Tailwind: prefer Tailwind utilities (with arbitrary values when needed) over custom CSS; shared palette/font tokens live in `src/styles.css` (`--accent-*`, `--surface`, `--font-display`).
 
 ## Linting and formatting
 

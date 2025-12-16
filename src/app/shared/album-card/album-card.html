@@ -1,0 +1,23 @@
+<article class="group rounded-xl border border-gray-800 bg-gray-900/40 hover:bg-gray-900/70 transition overflow-hidden">
+  <div class="aspect-square bg-gray-800">
+    @if (album.coverUrl && !imageFailed) {
+    <img [src]="album.coverUrl" [alt]="album.title" class="h-full w-full object-cover" loading="lazy"
+      (error)="onImageError()" />
+    } @else {
+    <div class="h-full w-full grid place-items-center text-gray-400 text-sm">
+      No cover
+    </div>
+    }
+  </div>
+
+  <div class="p-3">
+    <div class="font-medium leading-tight line-clamp-1">{{ album.title }}</div>
+    <div class="text-sm text-gray-400 line-clamp-1">{{ album.artist }}</div>
+
+    @if (album.year) {
+    <div class="mt-1 text-xs text-gray-500">
+      {{ album.year }}
+    </div>
+    }
+  </div>
+</article>

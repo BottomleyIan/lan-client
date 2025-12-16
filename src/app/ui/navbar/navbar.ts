@@ -1,0 +1,45 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+@Component({
+  selector: 'app-navbar',
+  template: `
+    <header
+      class="relative z-10 mb-4 flex items-center justify-between gap-4 text-slate-100 md:gap-6"
+    >
+      <div class="flex items-baseline gap-3 text-nowrap">
+        <span
+          class="text-2xl font-black uppercase tracking-[0.14em] drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
+          style="font-family: var(--font-display)"
+        >
+          {{ title() }}
+        </span>
+        <span class="text-xs uppercase tracking-[0.14em] text-slate-400">{{ subtitle() }}</span>
+      </div>
+
+      <nav class="flex items-center gap-3" aria-label="Primary">
+        <ng-content />
+      </nav>
+
+      <div
+        class="flex items-center gap-2 rounded-full border border-cyan-300/25 bg-slate-900/60 px-3 py-2 text-xs font-semibold tracking-wide text-slate-200 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset,0_12px_36px_rgba(0,0,0,0.45)] backdrop-blur"
+        aria-live="polite"
+      >
+        <span
+          class="h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.7),0_0_18px_rgba(34,211,238,0.45)]"
+          aria-hidden="true"
+        ></span>
+        <span class="uppercase tracking-[0.12em]">{{ statusLabel() }}</span>
+        @if (statusHint()) {
+          <span class="text-[11px] font-normal text-slate-400">{{ statusHint() }}</span>
+        }
+      </div>
+    </header>
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class Navbar {
+  readonly title = input<string>('LAN Music');
+  readonly subtitle = input<string>('client');
+  readonly statusLabel = input<string>('Live');
+  readonly statusHint = input<string>('Shift + / for shortcuts');
+}
