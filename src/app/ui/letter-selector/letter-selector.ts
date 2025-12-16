@@ -13,29 +13,58 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-const LETTERS = [
-  '*',
-  ...Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index)),
+const ALPHA_LETTERS = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
 ] as const;
-type LetterOption = (typeof LETTERS)[number];
+const LETTERS = ['*', ...ALPHA_LETTERS] as const;
+const LETTERS_WITH_SPACE = ['*', ' ', ...ALPHA_LETTERS] as const;
+type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 
 @Component({
   selector: 'app-letter-selector',
   imports: [CommonModule],
   template: `
     <div class="flex flex-col gap-2" aria-hidden="false">
-      @for (letter of letters; track letter) {
+      @for (letter of letters(); track letter) {
         <button
           type="button"
           class="group relative flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/60 hover:text-cyan-100 focus-visible:ring-2 focus-visible:ring-cyan-400/80 focus-visible:ring-offset-0 focus-visible:outline-none"
           [attr.id]="optionId(letter)"
           role="option"
           [attr.aria-selected]="isSelected(letter)"
+          [attr.aria-label]="letter === ' ' ? 'Space' : letter"
           [attr.tabindex]="-1"
           [attr.data-selected]="isSelected(letter)"
           (click)="select(letter)"
         >
-          <span class="drop-shadow-[0_0_8px_rgba(34,211,238,0.45)]">{{ letter }}</span>
+          <span class="drop-shadow-[0_0_8px_rgba(34,211,238,0.45)]">
+            {{ letter === ' ' ? '␣' : letter }}
+          </span>
         </button>
       }
     </div>
@@ -82,8 +111,11 @@ export class LetterSelector implements OnDestroy {
   readonly field = input.required<string>();
   readonly previous = input<(() => void) | undefined>(undefined);
   readonly next = input<(() => void) | undefined>(undefined);
+  readonly includeSpace = input(false);
 
-  protected readonly letters = LETTERS;
+  protected readonly letters = computed<readonly LetterOption[]>(() =>
+    this.includeSpace() ? LETTERS_WITH_SPACE : LETTERS,
+  );
   protected readonly selected = signal<LetterOption>(LETTERS[0]);
 
   protected readonly activeDescendantId = computed(() => this.optionId(this.selected()));
@@ -92,7 +124,8 @@ export class LetterSelector implements OnDestroy {
   private readonly syncFromQuery = effect(() => {
     const params = this.queryParams();
     const existing = params.get(this.field());
-    if (existing && LETTERS.includes(existing as LetterOption)) {
+    const options: readonly LetterOption[] = this.letters();
+    if (existing && options.includes(existing as LetterOption)) {
       this.selected.set(existing as LetterOption);
     } else if (!existing) {
       this.selected.set(LETTERS[0]);
@@ -112,11 +145,12 @@ export class LetterSelector implements OnDestroy {
   }
 
   protected optionId(letter: LetterOption): string {
-    const suffix = letter === '*' ? 'any' : letter.toLowerCase();
+    const suffix = letter === '*' ? 'any' : letter === ' ' ? 'space' : letter.toLowerCase();
     return `${this.field()}-letter-option-${suffix}`;
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    const letters: readonly LetterOption[] = this.letters();
     const { key } = event;
     if (key === 'ArrowDown') {
       event.preventDefault();
@@ -153,19 +187,25 @@ export class LetterSelector implements OnDestroy {
     }
     if (key === 'End') {
       event.preventDefault();
-      this.selected.set(LETTERS[LETTERS.length - 1]);
+      this.selected.set(letters[letters.length - 1]);
       this.queueQueryUpdate();
       return;
     }
     if (key.length === 1) {
       const upper = key.toUpperCase();
-      const match = LETTERS.find((letter) => letter === upper);
+      const match = letters.find((letter) => letter === upper);
       if (match) {
         this.selected.set(match);
         this.queueQueryUpdate();
       } else if (key === '*') {
         this.selected.set('*');
         this.queueQueryUpdate();
+      } else if (key === ' ') {
+        const includesSpace = letters.includes(' ');
+        if (includesSpace) {
+          this.selected.set(' ');
+          this.queueQueryUpdate();
+        }
       }
     }
   }
@@ -183,10 +223,11 @@ export class LetterSelector implements OnDestroy {
   }
 
   private shiftSelection(offset: 1 | -1): void {
+    const letters: readonly LetterOption[] = this.letters();
     this.selected.update((current) => {
-      const index = LETTERS.indexOf(current);
-      const nextIndex = (index + offset + LETTERS.length) % LETTERS.length;
-      return LETTERS[nextIndex];
+      const index = letters.indexOf(current);
+      const nextIndex = (index + offset + letters.length) % letters.length;
+      return letters[nextIndex];
     });
     this.queueQueryUpdate();
   }

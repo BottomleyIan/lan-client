@@ -4,7 +4,12 @@
   </app-panel>
 
   <app-panel label="L2">
-    <app-letter-selector #letter2Ref field="letter2" [previous]="focusLetter1" />
+    <app-letter-selector
+      #letter2Ref
+      field="letter2"
+      [previous]="focusLetter1"
+      [includeSpace]="true"
+    />
   </app-panel>
 
   <app-panel
