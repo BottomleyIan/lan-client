@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import type { ParamMap } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import type { Observable } from 'rxjs';
-import { map } from 'rxjs';
+import { distinctUntilChanged, map, switchMap } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AlbumsApi } from '../../../core/api/albums.api';
@@ -20,13 +21,19 @@ import { LetterSelector } from '../../../ui/letter-selector/letter-selector';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlbumsPage {
+  private readonly albumsApi = inject(AlbumsApi);
+  private readonly route = inject(ActivatedRoute);
+
   @ViewChild('letter1Ref') private letter1Selector?: LetterSelector;
   @ViewChild('letter2Ref') private letter2Selector?: LetterSelector;
-  albums$: Observable<AlbumCardModel[]>;
 
-  constructor(private albumsApi: AlbumsApi) {
-    this.albums$ = this.albumsApi.getAlbums().pipe(map((dto) => this.mapAlbums(dto)));
-  }
+  protected readonly albums$: Observable<AlbumCardModel[]> = this.route.queryParamMap.pipe(
+    map((params) => this.startsWithValue(params)),
+    distinctUntilChanged(),
+    switchMap((startswith) => this.albumsApi.getAlbums(startswith ? { startswith } : undefined)),
+    map((dto) => this.mapAlbums(dto)),
+  );
+
   private mapAlbums(items: HandlersAlbumDTO[]): AlbumCardModel[] {
     return items.map((a) => ({
       id: String(a.id),
@@ -43,4 +50,14 @@ export class AlbumsPage {
   protected focusLetter2 = (): void => {
     this.letter2Selector?.focus();
   };
+
+  private startsWithValue(params: ParamMap): string | null {
+    const letters = [params.get('letter1'), params.get('letter2')].filter(
+      (value): value is string => !!value && value !== '*',
+    );
+    if (letters.length === 0) {
+      return null;
+    }
+    return letters.join('').toLowerCase();
+  }
 }

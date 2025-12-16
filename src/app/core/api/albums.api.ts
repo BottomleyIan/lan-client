@@ -11,8 +11,9 @@ export class AlbumsApi {
   constructor(private http: HttpClient) {}
 
   /** GET /albums */
-  getAlbums(): Observable<HandlersAlbumDTO[]> {
-    return this.http.get<HandlersAlbumDTO[]>(apiUrl('api/albums'));
+  getAlbums(request?: { startswith?: string }): Observable<HandlersAlbumDTO[]> {
+    const params = request?.startswith ? { startswith: request.startswith } : undefined;
+    return this.http.get<HandlersAlbumDTO[]>(apiUrl('api/albums'), { params });
   }
 
   /** GET /albums/:id */

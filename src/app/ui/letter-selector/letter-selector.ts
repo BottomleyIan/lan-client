@@ -11,6 +11,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 const LETTERS = [
   '*',
@@ -73,6 +74,9 @@ export class LetterSelector implements OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly host = inject(ElementRef<HTMLElement>);
+  private readonly queryParams = toSignal(this.route.queryParamMap, {
+    initialValue: this.route.snapshot.queryParamMap,
+  });
   private debounceId: ReturnType<typeof setTimeout> | null = null;
 
   readonly field = input.required<string>();
@@ -82,16 +86,16 @@ export class LetterSelector implements OnDestroy {
   protected readonly letters = LETTERS;
   protected readonly selected = signal<LetterOption>(LETTERS[0]);
 
-  protected readonly selectedDisplay = computed(() =>
-    this.selected() === '*' ? 'Any' : this.selected(),
-  );
   protected readonly activeDescendantId = computed(() => this.optionId(this.selected()));
   protected readonly ariaLabel = computed(() => `Filter ${this.field()} by starting letter`);
 
-  private readonly syncInitialFromQuery = effect(() => {
-    const existing = this.route.snapshot.queryParamMap.get(this.field());
+  private readonly syncFromQuery = effect(() => {
+    const params = this.queryParams();
+    const existing = params.get(this.field());
     if (existing && LETTERS.includes(existing as LetterOption)) {
       this.selected.set(existing as LetterOption);
+    } else if (!existing) {
+      this.selected.set(LETTERS[0]);
     }
   });
 
@@ -174,7 +178,7 @@ export class LetterSelector implements OnDestroy {
       clearTimeout(this.debounceId);
       this.debounceId = null;
     }
-    this.syncInitialFromQuery.destroy();
+    this.syncFromQuery.destroy();
   }
 
   private shiftSelection(offset: 1 | -1): void {
@@ -199,7 +203,7 @@ export class LetterSelector implements OnDestroy {
   private writeQueryParam(): void {
     const field = this.field();
     const value = this.selected();
-    const current = this.route.snapshot.queryParamMap.get(field);
+    const current = this.queryParams().get(field);
     if (current === value) {
       return;
     }
