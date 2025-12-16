@@ -121,6 +121,7 @@ export class LetterSelector implements OnDestroy {
     if (key === 'ArrowDown') {
       event.preventDefault();
       this.shiftSelection(1);
+      this.scrollSelectedIntoView();
       return;
     }
     if (key === 'ArrowUp') {
@@ -213,5 +214,11 @@ export class LetterSelector implements OnDestroy {
       queryParamsHandling: 'merge',
       replaceUrl: true,
     });
+  }
+
+  private scrollSelectedIntoView(): void {
+    const optionId = this.optionId(this.selected());
+    const target = this.host.nativeElement.querySelector(`#${optionId}`) as HTMLElement | null;
+    target?.scrollIntoView({ block: 'nearest' });
   }
 }

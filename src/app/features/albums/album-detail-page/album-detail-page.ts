@@ -5,7 +5,7 @@ import type { Observable } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute } from '@angular/router';
-import type { HandlersAlbumDTO } from '../../../core/api/generated/api-types';
+import type { HandlersAlbumDTO, HandlersTrackDTO } from '../../../core/api/generated/api-types';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AlbumsApi } from '../../../core/api/albums.api';
 import { albumImageUrl } from '../../../core/api/album-image';
@@ -25,6 +25,7 @@ type AlbumDetailVm = {
 })
 export class AlbumDetailPage {
   vm$: Observable<AlbumDetailVm>;
+  tracks$: Observable<HandlersTrackDTO[]>;
 
   constructor(
     private route: ActivatedRoute,
@@ -35,6 +36,12 @@ export class AlbumDetailPage {
       filter((id): id is string => !!id),
       distinctUntilChanged(),
       switchMap((id) => this.albumsApi.getAlbum(id).pipe(map((a) => this.toVm(id, a)))),
+    );
+    this.tracks$ = this.route.paramMap.pipe(
+      map((p) => p.get('id')),
+      filter((id): id is string => !!id),
+      distinctUntilChanged(),
+      switchMap((id) => this.albumsApi.getAlbumTracks(id)),
     );
   }
   private toVm(id: string, a: HandlersAlbumDTO): AlbumDetailVm {

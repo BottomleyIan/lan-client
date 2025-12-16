@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { HandlersAlbumDTO } from './generated/api-types';
+import type { HandlersAlbumDTO, HandlersTrackDTO } from './generated/api-types';
 
 import { apiUrl } from './api-url';
 
@@ -19,5 +19,10 @@ export class AlbumsApi {
   /** GET /albums/:id */
   getAlbum(id: string | number): Observable<HandlersAlbumDTO> {
     return this.http.get<HandlersAlbumDTO>(apiUrl(`api/albums/${id}`));
+  }
+
+  /** GET /albums/:id/tracks */
+  getAlbumTracks(id: string | number): Observable<HandlersTrackDTO[]> {
+    return this.http.get<HandlersTrackDTO[]>(apiUrl(`api/albums/${id}/tracks`));
   }
 }
