@@ -1,17 +1,17 @@
 <article
-  class="group overflow-hidden rounded-xl border border-gray-800 bg-gray-900/40 transition hover:bg-gray-900/70"
+  class="group overflow-hidden flex flex-col @sm:flex-row rounded-xl border border-gray-800 bg-gray-900/40 transition hover:bg-gray-900/70"
 >
   <div class="aspect-square bg-gray-800">
     @if (album.coverUrl && !imageFailed) {
       <img
         [src]="album.coverUrl"
         [alt]="album.title"
-        class="h-full w-full object-cover"
+        class="w-full object-cover aspect-square @sm:w-24"
         loading="lazy"
         (error)="onImageError()"
       />
     } @else {
-      <div class="grid h-full w-full place-items-center text-sm text-gray-400">No cover</div>
+      <div class="grid w-full aspect-square @sm:w-24 place-items-center text-sm text-gray-400">No cover</div>
     }
   </div>
 

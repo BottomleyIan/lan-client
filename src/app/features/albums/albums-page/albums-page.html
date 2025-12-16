@@ -1,9 +1,9 @@
 <div class="flex h-full flex-row gap-4">
-  <app-panel label="L1">
+  <app-panel label="L1" badge="1">
     <app-letter-selector #letter1Ref field="letter1" [next]="focusLetter2" />
   </app-panel>
 
-  <app-panel label="L2">
+  <app-panel label="L2" badge="2">
     <app-letter-selector
       #letter2Ref
       field="letter2"
@@ -13,22 +13,30 @@
   </app-panel>
 
   <app-panel
-    class="md:col-span-2 lg:col-span-1"
+    class="flex-1"
     label="Albums"
     badge="Alpha"
     meta="Explore your collection"
   >
     @if (albums$ | async; as albums) {
-      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div class="flex flex-col @container ml-2 gap-2">
         @for (album of albums; track album.id) {
           <a
             [routerLink]="['/albums', album.id]"
-            class="block rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            class="block rounded-xl focus:ring-2 first:mt-2 last:mb-2 focus:ring-indigo-500 focus:outline-none"
           >
             <app-album-card [album]="album" />
           </a>
         }
       </div>
     }
+  </app-panel>
+  <app-panel
+    class="flex-1"
+    label="Tracks"
+    badge="BOOM"
+    meta="Explore your collection"
+  >
+    TRACKS
   </app-panel>
 </div>
