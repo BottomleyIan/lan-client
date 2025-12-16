@@ -16,7 +16,9 @@
     "format:check": "prettier --check ."
   },
   "prettier": {
-    "plugins": ["prettier-plugin-tailwindcss"],
+    "plugins": [
+      "prettier-plugin-tailwindcss"
+    ],
     "printWidth": 100,
     "singleQuote": true,
     "overrides": [

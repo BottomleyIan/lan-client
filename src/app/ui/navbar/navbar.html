@@ -1,13 +1,13 @@
 <header
-  class="relative z-10 mb-4 flex items-center justify-between gap-4 text-slate-100 md:gap-6 shrink-0"
+  class="relative z-10 mb-4 flex shrink-0 items-center justify-between gap-4 text-slate-100 md:gap-6"
 >
   <div class="flex items-baseline gap-3 text-nowrap">
     <span
-      class="font-[vt323] text-2xl font-black uppercase tracking-[0.14em] drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
+      class="font-[vt323] text-2xl font-black tracking-[0.14em] uppercase drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
     >
       {{ title() }}
     </span>
-    <span class="text-xs uppercase tracking-[0.14em] text-slate-400">{{ subtitle() }}</span>
+    <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
   </div>
 
   <nav class="flex items-center gap-3" aria-label="Primary">
@@ -22,7 +22,7 @@
       class="h-2.5 w-2.5 rounded-full bg-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.7),0_0_18px_rgba(34,211,238,0.45)]"
       aria-hidden="true"
     ></span>
-    <span class="uppercase tracking-[0.12em]">{{ statusLabel() }}</span>
+    <span class="tracking-[0.12em] uppercase">{{ statusLabel() }}</span>
     @if (statusHint()) {
       <span class="text-[11px] font-normal text-slate-400">{{ statusHint() }}</span>
     }
