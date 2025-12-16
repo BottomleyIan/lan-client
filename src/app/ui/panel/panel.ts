@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 })
 export class Panel {
   readonly label = input<string>('Panel');
-  readonly badge = input<string | null>('alpha');
+  readonly badge = input<string | null>(null);
   readonly meta = input<string | null>(null);
 
   protected readonly ariaLabel = computed(() => this.label());

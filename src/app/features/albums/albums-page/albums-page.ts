@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import type { Observable } from 'rxjs';
@@ -9,12 +9,14 @@ import { AlbumsApi } from '../../../core/api/albums.api';
 import type { HandlersAlbumDTO } from '../../../core/api/generated/api-types';
 import { AlbumCard, type AlbumCardModel } from '../../../shared/album-card/album-card';
 import { albumImageUrl } from '../../../core/api/album-image';
+import { Panel } from '../../../ui/panel/panel';
 
 @Component({
   selector: 'app-albums-page',
-  imports: [CommonModule, AlbumCard, RouterLink],
+  imports: [CommonModule, AlbumCard, RouterLink, Panel],
   templateUrl: './albums-page.html',
   styleUrl: './albums-page.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlbumsPage {
   albums$: Observable<AlbumCardModel[]>;

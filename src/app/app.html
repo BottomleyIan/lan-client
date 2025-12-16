@@ -17,10 +17,8 @@
       <app-nav-link routerLink="/artists" label="Artists" />
     </app-navbar>
 
-    <main class="flex-1 overflow-auto">
-      <app-panel label="Library" badge="alpha" meta="curated for you">
-        <router-outlet />
-      </app-panel>
+    <main class="min-h-0 flex-1 overflow-auto">
+      <router-outlet />
     </main>
   </div>
 </div>

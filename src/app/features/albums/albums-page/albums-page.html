@@ -1,12 +1,22 @@
-@if (albums$ | async; as albums) {
-  <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-    @for (album of albums; track album.id) {
-      <a
-        [routerLink]="['/albums', album.id]"
-        class="block rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-      >
-        <app-album-card [album]="album" />
-      </a>
+<div class="flex h-full flex-row gap-4">
+  <app-panel label="First">
+    <div>Filter</div>
+  </app-panel>
+  <app-panel label="Second">
+    <div>Filter</div>
+  </app-panel>
+  <app-panel label="Albums" badge="alpha" meta="Explore your collection">
+    @if (albums$ | async; as albums) {
+      <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+        @for (album of albums; track album.id) {
+          <a
+            [routerLink]="['/albums', album.id]"
+            class="block rounded-xl focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          >
+            <app-album-card [album]="album" />
+          </a>
+        }
+      </div>
     }
-  </div>
-}
+  </app-panel>
+</div>
