@@ -4,6 +4,7 @@ import type { ParamMap } from '@angular/router';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import type { Observable } from 'rxjs';
 import { combineLatest, distinctUntilChanged, map, shareReplay } from 'rxjs';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AlbumsApi } from '../../../core/api/albums.api';
@@ -15,7 +16,7 @@ import { LetterSelector } from '../../../ui/letter-selector/letter-selector';
 
 @Component({
   selector: 'app-albums-page',
-  imports: [CommonModule, AlbumCard, RouterLink, Panel, LetterSelector],
+  imports: [CommonModule, AlbumCard, RouterLink, Panel, LetterSelector, ScrollingModule],
   templateUrl: './albums-page.html',
   styleUrl: './albums-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -74,4 +75,6 @@ export class AlbumsPage {
     }
     return letters.join('').toLowerCase();
   }
+
+  trackByAlbumId = (_: number, album: AlbumCardModel): string => album.id;
 }
