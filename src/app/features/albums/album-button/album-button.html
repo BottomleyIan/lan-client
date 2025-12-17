@@ -1,0 +1,28 @@
+<button uiBigButton class="flex w-full overflow-hidden flex-row">
+  <div class="aspect-square bg-gray-800">
+    @if (album.coverUrl && !imageFailed) {
+      <img
+        [src]="album.coverUrl"
+        [alt]="album.title"
+        class="aspect-square object-cover w-24"
+        loading="lazy"
+        (error)="onImageError()"
+      />
+    } @else {
+      <div class="grid aspect-square place-items-center text-sm text-gray-400 w-24">
+        No cover
+      </div>
+    }
+  </div>
+
+  <div class="p-3">
+    <div class="line-clamp-1 leading-tight font-medium">{{ album.title }}</div>
+    <div class="line-clamp-1 text-sm text-gray-400">{{ album.artist }}</div>
+
+    @if (album.year) {
+      <div class="mt-1 text-xs text-gray-500">
+        {{ album.year }}
+      </div>
+    }
+  </div>
+</button>

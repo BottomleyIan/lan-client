@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 import { Panel } from '../../../ui/panel/panel';
 import { LetterSelector, type LetterOption } from '../../../ui/letter-selector/letter-selector';
 import { AlbumsList } from '../albums-list/albums-list';
+import { AlbumDetail } from '../album-detail/album-detail';
 
 @Component({
   selector: 'app-albums-page',
-  imports: [CommonModule, Panel, LetterSelector, AlbumsList],
+  imports: [CommonModule, Panel, LetterSelector, AlbumsList, AlbumDetail],
   templateUrl: './albums-page.html',
   styleUrl: './albums-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,7 +44,7 @@ export class AlbumsPage {
 
   private combineLetters(): string {
     const letters = [this.letter1(), this.letter2()].filter(
-      (value): value is string => !!value && value !== '*',
+      (value): value is LetterOption => !!value && value !== '*',
     );
     return letters.join('').toLowerCase();
   }

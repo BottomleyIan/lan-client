@@ -1,18 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { combineLatest, map, shareReplay, startWith } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { AlbumCard, type AlbumCardModel } from '../../../shared/album-card/album-card';
 import { Panel } from '../../../ui/panel/panel';
 import { AlbumsApi } from '../../../core/api/albums.api';
 import { albumImageUrl } from '../../../core/api/album-image';
 import type { HandlersAlbumDTO } from '../../../core/api/generated/api-types';
+import { AlbumButton, type AlbumButtonModel } from '../album-button/album-button';
 
 @Component({
   selector: 'app-albums-list',
-  imports: [CommonModule, Panel, AlbumCard, RouterLink, ScrollingModule],
+  imports: [CommonModule, Panel, ScrollingModule, AlbumButton],
   templateUrl: './albums-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -40,13 +39,13 @@ export class AlbumsList {
     }),
   );
 
-  protected trackByAlbumId = (_: number, album: AlbumCardModel): string => album.id;
+  protected trackByAlbumId = (_: number, album: AlbumButtonModel): string => album.id;
 
   protected handleAlbumSelected(albumId: string): void {
     this.onAlbumSelected()(albumId);
   }
 
-  private mapAlbums(items: HandlersAlbumDTO[]): AlbumCardModel[] {
+  private mapAlbums(items: HandlersAlbumDTO[]): AlbumButtonModel[] {
     return items.map((a) => ({
       id: String(a.id),
       title: String(a.title),

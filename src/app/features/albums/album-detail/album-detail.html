@@ -1,0 +1,4 @@
+@if (vm$ | async; as vm) {
+<app-panel class="flex-1" [label]="vm.title" [badge]="vm.artist" [meta]="vm.year ??''">
+</app-panel>
+}
