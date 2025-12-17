@@ -24,7 +24,8 @@ export class EqualizerService {
       if (playing) {
         this.start();
       } else {
-        this.stopWithDecay();
+        this.stop();
+        this.levels.set(Array(BAND_COUNT).fill(0));
       }
     });
   }
@@ -50,17 +51,6 @@ export class EqualizerService {
     this.rafId = requestAnimationFrame(() => this.updateFromAnalyser());
   }
 
-  private stopWithDecay(): void {
-    this.stop();
-    // Smoothly decay to zero
-    this.levels.update((current) => current.map((v) => Math.max(0, v * 0.6 - 0.05)));
-    if (this.levels().some((v) => v > 0.02)) {
-      setTimeout(() => this.stopWithDecay(), 120);
-    } else {
-      this.levels.set(Array(BAND_COUNT).fill(0));
-    }
-  }
-
   private stop(): void {
     if (this.rafId !== null) {
       cancelAnimationFrame(this.rafId);
@@ -69,6 +59,11 @@ export class EqualizerService {
   }
 
   private updateFromAnalyser(): void {
+    if (!this.isPlaying()) {
+      this.stop();
+      return;
+    }
+
     if (!this.analyser || !this.analyserData) {
       this.levels.set(Array(BAND_COUNT).fill(0));
       return;

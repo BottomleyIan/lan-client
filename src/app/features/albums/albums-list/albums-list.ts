@@ -35,7 +35,13 @@ export class AlbumsList {
   ]).pipe(
     map(([albums, startswith]) => {
       if (!startswith) return albums;
-      return albums.filter((a) => (a.title ?? '').toLowerCase().startsWith(startswith));
+      return albums.filter((a) => {
+        const lower = (a.title ?? '').toLowerCase();
+        if (lower.startsWith('the ')) {
+          return lower.startsWith(`the ${startswith}`);
+        }
+        return lower.startsWith(startswith);
+      });
     }),
   );
 
