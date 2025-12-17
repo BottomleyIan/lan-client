@@ -1,0 +1,14 @@
+  <div class="grid h-24 grid-cols-10 items-end gap-1 max-w-50 w-50"
+  role="img"
+  aria-label="Visual equalizer display"
+  >
+    @for (level of bands(); track $index) {
+      <div class="relative h-full bg-slate-800/70">
+        <div
+          class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-emerald-400 via-lime-300 to-amber-200 shadow-[0_4px_14px_rgba(16,185,129,0.4)]"
+          [style.height.%]="level * 100"
+        ></div>
+        <div class="absolute inset-0  [background:repeating-linear-gradient(180deg,rgba(255,255,255,0)_0px,rgba(255,255,255,0)_1px,rgba(0,0,0,1)_3px,rgba(0,0,0,1)_6px)]"></div>
+      </div>
+    }
+  </div>

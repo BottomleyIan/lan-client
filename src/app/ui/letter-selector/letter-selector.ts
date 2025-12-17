@@ -48,25 +48,6 @@ export type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
   selector: 'app-letter-selector',
   imports: [BigButtonDirective, CommonModule],
   templateUrl: './letter-selector.html',
-  styles: [
-    `
-      :host {
-        display: block;
-      }
-
-      button[data-selected='true'] {
-        border-color: rgba(34, 211, 238, 0.65);
-        background: linear-gradient(180deg, rgba(34, 211, 238, 0.18), rgba(236, 72, 153, 0.12));
-        box-shadow:
-          0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-          0 8px 28px rgba(0, 0, 0, 0.35);
-      }
-
-      button[data-selected='true'] span {
-        filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.75));
-      }
-    `,
-  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     role: 'listbox',

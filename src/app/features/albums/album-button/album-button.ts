@@ -17,6 +17,7 @@ export type AlbumButtonModel = {
 })
 export class AlbumButton {
   @Input({ required: true }) album!: AlbumButtonModel;
+  @Input({ required: true }) selected!: boolean;
 
   imageFailed = false;
 

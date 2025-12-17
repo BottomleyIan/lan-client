@@ -12,7 +12,7 @@
           class="block rounded-xl first:mt-2 last:mb-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           (click)="handleAlbumSelected(album.id)"
         >
-          <app-album-button [album]="album" />
+          <app-album-button [album]="album" [selected]="isSelected(album)" />
         </div>
       </div>
     </cdk-virtual-scroll-viewport>

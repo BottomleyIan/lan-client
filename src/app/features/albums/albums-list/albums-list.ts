@@ -15,12 +15,13 @@ import { AlbumButton, type AlbumButtonModel } from '../album-button/album-button
   templateUrl: './albums-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
+
 export class AlbumsList {
   private readonly albumsApi = inject(AlbumsApi);
 
   readonly letters = input<string>('');
   readonly selectedAlbumId = input<string | null>(null);
-  readonly onAlbumSelected = input<(albumId: string) => void>(() => {});
+  readonly onAlbumSelected = input<(albumId: string) => void>(() => { });
 
   private readonly allAlbums$ = this.albumsApi.getAlbums().pipe(
     map((dto) => this.mapAlbums(dto)),
@@ -44,6 +45,10 @@ export class AlbumsList {
       });
     }),
   );
+
+  protected isSelected(album: AlbumButtonModel): boolean {
+    return this.selectedAlbumId() === album.id;
+  }
 
   protected trackByAlbumId = (_: number, album: AlbumButtonModel): string => album.id;
 
