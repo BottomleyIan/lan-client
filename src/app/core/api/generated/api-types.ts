@@ -123,6 +123,10 @@ export interface HandlersCreatePlaylistRequest {
   name?: string;
 }
 
+export interface HandlersEnqueuePlaylistTrackRequest {
+  track_id?: number;
+}
+
 export interface HandlersUpdateAlbumRequest {
   artist_id?: number;
   title?: string;
