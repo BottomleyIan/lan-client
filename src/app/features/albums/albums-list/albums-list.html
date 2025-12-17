@@ -1,0 +1,21 @@
+<app-panel class="flex-1" label="Albums" badge="Alpha" meta="Explore your collection">
+  @if (albums$ | async; as albums) {
+    <cdk-virtual-scroll-viewport
+      class="@container ml-2 block h-full"
+      [itemSize]="98"
+      [minBufferPx]="98 * 5"
+      [maxBufferPx]="98 * 10"
+    >
+      <div class="flex flex-col gap-2">
+        <a
+          *cdkVirtualFor="let album of albums; trackBy: trackByAlbumId"
+          [routerLink]="['/albums', album.id]"
+          class="block rounded-xl first:mt-2 last:mb-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          (click)="handleAlbumSelected(album.id)"
+        >
+          <app-album-card [album]="album" />
+        </a>
+      </div>
+    </cdk-virtual-scroll-viewport>
+  }
+</app-panel>
