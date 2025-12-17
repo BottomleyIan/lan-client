@@ -15,6 +15,7 @@
   <app-albums-list
     class="flex-1"
     [letters]="selectedLetters()"
+    [selectedAlbumId]="selectedAlbumId()"
     [onAlbumSelected]="handleAlbumSelected"
   />
   <app-panel class="flex-1" label="Tracks" badge="BOOM" meta="Explore your collection">

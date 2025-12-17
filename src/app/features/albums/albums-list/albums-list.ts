@@ -20,6 +20,7 @@ export class AlbumsList {
   private readonly albumsApi = inject(AlbumsApi);
 
   readonly letters = input<string>('');
+  readonly selectedAlbumId = input<string | null>(null);
   readonly onAlbumSelected = input<(albumId: string) => void>(() => {});
 
   private readonly allAlbums$ = this.albumsApi.getAlbums().pipe(

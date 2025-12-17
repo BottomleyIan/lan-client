@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, ViewChild, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ViewChild,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { ParamMap } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -19,6 +26,7 @@ export class AlbumsPage {
   private readonly queryParams = toSignal(this.route.queryParamMap, {
     initialValue: this.route.snapshot.queryParamMap,
   });
+  protected readonly selectedAlbumId = signal<string | null>(null);
 
   @ViewChild('letter1Ref') private letter1Selector?: LetterSelector;
   @ViewChild('letter2Ref') private letter2Selector?: LetterSelector;
@@ -35,7 +43,9 @@ export class AlbumsPage {
     this.letter2Selector?.focus();
   };
 
-  protected handleAlbumSelected = (_albumId: string): void => {};
+  protected handleAlbumSelected = (albumId: string): void => {
+    this.selectedAlbumId.set(albumId);
+  };
 
   private startsWithValue(params: ParamMap): string | null {
     const letters = [params.get('letter1'), params.get('letter2')].filter(
