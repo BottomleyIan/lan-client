@@ -1,15 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BigButtonDirective } from '../../../ui/directives/big-button';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { PlayerService } from '../../../core/services/player-service';
 
-type TrackDetailVm = {
-  id: string;
-  title: string;
-  artist?: string;
-  genre?: string;
-  year?: string;
-  imageUrl?: string;
-};
+import { type PlayerServiceTrack } from '../../../core/services/player-service';
 
 @Component({
   selector: 'app-track-button',
@@ -17,5 +12,6 @@ type TrackDetailVm = {
   templateUrl: './track-button.html',
 })
 export class TrackButton {
-  @Input({ required: true }) track!: TrackDetailVm;
+  @Input({ required: true }) track!: PlayerServiceTrack;
+  constructor(public player: PlayerService) {}
 }
