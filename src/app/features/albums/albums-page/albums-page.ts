@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import type { ParamMap } from '@angular/router';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import type { Observable } from 'rxjs';
-import { distinctUntilChanged, map, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, shareReplay } from 'rxjs';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { AlbumsApi } from '../../../core/api/albums.api';
@@ -27,11 +27,25 @@ export class AlbumsPage {
   @ViewChild('letter1Ref') private letter1Selector?: LetterSelector;
   @ViewChild('letter2Ref') private letter2Selector?: LetterSelector;
 
-  protected readonly albums$: Observable<AlbumCardModel[]> = this.route.queryParamMap.pipe(
-    map((params) => this.startsWithValue(params)),
-    distinctUntilChanged(),
-    switchMap((startswith) => this.albumsApi.getAlbums(startswith ? { startswith } : undefined)),
+  private readonly allAlbums$ = this.albumsApi.getAlbums().pipe(
     map((dto) => this.mapAlbums(dto)),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+
+  private readonly startswith$ = this.route.queryParamMap.pipe(
+    map((params) => this.startsWithValue(params) ?? ''),
+    distinctUntilChanged(),
+  );
+
+  protected readonly albums$: Observable<AlbumCardModel[]> = combineLatest([
+    this.allAlbums$,
+    this.startswith$,
+  ]).pipe(
+    map(([albums, startswith]) => {
+      if (!startswith) return albums;
+      const s = startswith.toLowerCase();
+      return albums.filter((a) => (a.title ?? '').toLowerCase().startsWith(s));
+    }),
   );
 
   private mapAlbums(items: HandlersAlbumDTO[]): AlbumCardModel[] {
