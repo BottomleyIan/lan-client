@@ -1,6 +1,8 @@
-<button uiBigButton class="flex w-full flex-row overflow-hidden"
-      [attr.aria-selected]="selected"
-      [attr.data-selected]="selected"
+<button
+  uiBigButton
+  class="flex w-full flex-row overflow-hidden"
+  [attr.aria-selected]="selected"
+  [attr.data-selected]="selected"
 >
   <div class="aspect-square bg-gray-800">
     @if (album.coverUrl && !imageFailed) {

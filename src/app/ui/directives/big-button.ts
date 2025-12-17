@@ -11,4 +11,4 @@ import { Directive } from '@angular/core';
       'text-left  data-[selected=true]:border-orange-500',
   },
 })
-export class BigButtonDirective { }
+export class BigButtonDirective {}

@@ -15,13 +15,12 @@ import { AlbumButton, type AlbumButtonModel } from '../album-button/album-button
   templateUrl: './albums-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class AlbumsList {
   private readonly albumsApi = inject(AlbumsApi);
 
   readonly letters = input<string>('');
   readonly selectedAlbumId = input<string | null>(null);
-  readonly onAlbumSelected = input<(albumId: string) => void>(() => { });
+  readonly onAlbumSelected = input<(albumId: string) => void>(() => {});
 
   private readonly allAlbums$ = this.albumsApi.getAlbums().pipe(
     map((dto) => this.mapAlbums(dto)),
