@@ -5,11 +5,16 @@
       [itemSize]="98"
       [minBufferPx]="98 * 5"
       [maxBufferPx]="98 * 10"
+      role="presentation"
     >
       <div class="flex flex-col gap-2">
         <div
           *cdkVirtualFor="let album of albums; trackBy: trackByAlbumId"
           class="block rounded-xl first:mt-2 last:mb-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+          [attr.id]="itemId(album.id)"
+          role="option"
+          [attr.aria-selected]="isSelected(album)"
+          tabindex="-1"
           (click)="handleAlbumSelected(album.id)"
         >
           <app-album-button [album]="album" [selected]="isSelected(album)" />

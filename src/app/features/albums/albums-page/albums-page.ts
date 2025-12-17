@@ -19,6 +19,7 @@ export class AlbumsPage {
 
   @ViewChild('letter1Ref') private letter1Selector?: LetterSelector;
   @ViewChild('letter2Ref') private letter2Selector?: LetterSelector;
+  @ViewChild(AlbumsList) private albumsList?: AlbumsList;
 
   protected readonly selectedLetters = computed(() => this.combineLetters());
 
@@ -28,6 +29,10 @@ export class AlbumsPage {
 
   protected focusLetter2 = (): void => {
     this.letter2Selector?.focus();
+  };
+
+  protected focusAlbumList = (): void => {
+    this.albumsList?.focus();
   };
 
   protected handleAlbumSelected = (albumId: string): void => {

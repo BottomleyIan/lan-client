@@ -16,6 +16,7 @@
       [value]="letter2()"
       (valueChanged)="updateLetter2($event)"
       [previous]="focusLetter1"
+      [next]="focusAlbumList"
       [includeSpace]="true"
     />
   </app-panel>
@@ -24,6 +25,8 @@
     class="flex-1"
     [letters]="selectedLetters()"
     [selectedAlbumId]="selectedAlbumId()"
+    [previous]="focusLetter2"
+    [next]="null"
     [onAlbumSelected]="handleAlbumSelected"
   />
   <div class="flex-1">
