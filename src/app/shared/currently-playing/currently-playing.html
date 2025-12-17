@@ -1,33 +1,33 @@
 @if (current$ | async; as track) {
   <div class="flex flex-row gap-2 p-2">
-      <div class="flex items-center gap-3">
-        <div class="aspect-square bg-gray-800">
-          @if (track.imageUrl) {
-            <img
-              [src]="track.imageUrl"
-              [alt]="track.title"
-              class="aspect-square w-18 object-cover"
-              loading="lazy"
-              (error)="onImageError()"
-            />
-          } @else {
-            <div class="grid aspect-square w-18 place-items-center text-sm text-gray-400">
-              No cover
-            </div>
-          }
-        </div>
-        <div class="space-y-1">
-          <div class="text-xs tracking-[0.14em] text-slate-400 uppercase">Now Playing</div>
-          <div class="text-lg leading-snug font-semibold text-white">{{ track.title }}</div>
-          <div class="text-sm text-slate-300">{{ track.artist }}</div>
-        </div>
+    <div class="flex items-center gap-3">
+      <div class="aspect-square bg-gray-800">
+        @if (track.imageUrl) {
+          <img
+            [src]="track.imageUrl"
+            [alt]="track.title"
+            class="aspect-square w-18 object-cover"
+            loading="lazy"
+            (error)="onImageError()"
+          />
+        } @else {
+          <div class="grid aspect-square w-18 place-items-center text-sm text-gray-400">
+            No cover
+          </div>
+        }
       </div>
-      <div class="flex items-center gap-2">
-        <app-icon-button icon="previous" label="Previous track" (pressed)="player.previous()" />
-        <app-icon-button [icon]="playIcon()" [label]="playLabel()" (pressed)="player.play()" />
-        <app-icon-button icon="stop" label="Stop playback" (pressed)="player.pause()" />
-        <app-icon-button icon="next" label="Next track" (pressed)="player.next()" />
+      <div class="space-y-1">
+        <div class="text-xs tracking-[0.14em] text-slate-400 uppercase">Now Playing</div>
+        <div class="text-lg leading-snug font-semibold text-white">{{ track.title }}</div>
+        <div class="text-sm text-slate-300">{{ track.artist }}</div>
       </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <app-icon-button icon="previous" label="Previous track" (pressed)="player.previous()" />
+      <app-icon-button [icon]="playIcon()" [label]="playLabel()" (pressed)="player.play()" />
+      <app-icon-button icon="stop" label="Stop playback" (pressed)="player.pause()" />
+      <app-icon-button icon="next" label="Next track" (pressed)="player.next()" />
+    </div>
   </div>
 } @else {
   <div>Nothing queued</div>
