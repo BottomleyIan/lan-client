@@ -4,6 +4,22 @@ type IconDefinition = {
 };
 
 const icons = {
+  next: {
+    viewBox: '0 0 24 24',
+    paths: ['M6.75 18.75 15 12 6.75 5.25v13.5Z', 'M17.25 5.25v13.5'],
+  },
+  pause: {
+    viewBox: '0 0 24 24',
+    paths: ['M9.75 5.25v13.5', 'M14.25 5.25v13.5'],
+  },
+  play: {
+    viewBox: '0 0 24 24',
+    paths: ['M5.25 5.208v13.584L19.5 12 5.25 5.208Z'],
+  },
+  previous: {
+    viewBox: '0 0 24 24',
+    paths: ['M17.25 5.25 9 12l8.25 6.75V5.25Z', 'M6.75 5.25v13.5'],
+  },
   settings: {
     viewBox: '0 0 24 24',
     paths: [
@@ -20,6 +36,10 @@ const icons = {
       'M10.5 10.5v6',
       'M13.5 10.5v6',
     ],
+  },
+  stop: {
+    viewBox: '0 0 24 24',
+    paths: ['M8.25 8.25h7.5v7.5h-7.5z'],
   },
 } satisfies Record<string, IconDefinition>;
 

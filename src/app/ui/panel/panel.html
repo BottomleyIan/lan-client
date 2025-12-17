@@ -12,7 +12,7 @@
     class="relative z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-white/5 px-5 pt-4 pb-3"
   >
     <div class="flex items-center gap-3 text-[12px] tracking-[0.12em] text-slate-400 uppercase">
-      <span>{{ label() }}</span>
+      <h2 uiH2>{{ label() }}</h2>
       @if (badge()) {
         <span
           class="rounded-full border border-white/15 bg-black/25 px-2.5 py-1 font-mono text-[11px] font-semibold tracking-[0.08em] text-slate-200"
@@ -24,7 +24,7 @@
       <div class="text-xs text-slate-400">{{ meta() }}</div>
     }
   </div>
-  <div class="relative z-10 flex-1 overflow-auto">
+  <div class="relative z-10 flex-1 overflow-auto [scrollbar-gutter:stable]">
     <ng-content />
   </div>
 </section>

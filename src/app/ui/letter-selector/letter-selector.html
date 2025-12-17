@@ -1,8 +1,9 @@
 <div class="flex flex-col gap-2 pl-2" aria-hidden="false">
   @for (letter of letters(); track letter) {
     <button
+      uiBigButton
       type="button"
-      class="group last-mb-2 relative flex items-center justify-center rounded-lg border border-white/10 bg-white/5 px-2.5 py-2 text-sm font-semibold text-slate-100 transition first:mt-2 hover:border-cyan-300/60 hover:text-cyan-100 focus-visible:ring-2 focus-visible:ring-cyan-400/80 focus-visible:ring-offset-0 focus-visible:outline-none"
+      class="group last-mb-2 relative flex items-center justify-center px-2.5 py-2 text-sm font-semibold first:mt-2"
       [attr.id]="optionId(letter)"
       role="option"
       [attr.aria-selected]="isSelected(letter)"

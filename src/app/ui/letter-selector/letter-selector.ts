@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { BigButtonDirective } from '../directives/big-button';
 
 const ALPHA_LETTERS = [
   'A',
@@ -47,7 +48,7 @@ type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 
 @Component({
   selector: 'app-letter-selector',
-  imports: [CommonModule],
+  imports: [BigButtonDirective, CommonModule],
   templateUrl: './letter-selector.html',
   styles: [
     `

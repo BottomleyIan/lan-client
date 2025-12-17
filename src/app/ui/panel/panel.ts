@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { H2Directive } from '../directives/h2';
 
 @Component({
   selector: 'app-panel',
-  imports: [],
+  imports: [H2Directive],
   templateUrl: './panel.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

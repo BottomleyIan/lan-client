@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BigButtonDirective } from '../../ui/directives/big-button';
 
 export type AlbumCardModel = {
   id: string;
@@ -11,7 +12,7 @@ export type AlbumCardModel = {
 
 @Component({
   selector: 'app-album-card',
-  imports: [CommonModule],
+  imports: [BigButtonDirective, CommonModule],
   templateUrl: './album-card.html',
   styleUrl: './album-card.css',
 })
