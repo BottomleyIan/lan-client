@@ -1,7 +1,12 @@
 <div class="flex h-full flex-row gap-2">
-  <app-panel label="Playlists" badge="alpha" meta="fresh picks for you">
-    <h2 class="text-xl font-semibold">Playlists</h2>
-    <p class="text-sm text-gray-500">This is the playlists route.</p>
-  </app-panel>
-  <div class="flex-1">app-playlist-detail</div>
+  <app-playlists-list
+    class="flex-1"
+    [selectedPlaylistId]="selectedPlaylistId()"
+    [previous]="null"
+    [next]="null"
+    [onPlaylistSelected]="handlePlaylistSelected"
+  />
+  <div class="flex-1">
+    <app-playlist-detail [selectedPlaylistId]="selectedPlaylistId()" />
+  </div>
 </div>
