@@ -1,18 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize, map, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 import type { HandlersFolderDTO } from '../../../core/api/generated/api-types';
 import { Panel } from '../../../ui/panel/panel';
 import { FoldersApi } from '../../../core/api/folders.api';
 import { IconButton } from '../../../ui/icon-button/icon-button';
-import { FormDirective } from '../../../ui/directives/form';
-import { InputDirective } from '../../../ui/directives/input';
-import { ConfirmButtonDirective } from '../../../ui/directives/confirm-button';
-import { CancelButtonDirective } from '../../../ui/directives/cancel-button';
 import { TableDirective } from '../../../ui/directives/table';
 import { TableHeadDirective } from '../../../ui/directives/thead';
+import { AddFolderForm } from '../add-folder-form/add-folder-form';
 
 type FolderRow = {
   readonly id: string;
@@ -25,33 +21,15 @@ type FolderRow = {
 
 @Component({
   selector: 'app-settings-page',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    Panel,
-    IconButton,
-    FormDirective,
-    InputDirective,
-    ConfirmButtonDirective,
-    CancelButtonDirective,
-    TableDirective,
-    TableHeadDirective,
-  ],
+  imports: [CommonModule, Panel, IconButton, TableDirective, TableHeadDirective, AddFolderForm],
   templateUrl: './settings-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsPage {
   private readonly foldersApi = inject(FoldersApi);
-  private readonly formBuilder = inject(FormBuilder);
   private readonly refreshFolders$ = new Subject<void>();
   private readonly deletingIds = signal<Set<string>>(new Set());
   private readonly scanningIds = signal<Set<string>>(new Set());
-  protected readonly isCreating = signal(false);
-
-  protected readonly createForm = this.formBuilder.nonNullable.group({
-    path: ['', [Validators.required]],
-  });
-  protected readonly pathControl = this.createForm.controls.path;
 
   protected readonly folders$: Observable<FolderRow[]> = this.refreshFolders$.pipe(
     startWith(void 0),
@@ -98,40 +76,12 @@ export class SettingsPage {
         }),
       )
       .subscribe(() => {
-        this.refreshFolders$.next();
+        this.refreshFolders();
       });
   }
 
-  protected addFolder(): void {
-    const trimmedPath = this.pathControl.value.trim();
-    this.pathControl.setValue(trimmedPath);
-
-    if (!trimmedPath) {
-      this.pathControl.markAsTouched();
-      return;
-    }
-
-    if (this.isCreating()) {
-      return;
-    }
-
-    this.isCreating.set(true);
-
-    this.foldersApi
-      .createFolder({ path: trimmedPath })
-      .pipe(
-        finalize(() => {
-          this.isCreating.set(false);
-        }),
-      )
-      .subscribe(() => {
-        this.createForm.reset({ path: '' });
-        this.refreshFolders$.next();
-      });
-  }
-
-  protected resetForm(): void {
-    this.createForm.reset({ path: '' });
+  protected refreshFolders(): void {
+    this.refreshFolders$.next();
   }
 
   protected scanFolder(folder: FolderRow): void {
@@ -153,7 +103,7 @@ export class SettingsPage {
         }),
       )
       .subscribe(() => {
-        this.refreshFolders$.next();
+        this.refreshFolders();
       });
   }
 }
