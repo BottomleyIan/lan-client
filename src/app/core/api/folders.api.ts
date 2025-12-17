@@ -19,4 +19,9 @@ export class FoldersApi {
   deleteFolder(id: number): Observable<void> {
     return this.http.delete<void>(apiUrl(`api/folders/${id}`));
   }
+
+  /** POST /folders/:id/scan */
+  scanFolder(id: number): Observable<void> {
+    return this.http.post<void>(apiUrl(`api/folders/${id}/scan`), null);
+  }
 }

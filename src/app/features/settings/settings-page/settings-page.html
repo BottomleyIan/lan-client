@@ -33,17 +33,31 @@
                   <td class="px-4 py-3 text-slate-300">{{ folder.availability }}</td>
                   <td class="px-4 py-3 text-slate-300">
                     <div class="flex flex-col leading-tight">
-                      <span>{{ folder.lastScanStatus }}</span>
+                      <span>
+                        @if (isScanning(folder.id)) {
+                          <span class="text-amber-200">Scanning…</span>
+                        } @else {
+                          {{ folder.lastScanStatus }}
+                        }
+                      </span>
                       <span class="text-xs text-slate-500">{{ folder.lastScanAt }}</span>
                     </div>
                   </td>
                   <td class="px-4 py-3 text-right text-slate-500">
-                    <app-icon-button
-                      icon="trash"
-                      [label]="'Delete folder ' + folder.path"
-                      [disabled]="folder.folderId === null || isDeleting(folder.id)"
-                      (pressed)="deleteFolder(folder)"
-                    />
+                    <div class="flex justify-end gap-2">
+                      <app-icon-button
+                        icon="refresh"
+                        [label]="'Scan folder ' + folder.path"
+                        [disabled]="folder.folderId === null || isScanning(folder.id)"
+                        (pressed)="scanFolder(folder)"
+                      />
+                      <app-icon-button
+                        icon="trash"
+                        [label]="'Delete folder ' + folder.path"
+                        [disabled]="folder.folderId === null || isDeleting(folder.id)"
+                        (pressed)="deleteFolder(folder)"
+                      />
+                    </div>
                   </td>
                 </tr>
               }
