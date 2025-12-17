@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { HandlersCreateFolderRequest, HandlersFolderDTO } from './generated/api-types';
+import type {
+  HandlersCreateFolderRequest,
+  HandlersFolderDTO,
+  HandlersScanDTO,
+} from './generated/api-types';
 
 import { apiUrl } from './api-url';
 
@@ -13,6 +17,11 @@ export class FoldersApi {
   /** GET /folders */
   getFolders(): Observable<HandlersFolderDTO[]> {
     return this.http.get<HandlersFolderDTO[]>(apiUrl('api/folders'));
+  }
+
+  /** GET /folders/:id */
+  getFolder(id: number): Observable<HandlersFolderDTO> {
+    return this.http.get<HandlersFolderDTO>(apiUrl(`api/folders/${id}`));
   }
 
   /** DELETE /folders/:id */
@@ -28,5 +37,10 @@ export class FoldersApi {
   /** POST /folders */
   createFolder(body: HandlersCreateFolderRequest): Observable<void> {
     return this.http.post<void>(apiUrl('api/folders'), body);
+  }
+
+  /** GET /folders/:id/scan */
+  getScan(id: number): Observable<HandlersScanDTO> {
+    return this.http.get<HandlersScanDTO>(apiUrl(`api/folders/${id}/scan`));
   }
 }
