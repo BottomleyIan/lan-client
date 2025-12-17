@@ -1,6 +1,6 @@
 @if (current$ | async; as track) {
   <div class="grid grid-cols-3 gap-2 p-2">
-    <div class="flex items-center gap-2 flex-1">
+    <div class="flex flex-1 items-center gap-2">
       <div class="aspect-square bg-gray-800">
         @if (track.imageUrl) {
           <img
@@ -29,9 +29,9 @@
       <app-icon-button icon="stop" label="Stop playback" (pressed)="player.pause()" />
       <app-icon-button icon="next" label="Next track" (pressed)="player.next()" />
     </div>
-  <div class="px-2 pb-2 flex-1">
-    <app-equalizer-display />
-  </div>
+    <div class="flex-1 px-2 pb-2">
+      <app-equalizer-display />
+    </div>
   </div>
 } @else {
   <div>Nothing queued</div>
