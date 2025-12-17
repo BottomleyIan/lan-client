@@ -1,17 +1,7 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ViewChild,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { ParamMap } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { Panel } from '../../../ui/panel/panel';
-import { LetterSelector } from '../../../ui/letter-selector/letter-selector';
+import { LetterSelector, type LetterOption } from '../../../ui/letter-selector/letter-selector';
 import { AlbumsList } from '../albums-list/albums-list';
 
 @Component({
@@ -22,18 +12,14 @@ import { AlbumsList } from '../albums-list/albums-list';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlbumsPage {
-  private readonly route = inject(ActivatedRoute);
-  private readonly queryParams = toSignal(this.route.queryParamMap, {
-    initialValue: this.route.snapshot.queryParamMap,
-  });
   protected readonly selectedAlbumId = signal<string | null>(null);
+  protected readonly letter1 = signal<LetterOption>('*');
+  protected readonly letter2 = signal<LetterOption>('*');
 
   @ViewChild('letter1Ref') private letter1Selector?: LetterSelector;
   @ViewChild('letter2Ref') private letter2Selector?: LetterSelector;
 
-  protected readonly selectedLetters = computed(
-    () => this.startsWithValue(this.queryParams()) ?? '',
-  );
+  protected readonly selectedLetters = computed(() => this.combineLetters());
 
   protected focusLetter1 = (): void => {
     this.letter1Selector?.focus();
@@ -47,13 +33,18 @@ export class AlbumsPage {
     this.selectedAlbumId.set(albumId);
   };
 
-  private startsWithValue(params: ParamMap): string | null {
-    const letters = [params.get('letter1'), params.get('letter2')].filter(
+  protected updateLetter1 = (value: LetterOption): void => {
+    this.letter1.set(value);
+  };
+
+  protected updateLetter2 = (value: LetterOption): void => {
+    this.letter2.set(value);
+  };
+
+  private combineLetters(): string {
+    const letters = [this.letter1(), this.letter2()].filter(
       (value): value is string => !!value && value !== '*',
     );
-    if (letters.length === 0) {
-      return null;
-    }
     return letters.join('').toLowerCase();
   }
 }

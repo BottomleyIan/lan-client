@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import type { OnDestroy } from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,10 +7,9 @@ import {
   effect,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { BigButtonDirective } from '../directives/big-button';
 
 const ALPHA_LETTERS = [
@@ -44,7 +42,7 @@ const ALPHA_LETTERS = [
 ] as const;
 const LETTERS = ['*', ...ALPHA_LETTERS] as const;
 const LETTERS_WITH_SPACE = ['*', ' ', ...ALPHA_LETTERS] as const;
-type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
+export type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 
 @Component({
   selector: 'app-letter-selector',
@@ -80,35 +78,30 @@ type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
     '(keydown)': 'onKeydown($event)',
   },
 })
-export class LetterSelector implements OnDestroy {
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
+export class LetterSelector {
   private readonly host = inject(ElementRef<HTMLElement>);
-  private readonly queryParams = toSignal(this.route.queryParamMap, {
-    initialValue: this.route.snapshot.queryParamMap,
-  });
-  private debounceId: ReturnType<typeof setTimeout> | null = null;
 
   readonly field = input.required<string>();
   readonly previous = input<(() => void) | undefined>(undefined);
   readonly next = input<(() => void) | undefined>(undefined);
   readonly includeSpace = input(false);
+  readonly value = input<LetterOption>('*');
+  readonly valueChanged = output<LetterOption>();
 
   protected readonly letters = computed<readonly LetterOption[]>(() =>
     this.includeSpace() ? LETTERS_WITH_SPACE : LETTERS,
   );
-  protected readonly selected = signal<LetterOption>(LETTERS[0]);
+  protected readonly selected = signal<LetterOption>(this.value());
 
   protected readonly activeDescendantId = computed(() => this.optionId(this.selected()));
   protected readonly ariaLabel = computed(() => `Filter ${this.field()} by starting letter`);
 
-  private readonly syncFromQuery = effect(() => {
-    const params = this.queryParams();
-    const existing = params.get(this.field());
+  private readonly syncFromValue = effect(() => {
+    const incoming = this.value();
     const options: readonly LetterOption[] = this.letters();
-    if (existing && options.includes(existing as LetterOption)) {
-      this.selected.set(existing as LetterOption);
-    } else if (!existing) {
+    if (options.includes(incoming)) {
+      this.selected.set(incoming);
+    } else {
       this.selected.set(LETTERS[0]);
     }
   });
@@ -118,7 +111,7 @@ export class LetterSelector implements OnDestroy {
       return;
     }
     this.selected.set(letter);
-    this.queueQueryUpdate();
+    this.emitSelection();
   }
 
   protected isSelected(letter: LetterOption): boolean {
@@ -136,7 +129,6 @@ export class LetterSelector implements OnDestroy {
     if (key === 'ArrowDown') {
       event.preventDefault();
       this.shiftSelection(1);
-      this.scrollSelectedIntoView();
       return;
     }
     if (key === 'ArrowUp') {
@@ -163,13 +155,13 @@ export class LetterSelector implements OnDestroy {
     if (key === 'Home') {
       event.preventDefault();
       this.selected.set(LETTERS[0]);
-      this.queueQueryUpdate();
+      this.emitSelection();
       return;
     }
     if (key === 'End') {
       event.preventDefault();
       this.selected.set(letters[letters.length - 1]);
-      this.queueQueryUpdate();
+      this.emitSelection();
       return;
     }
     if (key.length === 1) {
@@ -177,15 +169,15 @@ export class LetterSelector implements OnDestroy {
       const match = letters.find((letter) => letter === upper);
       if (match) {
         this.selected.set(match);
-        this.queueQueryUpdate();
+        this.emitSelection();
       } else if (key === '*') {
         this.selected.set('*');
-        this.queueQueryUpdate();
+        this.emitSelection();
       } else if (key === ' ') {
         const includesSpace = letters.includes(' ');
         if (includesSpace) {
           this.selected.set(' ');
-          this.queueQueryUpdate();
+          this.emitSelection();
         }
       }
     }
@@ -195,14 +187,6 @@ export class LetterSelector implements OnDestroy {
     this.host.nativeElement.focus();
   }
 
-  ngOnDestroy(): void {
-    if (this.debounceId) {
-      clearTimeout(this.debounceId);
-      this.debounceId = null;
-    }
-    this.syncFromQuery.destroy();
-  }
-
   private shiftSelection(offset: 1 | -1): void {
     const letters: readonly LetterOption[] = this.letters();
     this.selected.update((current) => {
@@ -210,32 +194,12 @@ export class LetterSelector implements OnDestroy {
       const nextIndex = (index + offset + letters.length) % letters.length;
       return letters[nextIndex];
     });
-    this.queueQueryUpdate();
+    this.emitSelection();
   }
 
-  private queueQueryUpdate(): void {
-    if (this.debounceId) {
-      clearTimeout(this.debounceId);
-    }
-    this.debounceId = setTimeout(() => {
-      this.debounceId = null;
-      this.writeQueryParam();
-    }, 200);
-  }
-
-  private writeQueryParam(): void {
-    const field = this.field();
-    const value = this.selected();
-    const current = this.queryParams().get(field);
-    if (current === value) {
-      return;
-    }
-    void this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { [field]: value },
-      queryParamsHandling: 'merge',
-      replaceUrl: true,
-    });
+  private emitSelection(): void {
+    this.valueChanged.emit(this.selected());
+    this.scrollSelectedIntoView();
   }
 
   private scrollSelectedIntoView(): void {
