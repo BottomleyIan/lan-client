@@ -25,11 +25,7 @@
             [disabled]="isCreating()"
           />
           <div class="flex flex-col gap-2 @sm:flex-row @sm:items-center">
-            <button
-              uiConfirmButton
-              type="submit"
-              [disabled]="createForm.invalid || isCreating()"
-            >
+            <button uiConfirmButton type="submit" [disabled]="createForm.invalid || isCreating()">
               Add folder
             </button>
             <button
@@ -53,10 +49,7 @@
         <p class="text-sm text-slate-300">No folders added yet.</p>
       } @else {
         <div class="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-          <table
-            uiTable
-            aria-label="Music folders"
-          >
+          <table uiTable aria-label="Music folders">
             <thead uiTHead>
               <tr>
                 <th scope="col" class="px-4 py-3 font-semibold">Path</th>
