@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { HandlersFolderDTO } from './generated/api-types';
+import type { HandlersCreateFolderRequest, HandlersFolderDTO } from './generated/api-types';
 
 import { apiUrl } from './api-url';
 
@@ -23,5 +23,10 @@ export class FoldersApi {
   /** POST /folders/:id/scan */
   scanFolder(id: number): Observable<void> {
     return this.http.post<void>(apiUrl(`api/folders/${id}/scan`), null);
+  }
+
+  /** POST /folders */
+  createFolder(body: HandlersCreateFolderRequest): Observable<void> {
+    return this.http.post<void>(apiUrl('api/folders'), body);
   }
 }

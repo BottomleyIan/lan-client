@@ -9,16 +9,55 @@
       }
     </div>
 
+    <form uiForm (ngSubmit)="addFolder()" [formGroup]="createForm">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-semibold text-slate-100" for="folder-path">Add folder</label>
+        <p class="text-xs text-slate-400">Enter a music folder path to include in the library.</p>
+        <div class="flex flex-col gap-2 @sm:flex-row @sm:items-center">
+          <input
+            uiInput
+            id="folder-path"
+            name="folder-path"
+            type="text"
+            placeholder="/Users/you/Music"
+            formControlName="path"
+            [attr.aria-invalid]="pathControl.invalid && pathControl.touched ? true : null"
+            [disabled]="isCreating()"
+          />
+          <div class="flex flex-col gap-2 @sm:flex-row @sm:items-center">
+            <button
+              uiConfirmButton
+              type="submit"
+              [disabled]="createForm.invalid || isCreating()"
+            >
+              Add folder
+            </button>
+            <button
+              uiCancelButton
+              type="button"
+              [disabled]="isCreating() || !pathControl.value"
+              (click)="resetForm()"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+        @if (pathControl.invalid && pathControl.touched) {
+          <p class="text-xs font-semibold text-rose-200">Folder path is required.</p>
+        }
+      </div>
+    </form>
+
     @if (folders$ | async; as folders) {
       @if (folders.length === 0) {
         <p class="text-sm text-slate-300">No folders added yet.</p>
       } @else {
         <div class="overflow-hidden rounded-xl border border-white/10 bg-white/5">
           <table
-            class="min-w-full border-separate border-spacing-0 text-sm"
+            uiTable
             aria-label="Music folders"
           >
-            <thead class="bg-white/5 text-left text-xs tracking-[0.16em] text-slate-400 uppercase">
+            <thead uiTHead>
               <tr>
                 <th scope="col" class="px-4 py-3 font-semibold">Path</th>
                 <th scope="col" class="px-4 py-3 font-semibold">Availability</th>
