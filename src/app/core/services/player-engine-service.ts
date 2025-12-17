@@ -9,8 +9,12 @@ import { trackUrl } from '../api/track-url';
 export class PlayerEngineService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly audio = new Audio();
+  private audioContext: AudioContext | null = null;
+  private analyser: AnalyserNode | null = null;
+  private sourceNode: MediaElementAudioSourceNode | null = null;
 
   constructor(private player: PlayerService) {
+    this.audio.crossOrigin = 'anonymous';
     // When track or play state changes, apply to audio
     combineLatest([this.player.currentTrack$, this.player.isPlaying$])
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -33,5 +37,33 @@ export class PlayerEngineService {
 
     // When track ends, go next
     this.audio.addEventListener('ended', () => this.player.next());
+  }
+
+  getAnalyser(): AnalyserNode | null {
+    if (typeof AudioContext === 'undefined') {
+      return null;
+    }
+
+    if (!this.audioContext) {
+      this.audioContext = new AudioContext();
+    }
+
+    if (!this.sourceNode) {
+      this.sourceNode = this.audioContext.createMediaElementSource(this.audio);
+    }
+
+    if (!this.analyser) {
+      this.analyser = this.audioContext.createAnalyser();
+      this.analyser.fftSize = 2048;
+      this.analyser.smoothingTimeConstant = 0.7;
+      this.sourceNode.connect(this.analyser);
+      this.analyser.connect(this.audioContext.destination);
+    }
+
+    if (this.audioContext.state === 'suspended') {
+      void this.audioContext.resume();
+    }
+
+    return this.analyser;
   }
 }

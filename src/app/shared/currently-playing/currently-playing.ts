@@ -1,13 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal, type Signal } from '@angular/core';
 import { IconButton } from '../../ui/icon-button/icon-button';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService, type PlayerServiceTrack } from '../../core/services/player-service';
 import type { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { EqualizerDisplay } from '../equalizer-display/equalizer-display';
 
 @Component({
   selector: 'app-currently-playing',
-  imports: [IconButton, AsyncPipe],
+  imports: [IconButton, AsyncPipe, EqualizerDisplay],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -26,13 +28,12 @@ export class CurrentlyPlaying {
   }
 
   readonly position = signal(98);
-  readonly isPlaying = signal(false);
   current$: Observable<PlayerServiceTrack | null>;
-  isPlaying$: Observable<boolean>;
+  private readonly isPlaying: Signal<boolean>;
 
   constructor(public player: PlayerService) {
     this.current$ = this.player.currentTrack$;
-    this.isPlaying$ = this.player.isPlaying$;
+    this.isPlaying = toSignal(this.player.isPlaying$, { initialValue: false });
   }
 
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
@@ -45,5 +46,13 @@ export class CurrentlyPlaying {
     const minutes = Math.floor(safeSeconds / 60);
     const seconds = (safeSeconds % 60).toString().padStart(2, '0');
     return `${minutes}:${seconds}`;
+  }
+
+  togglePlayback(): void {
+    if (this.isPlaying()) {
+      this.player.pause();
+    } else {
+      this.player.play();
+    }
   }
 }
