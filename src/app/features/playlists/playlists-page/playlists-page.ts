@@ -10,7 +10,7 @@ import { PlaylistDetail } from '../playlist-detail/playlist-detail';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistsPage {
-  protected readonly selectedPlaylistId = signal<string | null>(null);
+  protected readonly selectedPlaylistId = signal('1');
 
   protected handlePlaylistSelected = (playlistId: string): void => {
     this.selectedPlaylistId.set(playlistId);

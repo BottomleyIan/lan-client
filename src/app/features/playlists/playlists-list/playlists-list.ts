@@ -33,7 +33,7 @@ export class PlaylistsList {
   private readonly playlistsApi = inject(PlaylistsApi);
   private readonly host = inject(ElementRef<HTMLElement>);
 
-  readonly selectedPlaylistId = input<string | null>(null);
+  readonly selectedPlaylistId = input.required<string>();
   readonly previous = input<(() => void) | null>(null);
   readonly next = input<(() => void) | null>(null);
   readonly onPlaylistSelected = input<(playlistId: string) => void>(() => {});

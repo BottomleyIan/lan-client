@@ -7,7 +7,7 @@ import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types'
 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { Panel } from '../../../ui/panel/panel';
-import { TracksList } from '../../tracks/tracks-list/tracks-list';
+import { PlaylistTracks } from '../playlist-tracks/playlist-tracks';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlaylistsApi } from '../../../core/api/playlists.api';
 
@@ -19,13 +19,13 @@ type PlaylistVm = {
 @Component({
   selector: 'app-playlist-detail',
   standalone: true,
-  imports: [CommonModule, Panel, TracksList],
+  imports: [CommonModule, Panel, PlaylistTracks],
   templateUrl: './playlist-detail.html',
 })
 export class PlaylistDetail {
   vm$: Observable<PlaylistVm | null>;
 
-  readonly selectedPlaylistId = input<string | null>(null);
+  readonly selectedPlaylistId = input.required<string>();
   readonly selectedPlaylistId$ = toObservable(this.selectedPlaylistId).pipe(distinctUntilChanged());
 
   constructor(private playlistsApi: PlaylistsApi) {

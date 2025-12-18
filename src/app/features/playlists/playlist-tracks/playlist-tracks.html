@@ -1,0 +1,20 @@
+@if (tracks$ | async; as tracks) {
+  <cdk-virtual-scroll-viewport
+    class="@container ml-2 block h-full"
+    [itemSize]="86"
+    [minBufferPx]="86 * 5"
+    [maxBufferPx]="86 * 10"
+  >
+    <div class="flex flex-col gap-2">
+      @for (track of tracks; track track.id) {
+        <app-playlist-track
+          [track]="track"
+          [removable]="track.trackId !== null"
+          (remove)="removeTrack(playlistId(), track)"
+        />
+      }
+    </div>
+  </cdk-virtual-scroll-viewport>
+} @else {
+  <div class="px-4 py-6 text-sm text-slate-400">Loading playlist tracks…</div>
+}
