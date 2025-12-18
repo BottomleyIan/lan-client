@@ -6,18 +6,19 @@
   >
     <div class="grid grid-cols-3 items-center gap-2">
       <div class="flex flex-1 items-center gap-2">
-        <div class="aspect-square h-full max-h-22 bg-gray-800">
+        <div class="bg-darcula-surface-0 aspect-square h-22 max-h-22">
           @if (track.imageUrl) {
             <img
               [src]="track.imageUrl"
               [alt]="track.title"
+              [style.visibility]="imageFailed() ? 'hidden' : 'visible'"
               class="aspect-square h-full object-cover"
               loading="lazy"
               (error)="onImageError()"
             />
           }
         </div>
-        <div class="w-[38ch] self-start">
+        <div class="w-[38ch]">
           <h2 uiH2 class="font-vt323c text-darcula-accent-cyan truncate leading-6 font-semibold">
             {{ track.title }}
           </h2>

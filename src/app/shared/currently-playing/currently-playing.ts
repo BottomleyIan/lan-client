@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, signal, type Signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  signal,
+  type Signal,
+} from '@angular/core';
 import { Panel } from '../../ui/panel/panel';
 import { IconButtonPrimary } from '../../ui/icon-button/icon-button-primary';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -26,26 +33,28 @@ import { ContainerDivDirective } from '../../ui/directives/container-div';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrentlyPlaying {
-  readonly track = signal({
-    title: 'Song 1',
-    artist: 'Unknown Artist',
-    time: '12:24',
-    duration: 245,
-  });
-
-  imageFailed = false;
+  readonly imageFailed = signal(false);
 
   onImageError(): void {
-    this.imageFailed = true;
+    this.imageFailed.set(true);
   }
 
   readonly position = signal(98);
-  current$: Observable<PlayerServiceTrack | null>;
+  readonly current$: Observable<PlayerServiceTrack | null>;
   private readonly isPlaying: Signal<boolean>;
+  private readonly currentTrack: Signal<PlayerServiceTrack | null>;
 
   constructor(public player: PlayerService) {
     this.current$ = this.player.currentTrack$;
     this.isPlaying = toSignal(this.player.isPlaying$, { initialValue: false });
+    this.currentTrack = toSignal(this.current$, { initialValue: null });
+    effect(
+      () => {
+        this.currentTrack();
+        this.imageFailed.set(false);
+      },
+      { allowSignalWrites: true },
+    );
   }
 
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
