@@ -43,14 +43,14 @@
                     </div>
                   </td>
                   <td class="px-4 py-3 text-right text-slate-500">
-                    <div class="flex justify-end gap-2">
-                      <app-icon-button
+                    <div class="flex justify-end gap-2 text-xl">
+                      <app-icon-button-primary
                         icon="refresh"
                         [label]="'Scan folder ' + folder.path"
                         [disabled]="folder.folderId === null || isScanning(folder.id)"
                         (pressed)="scanFolder(folder)"
                       />
-                      <app-icon-button
+                      <app-icon-button-danger
                         icon="trash"
                         [label]="'Delete folder ' + folder.path"
                         [disabled]="folder.folderId === null || isDeleting(folder.id)"

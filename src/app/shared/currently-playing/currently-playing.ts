@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, signal, type Signal } from '@angular/core';
 import { Panel } from '../../ui/panel/panel';
-import { IconButton } from '../../ui/icon-button/icon-button';
+import { IconButtonPrimary } from '../../ui/icon-button/icon-button-primary';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService, type PlayerServiceTrack } from '../../core/services/player-service';
 import type { Observable } from 'rxjs';
@@ -8,10 +8,20 @@ import { AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EqualizerDisplay } from '../equalizer-display/equalizer-display';
 import { VolumeControls } from '../volume-controls/volume-controls';
+import { H2Directive } from '../../ui/directives/h2';
+import { ContainerDivDirective } from '../../ui/directives/container-div';
 
 @Component({
   selector: 'app-currently-playing',
-  imports: [Panel, IconButton, AsyncPipe, EqualizerDisplay, VolumeControls],
+  imports: [
+    Panel,
+    IconButtonPrimary,
+    AsyncPipe,
+    H2Directive,
+    EqualizerDisplay,
+    ContainerDivDirective,
+    VolumeControls,
+  ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

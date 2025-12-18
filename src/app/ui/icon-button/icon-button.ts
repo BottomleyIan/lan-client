@@ -8,7 +8,7 @@ import { Icon, type IconName } from '../icon/icon';
   template: `
     <button
       type="button"
-      class="hover:cursor inline-flex h-9 w-9 items-center justify-center rounded-md transition focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+      class="inline-flex h-9 items-center justify-center gap-2 rounded-md px-2 transition focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
       [ngClass]="buttonClass()"
       [attr.aria-label]="label()"
       [attr.title]="label()"
@@ -22,6 +22,9 @@ import { Icon, type IconName } from '../icon/icon';
         [strokeWidth]="strokeWidth()"
         [ngClass]="iconClass()"
       />
+      @if (text()) {
+        <span class="text-sm leading-none font-semibold">{{ text() }}</span>
+      }
       <span class="sr-only">{{ label() }}</span>
     </button>
   `,
@@ -34,6 +37,7 @@ export class IconButton {
   readonly strokeWidth = input<number>(1.8);
   readonly buttonClass = input<string>('text-red-500 hover:text-red-600');
   readonly iconClass = input<string | null>(null);
+  readonly text = input<string | null>(null);
   readonly pressed = output<void>();
 
   handleClick(): void {

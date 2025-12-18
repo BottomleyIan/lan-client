@@ -1,4 +1,4 @@
-<div class="flex items-center gap-2">
+<div class="flex w-full items-center justify-between gap-2 place-self-center bg-green-900 text-3xl">
   <app-icon-button icon="volumeDown" label="Decrease volume" (pressed)="handleDecrease()" />
   <div
     class="relative h-2 flex-1 overflow-hidden rounded-full bg-white/10"
@@ -13,6 +13,10 @@
       [style.width.%]="volumePercent()"
     ></div>
   </div>
-  <app-icon-button icon="volumeUp" label="Increase volume" (pressed)="handleIncrease()" />
-  <span class="font-mono text-xs text-slate-300">{{ volumePercent() }}%</span>
+  <app-icon-button-primary
+    icon="volumeUp"
+    [text]="volumePercent().toString()"
+    label="Increase volume"
+    (pressed)="handleIncrease()"
+  />
 </div>

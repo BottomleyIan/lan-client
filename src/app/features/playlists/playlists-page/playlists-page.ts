@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { Panel } from '../../../ui/panel/panel';
 import { PlaylistsList } from '../playlists-list/playlists-list';
 import { PlaylistDetail } from '../playlist-detail/playlist-detail';
 
 @Component({
   selector: 'app-playlists-page',
-  imports: [Panel, PlaylistsList, PlaylistDetail],
+  imports: [PlaylistsList, PlaylistDetail],
   templateUrl: './playlists-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

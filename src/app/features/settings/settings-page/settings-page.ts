@@ -5,10 +5,11 @@ import type { Observable } from 'rxjs';
 import type { HandlersFolderDTO } from '../../../core/api/generated/api-types';
 import { Panel } from '../../../ui/panel/panel';
 import { FoldersApi } from '../../../core/api/folders.api';
-import { IconButton } from '../../../ui/icon-button/icon-button';
 import { TableDirective } from '../../../ui/directives/table';
 import { TableHeadDirective } from '../../../ui/directives/thead';
 import { AddFolderForm } from '../add-folder-form/add-folder-form';
+import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
+import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 
 type FolderRow = {
   readonly id: string;
@@ -21,7 +22,15 @@ type FolderRow = {
 
 @Component({
   selector: 'app-settings-page',
-  imports: [CommonModule, Panel, IconButton, TableDirective, TableHeadDirective, AddFolderForm],
+  imports: [
+    CommonModule,
+    Panel,
+    IconButtonDanger,
+    IconButtonPrimary,
+    TableDirective,
+    TableHeadDirective,
+    AddFolderForm,
+  ],
   templateUrl: './settings-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
