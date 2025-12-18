@@ -11,6 +11,7 @@ export class Panel {
   readonly label = input<string>('Panel');
   readonly badge = input<string | null>(null);
   readonly meta = input<string | null>(null);
+  readonly stableGutter = input(true);
 
   protected readonly ariaLabel = computed(() => this.label());
 }

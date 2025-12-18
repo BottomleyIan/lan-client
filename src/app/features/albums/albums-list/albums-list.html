@@ -1,4 +1,4 @@
-<app-panel class="flex-1" label="Albums" badge="Alpha" meta="Explore your collection">
+<app-panel class="flex-1" label="Albums" badge="Alpha" meta="Explore your collection" [stableGutter]="false">
   @if (albums$ | async; as albums) {
     <cdk-virtual-scroll-viewport
       class="@container ml-2 block h-full"

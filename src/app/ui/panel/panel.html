@@ -24,7 +24,10 @@
       <div class="text-xs text-slate-400">{{ meta() }}</div>
     }
   </div>
-  <div class="relative z-10 flex-1 overflow-auto [scrollbar-gutter:stable]">
+  <div
+    class="relative z-10 flex-1 overflow-auto"
+    [style.scrollbar-gutter]="stableGutter() ? 'stable' : null"
+  >
     <ng-content />
   </div>
 </section>
