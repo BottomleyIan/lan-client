@@ -3,8 +3,10 @@ import { PlaylistsPage } from './features/playlists/playlists-page/playlists-pag
 import { ArtistsPage } from './features/artists/artists-page/artists-page';
 import { AlbumsPage } from './features/albums/albums-page/albums-page';
 import { AlbumDetailPage } from './features/albums/album-detail-page/album-detail-page';
+import { CalendarPage } from './features/calendar/calendar-page/calendar-page';
 
 export const routes: Routes = [
+  { path: 'calendar/:year/:month', component: CalendarPage },
   { path: '', pathMatch: 'full', redirectTo: 'playlists' },
   { path: 'playlists', component: PlaylistsPage },
   { path: 'artists', component: ArtistsPage },

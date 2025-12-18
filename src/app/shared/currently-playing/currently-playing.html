@@ -24,8 +24,13 @@
           <div class="text-xs text-slate-400">{{ statusLabel() }}</div>
         </div>
       </div>
-      <div class="flex items-center gap-2 place-self-center text-cyan-200">
-        <app-icon-button icon="previous" label="Previous track" (pressed)="player.previous()" />
+      <div class="flex items-center gap-2 place-self-center text-3xl">
+        <app-icon-button
+          buttonClass="text-darcula-accent-cyan hover:text-darcula-accent-cyan"
+          icon="previous"
+          label="Previous track"
+          (pressed)="player.previous()"
+        />
         <app-icon-button [icon]="playIcon()" [label]="playLabel()" (pressed)="togglePlayback()" />
         <app-icon-button icon="stop" label="Stop playback" (pressed)="player.pause()" />
         <app-icon-button icon="next" label="Next track" (pressed)="player.next()" />

@@ -15,12 +15,10 @@
       <app-nav-link routerLink="/albums" label="Albums" />
       <app-nav-link routerLink="/artists" label="Artists" />
       <app-nav-link
-        routerLink="/settings"
-        [exact]="true"
-        label="Settings"
-        iconName="settings"
-        iconColorVar="--nav-icon-color"
+        routerLink="/calendar/{{ currentYear() }}/{{ currentMonth() }}"
+        label="Calendar"
       />
+      <app-nav-link routerLink="/settings" [exact]="true" label="Settings" iconName="settings" />
     </app-navbar>
 
     <main class="min-h-0 flex-1 overflow-y-auto pb-2">

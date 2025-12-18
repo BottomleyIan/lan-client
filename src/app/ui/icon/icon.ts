@@ -4,20 +4,15 @@ import { icons, type IconName } from './icons';
 @Component({
   selector: 'app-icon',
   template: `
-    <svg
-      class="block h-5 w-5 shrink-0"
-      [attr.viewBox]="icon().viewBox"
+    <i
+      class="font-nerd block h-5 w-5 shrink-0 leading-none not-italic"
       aria-hidden="true"
-      focusable="false"
-      fill="none"
-      stroke="currentColor"
-      [attr.stroke-width]="strokeWidth()"
+      role="img"
+      [attr.aria-label]="icon().label"
       [style.color]="iconColor()"
     >
-      @for (path of icon().paths; track path) {
-        <path [attr.d]="path" stroke-linecap="round" stroke-linejoin="round" />
-      }
-    </svg>
+      {{ icon().glyph }}
+    </i>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

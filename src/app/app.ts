@@ -15,5 +15,7 @@ import { PlayerEngineService } from './core/services/player-engine-service';
 })
 export class App {
   protected readonly title = signal('musicclient');
+  protected readonly currentYear = signal(new Date().getFullYear());
+  protected readonly currentMonth = signal(new Date().getMonth() + 1);
   constructor(_engine: PlayerEngineService) {}
 }

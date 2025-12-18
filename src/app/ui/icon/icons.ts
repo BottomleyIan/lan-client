@@ -1,67 +1,19 @@
 type IconDefinition = {
-  readonly viewBox: string;
-  readonly paths: readonly string[];
+  readonly glyph: string;
+  readonly label: string;
 };
 
 const icons = {
-  next: {
-    viewBox: '0 0 24 24',
-    paths: ['M6.75 18.75 15 12 6.75 5.25v13.5Z', 'M17.25 5.25v13.5'],
-  },
-  pause: {
-    viewBox: '0 0 24 24',
-    paths: ['M9.75 5.25v13.5', 'M14.25 5.25v13.5'],
-  },
-  play: {
-    viewBox: '0 0 24 24',
-    paths: ['M5.25 5.208v13.584L19.5 12 5.25 5.208Z'],
-  },
-  previous: {
-    viewBox: '0 0 24 24',
-    paths: ['M17.25 5.25 9 12l8.25 6.75V5.25Z', 'M6.75 5.25v13.5'],
-  },
-  refresh: {
-    viewBox: '0 0 24 24',
-    paths: [
-      'M5.25 8.25v-3h-3',
-      'M3 8.25h4.5c3.314 0 6-2.686 6-6v0',
-      'M18.75 15.75v3h3',
-      'M21 15.75h-4.5c-3.314 0-6 2.686-6 6v0',
-    ],
-  },
-  settings: {
-    viewBox: '0 0 24 24',
-    paths: [
-      'M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.65.87.03.016.06.033.09.05l1.12.561c.495.248.723.84.508 1.356l-.498 1.246a1.125 1.125 0 0 0 .285 1.234l.93.929c.39.389.44 1.002.118 1.45l-.498.684a1.125 1.125 0 0 1-1.27.38l-1.21-.404a1.125 1.125 0 0 0-1.02.17l-.268.201a1.125 1.125 0 0 0-.45.9v1.332c0 .52-.355.966-.86 1.09l-1.518.38c-.52.13-1.06-.184-1.17-.714l-.259-1.296a1.125 1.125 0 0 0-.641-.828l-1.233-.493a1.125 1.125 0 0 1-.681-1.105l.06-1.35a1.125 1.125 0 0 0-.188-.7l-.732-1.1a1.125 1.125 0 0 1 .106-1.41l.976-.976c.249-.249.38-.595.36-.949l-.07-1.234c-.03-.52.35-.978.868-1.05l1.334-.178c.378-.05.704-.29.868-.638l.945-1.89Z',
-      'M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z',
-    ],
-  },
-  trash: {
-    viewBox: '0 0 24 24',
-    paths: [
-      'M9.75 4.5h4.5',
-      'M4.5 7.5h15',
-      'M6.375 7.5 7.19 18.194c.073.964.87 1.806 1.836 1.806h5.95c.966 0 1.763-.842 1.836-1.806L17.625 7.5',
-      'M10.5 10.5v6',
-      'M13.5 10.5v6',
-    ],
-  },
-  stop: {
-    viewBox: '0 0 24 24',
-    paths: ['M8.25 8.25h7.5v7.5h-7.5z'],
-  },
-  volumeDown: {
-    viewBox: '0 0 24 24',
-    paths: ['M4.5 9.75h3l4.5-3.75v12L7.5 14.25h-3z', 'M16.5 10.5a3 3 0 0 1 0 3'],
-  },
-  volumeUp: {
-    viewBox: '0 0 24 24',
-    paths: [
-      'M4.5 9.75h3l4.5-3.75v12L7.5 14.25h-3z',
-      'M16.5 9a4.5 4.5 0 0 1 0 6',
-      'M19.5 7.5a6.75 6.75 0 0 1 0 9',
-    ],
-  },
+  next: { glyph: '\udb83\udf27', label: 'Next' }, //nf-md-skip_next_outline 󰼧
+  pause: { glyph: '\udb80\udfe4', label: 'Pause' }, //nf-md-pause 󰏤
+  play: { glyph: '\udb83\udf1b', label: 'Play' }, //nf-md-play_outline 󰼛
+  previous: { glyph: '\udb83\udf28', label: 'Previous' }, //nf-md-skip_previous_outline 󰼨
+  refresh: { glyph: '\udb81\udc50', label: 'Refresh' }, //nf-md-refresh 󰑐
+  settings: { glyph: '\udb81\udc93', label: 'Settings' }, //nf-md-cog 󰒓
+  trash: { glyph: '\udb80\uddb4', label: 'Delete' }, //nf-md-delete 󰆴
+  stop: { glyph: '\udb81\udcdb', label: 'Stop' }, //nf-md-stop 󰓛
+  volumeDown: { glyph: '\udb80\udf74', label: 'Volume down' }, //nf-md-minus 󰍴
+  volumeUp: { glyph: '\udb81\udc15', label: 'Volume up' }, //nf-md-plus 󰐕
 } satisfies Record<string, IconDefinition>;
 
 type IconName = keyof typeof icons;

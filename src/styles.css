@@ -22,9 +22,19 @@
   --color-darcula-accent-pink: #c586c0;
 
   --font-vt323: 'VT323', monospace;
+  /* Usage: font-nerd */
+  --font-nerd: 'InconsolataLGC Nerd Font', 'Inconsolata', monospace;
 }
 
 @layer base {
+  @font-face {
+    font-family: 'InconsolataLGC Nerd Font';
+    src: url('/InconsolataLGCNerdFont-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
   * {
     scrollbar-color: color-mix(
         in srgb,
