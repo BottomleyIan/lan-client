@@ -20,18 +20,17 @@
   --color-darcula-accent-red: #f44747;
   --color-darcula-accent-yellow: #dcdcaa;
   --color-darcula-accent-pink: #c586c0;
+
+  --font-vt323: 'VT323', monospace;
 }
 
 @layer base {
-  :root {
-    --font-display: 'VT323', monospace;
-    --surface: #0b0b16;
-    --surface-strong: #0f1020;
-    --nav-icon-color: color-mix(in srgb, var(--color-darcula-accent-cyan) 80%, #e2e8f0);
-  }
-
   * {
-    scrollbar-color: color-mix(in srgb, var(--color-darcula-accent-cyan) 100%, var(--surface))
+    scrollbar-color: color-mix(
+        in srgb,
+        var(--color-darcula-accent-cyan) 100%,
+        var(--color-darcula-surface-0)
+      )
       transparent;
     scrollbar-width: thin;
   }
