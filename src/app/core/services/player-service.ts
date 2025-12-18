@@ -19,6 +19,7 @@ export interface PlayerState {
   isPlaying: boolean;
   repeat: RepeatMode;
   shuffle: boolean;
+  volume: number; // 0 to 1
 }
 
 const initialState: PlayerState = {
@@ -27,6 +28,7 @@ const initialState: PlayerState = {
   isPlaying: false,
   repeat: 'off',
   shuffle: false,
+  volume: 0.7,
 };
 
 @Injectable({ providedIn: 'root' })
@@ -42,6 +44,10 @@ export class PlayerService {
   );
   readonly isPlaying$ = this.state$.pipe(
     map((s) => s.isPlaying),
+    distinctUntilChanged(),
+  );
+  readonly volume$ = this.state$.pipe(
+    map((s) => s.volume),
     distinctUntilChanged(),
   );
 
@@ -122,5 +128,18 @@ export class PlayerService {
 
   clearQueue(): void {
     this.stateSubject.next(initialState);
+  }
+
+  setVolume(volume: number): void {
+    const clamped = Math.min(1, Math.max(0, volume));
+    this.setState({ volume: clamped });
+  }
+
+  volumeUp(step = 0.1): void {
+    this.setVolume(this.snapshot.volume + step);
+  }
+
+  volumeDown(step = 0.1): void {
+    this.setVolume(this.snapshot.volume - step);
   }
 }

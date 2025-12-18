@@ -16,9 +16,9 @@ export class PlayerEngineService {
   constructor(private player: PlayerService) {
     this.audio.crossOrigin = 'anonymous';
     // When track or play state changes, apply to audio
-    combineLatest([this.player.currentTrack$, this.player.isPlaying$])
+    combineLatest([this.player.currentTrack$, this.player.isPlaying$, this.player.volume$])
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([track, isPlaying]) => {
+      .subscribe(([track, isPlaying, volume]) => {
         if (!track) {
           this.audio.pause();
           this.audio.src = '';
@@ -31,6 +31,7 @@ export class PlayerEngineService {
           this.audio.load();
         }
 
+        this.audio.volume = volume;
         if (isPlaying) void this.audio.play();
         else this.audio.pause();
       });

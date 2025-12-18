@@ -50,6 +50,18 @@ const icons = {
     viewBox: '0 0 24 24',
     paths: ['M8.25 8.25h7.5v7.5h-7.5z'],
   },
+  volumeDown: {
+    viewBox: '0 0 24 24',
+    paths: ['M4.5 9.75h3l4.5-3.75v12L7.5 14.25h-3z', 'M16.5 10.5a3 3 0 0 1 0 3'],
+  },
+  volumeUp: {
+    viewBox: '0 0 24 24',
+    paths: [
+      'M4.5 9.75h3l4.5-3.75v12L7.5 14.25h-3z',
+      'M16.5 9a4.5 4.5 0 0 1 0 6',
+      'M19.5 7.5a6.75 6.75 0 0 1 0 9',
+    ],
+  },
 } satisfies Record<string, IconDefinition>;
 
 type IconName = keyof typeof icons;
