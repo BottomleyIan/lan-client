@@ -1,15 +1,12 @@
 <section
-  class="relative flex h-full max-h-full flex-col overflow-hidden rounded-2xl border border-cyan-200/20 bg-gradient-to-b from-slate-950/80 via-slate-950/60 to-slate-950/80 text-slate-100 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset,0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+  uiContainerDiv
+  class="relative flex h-full max-h-full flex-col overflow-hidden bg-gradient-to-b from-slate-950/10 via-slate-950/5 to-slate-950/10 text-slate-100 shadow-[0_0_0_1px_rgba(255,255,255,0.04)_inset,0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-xl"
   role="group"
   [attr.aria-label]="ariaLabel()"
 >
   <div
-    class="pointer-events-none absolute inset-0 shrink-0 opacity-70 [background:radial-gradient(180px_80px_at_20%_0%,rgba(236,72,153,0.2),transparent_60%),radial-gradient(160px_80px_at_80%_0%,rgba(34,211,238,0.2),transparent_60%)]"
-    aria-hidden="true"
-  ></div>
-
-  <div
-    class="relative z-10 flex items-center justify-between gap-3 border-b border-white/10 bg-white/5 px-5 pt-4 pb-3"
+    class="relative z-10 flex items-center justify-between gap-3 border-white/10 px-3 pt-2"
+    [class.hidden]="hidden()"
   >
     <div class="flex items-center gap-3 text-[12px] tracking-[0.12em] text-slate-400 uppercase">
       <h2 uiH2>{{ label() }}</h2>

@@ -1,18 +1,38 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @import 'tailwindcss';
 
+/* Darcula theme colors for Tailwind utilities. */
+@theme {
+  /* Usage: bg-darcula-surface-1 text-darcula-text border-darcula-border */
+  --color-darcula-surface-0: #1e1e1e;
+  --color-darcula-surface-1: #252526;
+  --color-darcula-surface-2: #2d2d2d;
+  --color-darcula-surface-3: #313335;
+  --color-darcula-border: #3c3f41;
+  --color-darcula-text: #d4d4d4;
+  --color-darcula-text-muted: #9e9e9e;
+  --color-darcula-text-subtle: #7f7f7f;
+  --color-darcula-accent-purple: #9876aa;
+  --color-darcula-accent-blue: #569cd6;
+  --color-darcula-accent-cyan: #4ec9b0;
+  --color-darcula-accent-green: #6a9955;
+  --color-darcula-accent-orange: #ce9178;
+  --color-darcula-accent-red: #f44747;
+  --color-darcula-accent-yellow: #dcdcaa;
+  --color-darcula-accent-pink: #c586c0;
+}
+
 @layer base {
   :root {
     --font-display: 'VT323', monospace;
-    --accent-cyan: #22d3ee;
-    --accent-pink: #ec4899;
     --surface: #0b0b16;
     --surface-strong: #0f1020;
-    --nav-icon-color: color-mix(in srgb, var(--accent-cyan) 80%, #e2e8f0);
+    --nav-icon-color: color-mix(in srgb, var(--color-darcula-accent-cyan) 80%, #e2e8f0);
   }
 
   * {
-    scrollbar-color: color-mix(in srgb, var(--accent-cyan) 55%, var(--surface)) transparent;
+    scrollbar-color: color-mix(in srgb, var(--color-darcula-accent-cyan) 100%, var(--surface))
+      transparent;
     scrollbar-width: thin;
   }
 
@@ -27,7 +47,11 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, var(--accent-cyan), var(--accent-pink));
+    background: linear-gradient(
+      180deg,
+      var(--color-darcula-accent-cyan),
+      var(--color-darcula-accent-pink)
+    );
     border-radius: 999px;
     border: 2px solid color-mix(in srgb, var(--surface-strong) 90%, transparent);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);

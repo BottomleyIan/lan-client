@@ -4,7 +4,7 @@ import { Directive } from '@angular/core';
   selector: '[uiH2]',
   standalone: true,
   host: {
-    class: '',
+    class: 'font-[vt323] text-2xl',
   },
 })
 export class H2Directive {}

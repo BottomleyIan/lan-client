@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, signal, type Signal } from '@angular/core';
+import { Panel } from '../../ui/panel/panel';
 import { IconButton } from '../../ui/icon-button/icon-button';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService, type PlayerServiceTrack } from '../../core/services/player-service';
@@ -9,7 +10,7 @@ import { EqualizerDisplay } from '../equalizer-display/equalizer-display';
 
 @Component({
   selector: 'app-currently-playing',
-  imports: [IconButton, AsyncPipe, EqualizerDisplay],
+  imports: [Panel, IconButton, AsyncPipe, EqualizerDisplay],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
