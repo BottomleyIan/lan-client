@@ -1,7 +1,7 @@
-<div class="flex w-full items-center justify-between gap-2 place-self-center bg-green-900 text-3xl">
-  <app-icon-button icon="volumeDown" label="Decrease volume" (pressed)="handleDecrease()" />
+<div class="flex w-full items-center justify-between gap-2 place-self-center text-3xl">
+  <app-icon-button-primary icon="volumeDown" label="Decrease volume" (pressed)="handleDecrease()" />
   <div
-    class="relative h-2 flex-1 overflow-hidden rounded-full bg-white/10"
+    class="bg-darcula-surface-0 relative h-4 flex-1 overflow-hidden"
     role="progressbar"
     aria-label="Volume level"
     [attr.aria-valuenow]="volumePercent()"
@@ -13,10 +13,5 @@
       [style.width.%]="volumePercent()"
     ></div>
   </div>
-  <app-icon-button-primary
-    icon="volumeUp"
-    [text]="volumePercent().toString()"
-    label="Increase volume"
-    (pressed)="handleIncrease()"
-  />
+  <app-icon-button-primary icon="volumeUp" label="Increase volume" (pressed)="handleIncrease()" />
 </div>

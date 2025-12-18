@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, type Signal } from '@angular/core';
-import { IconButton } from '../../ui/icon-button/icon-button';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService } from '../../core/services/player-service';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -7,7 +6,7 @@ import { IconButtonPrimary } from '../../ui/icon-button/icon-button-primary';
 
 @Component({
   selector: 'app-volume-controls',
-  imports: [IconButton, IconButtonPrimary],
+  imports: [IconButtonPrimary],
   templateUrl: './volume-controls.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
