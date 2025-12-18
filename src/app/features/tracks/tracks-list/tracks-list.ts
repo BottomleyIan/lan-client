@@ -13,16 +13,7 @@ import { trackImageUrl } from '../../../core/api/track-image';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { TrackButton } from '../track-button/track-button';
 import type { PlayerServiceTrack } from '../../../core/services/player-service';
-/*
-type TrackDetailVm = {
-  id: string;
-  title: string;
-  artist?: string;
-  genre?: string;
-  year?: string;
-  imageUrl?: string;
-};
-*/
+
 @Component({
   selector: 'app-tracks-list',
   standalone: true,
@@ -39,7 +30,9 @@ export class TracksList {
     this.tracksVm$ = this.albumId$.pipe(
       switchMap((id) =>
         id
-          ? this.albumsApi.getAlbumTracks(id).pipe(map((tracks) => this.toTracksVm(tracks)))
+          ? this.albumsApi
+              .getAlbumTracks(id, { expand: 'artist' })
+              .pipe(map((tracks) => this.toTracksVm(tracks)))
           : of([]),
       ),
     );

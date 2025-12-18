@@ -69,7 +69,6 @@ export class PlayerService {
   enqueue(track: PlayerServiceTrack): void {
     const s = this.snapshot;
     const newQueue = [...s.queue, track];
-
     // If queue was empty (or nothing selected), start playing the newly enqueued track
     if (s.queue.length === 0 || s.currentIndex === -1) {
       this.stateSubject.next({
