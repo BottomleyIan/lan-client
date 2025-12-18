@@ -7,10 +7,11 @@ import type { Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EqualizerDisplay } from '../equalizer-display/equalizer-display';
+import { VolumeControls } from '../volume-controls/volume-controls';
 
 @Component({
   selector: 'app-currently-playing',
-  imports: [Panel, IconButton, AsyncPipe, EqualizerDisplay],
+  imports: [Panel, IconButton, AsyncPipe, EqualizerDisplay, VolumeControls],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -31,12 +32,10 @@ export class CurrentlyPlaying {
   readonly position = signal(98);
   current$: Observable<PlayerServiceTrack | null>;
   private readonly isPlaying: Signal<boolean>;
-  private readonly volume: Signal<number>;
 
   constructor(public player: PlayerService) {
     this.current$ = this.player.currentTrack$;
     this.isPlaying = toSignal(this.player.isPlaying$, { initialValue: false });
-    this.volume = toSignal(this.player.volume$, { initialValue: 0.7 });
   }
 
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
@@ -44,7 +43,6 @@ export class CurrentlyPlaying {
   readonly playLabel = computed(() => (this.isPlaying() ? 'Pause playback' : 'Play track'));
 
   readonly statusLabel = computed(() => (this.isPlaying() ? 'Playing' : 'Paused'));
-  readonly volumePercent = computed(() => Math.round(this.volume() * 100));
   formatTime(totalSeconds: number): string {
     const safeSeconds = Math.max(0, Math.floor(totalSeconds));
     const minutes = Math.floor(safeSeconds / 60);
@@ -58,13 +56,5 @@ export class CurrentlyPlaying {
     } else {
       this.player.play();
     }
-  }
-
-  volumeUp(): void {
-    this.player.volumeUp();
-  }
-
-  volumeDown(): void {
-    this.player.volumeDown();
   }
 }
