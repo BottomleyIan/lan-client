@@ -14,6 +14,7 @@ export class NavLink {
   readonly exact = input(false);
   readonly iconName = input<IconName | null>(null);
   readonly iconColorVar = input<string | null>(null);
+  readonly srOnly = input(false);
 
   protected readonly routerLinkActiveOptions = computed(() => ({ exact: this.exact() }));
 }

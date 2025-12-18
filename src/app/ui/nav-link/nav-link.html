@@ -17,5 +17,5 @@
   @if (iconName(); as icon) {
     <app-icon [name]="icon" [colorVar]="iconColorVar()" />
   }
-  {{ label() }}
+  <span [class.sr-only]="srOnly()">{{ label() }}</span>
 </a>

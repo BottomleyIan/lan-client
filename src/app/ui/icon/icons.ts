@@ -12,6 +12,7 @@ const icons = {
   settings: { glyph: '\udb81\udc93', label: 'Settings' }, //nf-md-cog 󰒓
   trash: { glyph: '\udb80\uddb4', label: 'Delete' }, //nf-md-delete 󰆴
   stop: { glyph: '\udb81\udcdb', label: 'Stop' }, //nf-md-stop 󰓛
+  calendar: { glyph: '\udb80\udced', label: 'Calendar' }, // 󰃭
   volumeDown: { glyph: '\udb80\udf74', label: 'Volume down' }, //nf-md-minus 󰍴
   volumeUp: { glyph: '\udb81\udc15', label: 'Volume up' }, //nf-md-plus 󰐕
 } satisfies Record<string, IconDefinition>;

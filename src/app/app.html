@@ -11,14 +11,34 @@
   ></div>
   <div class="flex h-full flex-col">
     <app-navbar>
-      <app-nav-link routerLink="/playlists" [exact]="true" label="Playlists" />
-      <app-nav-link routerLink="/albums" label="Albums" />
-      <app-nav-link routerLink="/artists" label="Artists" />
-      <app-nav-link
-        routerLink="/calendar/{{ currentYear() }}/{{ currentMonth() }}"
-        label="Calendar"
-      />
-      <app-nav-link routerLink="/settings" [exact]="true" label="Settings" iconName="settings" />
+      <div class="flex items-center gap-3">
+        <details name="nav-groups" class="flex items-center">
+          <summary
+            class="flex cursor-pointer items-center justify-center p-1 text-slate-100 focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-0 focus-visible:outline-none [&::-webkit-details-marker]:hidden"
+          >
+            <app-icon name="play" />
+            <span class="sr-only">Music navigation</span>
+          </summary>
+          <div class="flex items-center gap-2">
+            <app-nav-link routerLink="/playlists" [exact]="true" label="Playlists" />
+            <app-nav-link routerLink="/albums" label="Albums" />
+            <app-nav-link routerLink="/artists" label="Artists" />
+          </div>
+        </details>
+        <app-nav-link
+          routerLink="/calendar/{{ currentYear() }}/{{ currentMonth() }}"
+          label="Calendar"
+          iconName="calendar"
+          [srOnly]="true"
+        />
+        <app-nav-link
+          routerLink="/settings"
+          [exact]="true"
+          label="Settings"
+          iconName="settings"
+          [srOnly]="true"
+        />
+      </div>
     </app-navbar>
 
     <main class="min-h-0 flex-1 overflow-y-auto pb-2">
