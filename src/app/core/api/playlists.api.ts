@@ -67,6 +67,7 @@ export class PlaylistsApi {
     id: number | string,
     body: HandlersAddPlaylistTrackRequest,
   ): Observable<HandlersPlaylistTrackDTO> {
+    console.log(id, body);
     return this.http.post<HandlersPlaylistTrackDTO>(apiUrl(`api/playlists/${id}/tracks`), body);
   }
 

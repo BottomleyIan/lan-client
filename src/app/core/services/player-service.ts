@@ -65,29 +65,6 @@ export class PlayerService {
     this.stateSubject.next({ ...this.snapshot, ...patch });
   }
 
-  /** Add a track to the end of the queue. If nothing is playing, start it. */
-  enqueue(track: PlayerServiceTrack): void {
-    const s = this.snapshot;
-    const newQueue = [...s.queue, track];
-    // If queue was empty (or nothing selected), start playing the newly enqueued track
-    if (s.queue.length === 0 || s.currentIndex === -1) {
-      this.stateSubject.next({
-        ...s,
-        queue: newQueue,
-        currentIndex: 0,
-        isPlaying: true,
-      });
-      return;
-    }
-
-    this.setState({ queue: newQueue });
-  }
-
-  /** Optionally: enqueue many */
-  enqueueMany(tracks: PlayerServiceTrack[]): void {
-    tracks.forEach((t) => this.enqueue(t));
-  }
-
   play(): void {
     const s = this.snapshot;
     if (s.queue.length === 0) return;
@@ -125,10 +102,6 @@ export class PlayerService {
     this.setState({ currentIndex: prev, isPlaying: true });
   }
 
-  clearQueue(): void {
-    this.stateSubject.next(initialState);
-  }
-
   setVolume(volume: number): void {
     const clamped = Math.min(1, Math.max(0, volume));
     this.setState({ volume: clamped });
@@ -140,5 +113,27 @@ export class PlayerService {
 
   volumeDown(step = 0.1): void {
     this.setVolume(this.snapshot.volume - step);
+  }
+  stop(): void {
+    this.setState({ isPlaying: false, currentIndex: -1 });
+  }
+
+  setQueue(queue: PlayerServiceTrack[], opts?: { autoplay?: boolean; startIndex?: number }): void {
+    const autoplay = opts?.autoplay ?? false;
+
+    const prev = this.snapshot;
+    const prevTrackId = prev.currentIndex >= 0 ? prev.queue[prev.currentIndex]?.id : null;
+
+    let nextIndex =
+      opts?.startIndex ?? (prevTrackId ? queue.findIndex((t) => t.id === prevTrackId) : -1);
+
+    if (nextIndex < 0) nextIndex = queue.length ? 0 : -1;
+
+    this.stateSubject.next({
+      ...prev,
+      queue,
+      currentIndex: nextIndex,
+      isPlaying: autoplay ? nextIndex >= 0 : prev.isPlaying, // keep play state unless explicitly autoplay
+    });
   }
 }

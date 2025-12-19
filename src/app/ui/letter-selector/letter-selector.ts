@@ -10,7 +10,6 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { BigButtonDirective } from '../directives/big-button';
 
 const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 const ALPHA_LETTERS = [
@@ -47,7 +46,7 @@ export type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 
 @Component({
   selector: 'app-letter-selector',
-  imports: [BigButtonDirective, CommonModule],
+  imports: [CommonModule],
   templateUrl: './letter-selector.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

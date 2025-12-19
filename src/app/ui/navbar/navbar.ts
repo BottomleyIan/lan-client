@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { NavLink } from '../nav-link/nav-link';
-import { Icon } from '../icon/icon';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
-  imports: [RouterOutlet, Navbar, NavLink, Icon],
+  imports: [NavLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {
