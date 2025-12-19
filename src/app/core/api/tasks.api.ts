@@ -56,9 +56,6 @@ export class TasksApi {
     id: number | string,
     body: HandlersCreateTaskTransitionRequest,
   ): Observable<HandlersTaskTransitionDTO> {
-    return this.http.post<HandlersTaskTransitionDTO>(
-      apiUrl(`api/tasks/${id}/transitions`),
-      body,
-    );
+    return this.http.post<HandlersTaskTransitionDTO>(apiUrl(`api/tasks/${id}/transitions`), body);
   }
 }
