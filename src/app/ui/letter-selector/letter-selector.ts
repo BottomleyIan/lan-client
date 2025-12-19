@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { BigButtonDirective } from '../directives/big-button';
 
+const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'] as const;
 const ALPHA_LETTERS = [
   'A',
   'B',
@@ -40,8 +41,8 @@ const ALPHA_LETTERS = [
   'Y',
   'Z',
 ] as const;
-const LETTERS = ['*', ...ALPHA_LETTERS] as const;
-const LETTERS_WITH_SPACE = ['*', ' ', ...ALPHA_LETTERS] as const;
+const LETTERS = ['*', ...DIGITS, ...ALPHA_LETTERS] as const;
+const LETTERS_WITH_SPACE = ['*', ' ', ...DIGITS, ...ALPHA_LETTERS] as const;
 export type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 
 @Component({

@@ -13,6 +13,14 @@ export const routes: Routes = [
   { path: 'albums', component: AlbumsPage },
   { path: 'albums/:id', component: AlbumDetailPage },
   {
+    path: 'tasks',
+    loadComponent: () => import('./features/tasks/tasks-page/tasks-page').then((c) => c.TasksPage),
+  },
+  {
+    path: 'files',
+    loadComponent: () => import('./features/files/files-page/files-page').then((c) => c.FilesPage),
+  },
+  {
     path: 'settings',
     loadComponent: () =>
       import('./features/settings/settings-page/settings-page').then((c) => c.SettingsPage),
