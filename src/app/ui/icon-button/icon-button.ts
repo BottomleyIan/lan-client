@@ -42,7 +42,7 @@ export class IconButton {
   readonly pressed = output<void>();
 
   private readonly baseButtonClass =
-    'inline-flex h-9 items-center justify-center gap-2 rounded-md px-2 transition focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60';
+    'inline-flex h-9 items-center justify-center gap-2 rounded-md px-2 transition focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-tokyo-text-muted disabled:opacity-70';
 
   buttonClasses(): string {
     const base = this.baseButtonClass;

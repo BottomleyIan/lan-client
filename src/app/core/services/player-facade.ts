@@ -21,6 +21,35 @@ export class PlayerFacade {
       .subscribe((queue) => {
         this.player.setQueue(queue, { autoplay: false });
       });
+    this.setPlaylistAndPlay$(2);
+  }
+
+  setActivePlaylist$(playlistId: number | string): Observable<void> {
+    const id = typeof playlistId === 'string' ? Number(playlistId) : playlistId;
+    this.playlist.setActivePlaylist(id);
+    return this.player.queue$.pipe(
+      // wait until the sync subscription has populated the queue
+      filter((q) => q.length > 0),
+      map(() => void 0),
+    );
+  }
+
+  setPlaylistAndPlay$(playlistId: number | string): Observable<void> {
+    const id = typeof playlistId === 'string' ? Number(playlistId) : playlistId;
+
+    console.log('start', playlistId);
+    this.playlist.setActivePlaylist(id);
+
+    return this.player.queue$.pipe(
+      // wait until the sync subscription has populated the queue
+      filter((q) => q.length > 0),
+      take(1),
+      tap(() => {
+        console.log('play');
+        this.player.playAt(0);
+      }), // or this.player.play()
+      map(() => void 0),
+    );
   }
 
   enqueueAndPlay$(trackId: number | string): Observable<number> {

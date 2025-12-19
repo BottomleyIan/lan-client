@@ -8,7 +8,7 @@ const icons = {
   artist: { glyph: '\uedc5', label: 'Artist' }, // 
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖
   next: { glyph: '\udb83\udf27', label: 'Next' }, //nf-md-skip_next_outline 󰼧
-  notes: { glyph: '\udb84\udde7', label: 'Notes' }, // 󱇧
+  notes: { glyph: '\udb80\udfea', label: 'Notes' }, // 󰏪
   pause: { glyph: '\udb80\udfe4', label: 'Pause' }, //nf-md-pause 󰏤
   play: { glyph: '\udb83\udf1b', label: 'Play' }, //nf-md-play_outline 󰼛
   playlist: { glyph: '\udb83\udcb8', label: 'Playlist' }, //󰲸

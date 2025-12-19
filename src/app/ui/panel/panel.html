@@ -17,8 +17,28 @@
         >
       }
     </div>
-    @if (meta()) {
-      <div class="text-xs text-slate-400">{{ meta() }}</div>
+    @if (meta() || hasActions()) {
+      <div class="flex items-center gap-3">
+        @if (meta()) {
+          <div class="text-xs text-slate-400">{{ meta() }}</div>
+        }
+        @if (hasActions()) {
+          <div class="flex items-center gap-1">
+            @for (action of actions(); track action.label) {
+              <app-icon-button-primary
+                [icon]="action.icon"
+                [label]="action.label"
+                [disabled]="action.disabled ?? false"
+                [buttonClass]="buttonClassFor(action)"
+                [iconClass]="action.iconClass ?? null"
+                [active]="action.active ?? null"
+                [activeClass]="action.activeClass ?? null"
+                (pressed)="handleAction(action)"
+              />
+            }
+          </div>
+        }
+      </div>
     }
   </div>
   <div

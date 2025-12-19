@@ -4,6 +4,8 @@ import { Navbar } from './ui/navbar/navbar';
 import { CurrentlyPlaying } from './shared/currently-playing/currently-playing';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerEngineService } from './core/services/player-engine-service';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { PlayerFacade } from './core/services/player-facade';
 
 @Component({
   selector: 'app-root',
@@ -14,5 +16,7 @@ import { PlayerEngineService } from './core/services/player-engine-service';
 })
 export class App {
   protected readonly title = signal('musicclient');
-  constructor(_engine: PlayerEngineService) {}
+  constructor(_engine: PlayerEngineService, playlist: PlayerFacade) {
+    playlist.setActivePlaylist$(1).subscribe();
+  }
 }
