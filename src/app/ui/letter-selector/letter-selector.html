@@ -1,8 +1,8 @@
-<div class="font-vt323 text-darcula-text-subtle flex flex-col pl-2 text-2xl" aria-hidden="false">
+<div class="font-vt323 text-tokyo-text-subtle flex flex-col pl-2 text-2xl" aria-hidden="false">
   @for (letter of letters(); track letter) {
     <button
       type="button"
-      class="last-mb-2 data-[selected=true]:text-darcula-accent-cyan hover:bg-darcula-surface-0 relative flex items-center justify-center px-2 font-semibold first:mt-2 data-[selected=true]:pl-2"
+      class="last-mb-2 data-[selected=true]:text-tokyo-accent-cyan hover:bg-tokyo-surface-0 relative flex items-center justify-center px-2 font-semibold first:mt-2 data-[selected=true]:pl-2"
       [attr.id]="optionId(letter)"
       role="option"
       [attr.aria-selected]="isSelected(letter)"
@@ -11,10 +11,7 @@
       [attr.data-selected]="isSelected(letter)"
       (click)="select(letter)"
     >
-      <span
-        [attr.data-selected]="isSelected(letter)"
-        class="data-[selected=true]:darcula-glow-cyan"
-      >
+      <span [attr.data-selected]="isSelected(letter)" class="data-[selected=true]:tokyo-glow-cyan">
         {{ letter === ' ' ? '␣' : letter }}
       </span>
     </button>

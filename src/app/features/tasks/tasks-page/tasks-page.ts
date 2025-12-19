@@ -7,22 +7,22 @@ type ColorSample = {
 };
 
 const COLOR_SAMPLES: readonly ColorSample[] = [
-  { name: 'Surface 0', cssVar: 'var(--color-darcula-surface-0)' },
-  { name: 'Surface 1', cssVar: 'var(--color-darcula-surface-1)' },
-  { name: 'Surface 2', cssVar: 'var(--color-darcula-surface-2)' },
-  { name: 'Surface 3', cssVar: 'var(--color-darcula-surface-3)' },
-  { name: 'Border', cssVar: 'var(--color-darcula-border)' },
-  { name: 'Text', cssVar: 'var(--color-darcula-text)' },
-  { name: 'Text Muted', cssVar: 'var(--color-darcula-text-muted)' },
-  { name: 'Text Subtle', cssVar: 'var(--color-darcula-text-subtle)' },
-  { name: 'Accent Purple', cssVar: 'var(--color-darcula-accent-purple)' },
-  { name: 'Accent Blue', cssVar: 'var(--color-darcula-accent-blue)' },
-  { name: 'Accent Cyan', cssVar: 'var(--color-darcula-accent-cyan)' },
-  { name: 'Accent Green', cssVar: 'var(--color-darcula-accent-green)' },
-  { name: 'Accent Orange', cssVar: 'var(--color-darcula-accent-orange)' },
-  { name: 'Accent Red', cssVar: 'var(--color-darcula-accent-red)' },
-  { name: 'Accent Yellow', cssVar: 'var(--color-darcula-accent-yellow)' },
-  { name: 'Accent Pink', cssVar: 'var(--color-darcula-accent-pink)' },
+  { name: 'Surface 0', cssVar: 'var(--color-tokyo-surface-0)' },
+  { name: 'Surface 1', cssVar: 'var(--color-tokyo-surface-1)' },
+  { name: 'Surface 2', cssVar: 'var(--color-tokyo-surface-2)' },
+  { name: 'Surface 3', cssVar: 'var(--color-tokyo-surface-3)' },
+  { name: 'Border', cssVar: 'var(--color-tokyo-border)' },
+  { name: 'Text', cssVar: 'var(--color-tokyo-text)' },
+  { name: 'Text Muted', cssVar: 'var(--color-tokyo-text-muted)' },
+  { name: 'Text Subtle', cssVar: 'var(--color-tokyo-text-subtle)' },
+  { name: 'Accent Purple', cssVar: 'var(--color-tokyo-accent-purple)' },
+  { name: 'Accent Blue', cssVar: 'var(--color-tokyo-accent-blue)' },
+  { name: 'Accent Cyan', cssVar: 'var(--color-tokyo-accent-cyan)' },
+  { name: 'Accent Green', cssVar: 'var(--color-tokyo-accent-green)' },
+  { name: 'Accent Orange', cssVar: 'var(--color-tokyo-accent-orange)' },
+  { name: 'Accent Red', cssVar: 'var(--color-tokyo-accent-red)' },
+  { name: 'Accent Yellow', cssVar: 'var(--color-tokyo-accent-yellow)' },
+  { name: 'Accent Pink', cssVar: 'var(--color-tokyo-accent-pink)' },
 ];
 
 @Component({

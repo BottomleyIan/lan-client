@@ -24,7 +24,7 @@ export class IconButtonHighlight {
   readonly label = input.required<string>();
   readonly disabled = input(false);
   readonly strokeWidth = input<number>(1.8);
-  readonly buttonClass = input<string>('darcula-glow-orange-hover');
+  readonly buttonClass = input<string>('tokyo-glow-orange-hover');
   readonly iconClass = input<string | null>(null);
   readonly text = input<string | null>(null);
   readonly pressed = output<void>();

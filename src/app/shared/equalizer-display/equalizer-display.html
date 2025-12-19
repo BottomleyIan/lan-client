@@ -4,9 +4,9 @@
   aria-label="Visual equalizer display"
 >
   @for (level of bands(); track $index) {
-    <div class="bg-darcula-surface-1 relative h-full">
+    <div class="bg-tokyo-surface-1 relative h-full">
       <div
-        class="bg-darcula-accent-cyan absolute inset-x-0 bottom-0 shadow-[0_4px_14px_rgba(16,185,129,0.4)]"
+        class="bg-tokyo-accent-cyan absolute inset-x-0 bottom-0 shadow-[0_4px_14px_rgba(16,185,129,0.4)]"
         [style.height.%]="level * 100"
       ></div>
       <div

@@ -1,25 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 @import 'tailwindcss';
 
-/* Darcula theme colors for Tailwind utilities. */
+/* Tokyo Night theme colors for Tailwind utilities. */
 @theme {
-  /* Usage: bg-darcula-surface-1 text-darcula-text border-darcula-border */
-  --color-darcula-surface-0: #1e1e1e;
-  --color-darcula-surface-1: #252526;
-  --color-darcula-surface-2: #2d2d2d;
-  --color-darcula-surface-3: #313335;
-  --color-darcula-border: #3c3f41;
-  --color-darcula-text: #d4d4d4;
-  --color-darcula-text-muted: #9e9e9e;
-  --color-darcula-text-subtle: #7f7f7f;
-  --color-darcula-accent-purple: #9876aa;
-  --color-darcula-accent-blue: #569cd6;
-  --color-darcula-accent-cyan: #4ec9b0;
-  --color-darcula-accent-green: #6a9955;
-  --color-darcula-accent-orange: #ce9178;
-  --color-darcula-accent-red: #f44747;
-  --color-darcula-accent-yellow: #dcdcaa;
-  --color-darcula-accent-pink: #c586c0;
+  /* Usage: bg-tokyo-surface-1 text-tokyo-text border-tokyo-border */
+  --color-tokyo-surface-0: #16161e;
+  --color-tokyo-surface-1: #1a1b26;
+  --color-tokyo-surface-2: #24283b;
+  --color-tokyo-surface-3: #292e42;
+  --color-tokyo-border: #414868;
+  --color-tokyo-text: #c0caf5;
+  --color-tokyo-text-muted: #a9b1d6;
+  --color-tokyo-text-subtle: #565f89;
+  --color-tokyo-accent-purple: #9d7cd8;
+  --color-tokyo-accent-blue: #7aa2f7;
+  --color-tokyo-accent-cyan: #7dcfff;
+  --color-tokyo-accent-green: #9ece6a;
+  --color-tokyo-accent-orange: #ff9e64;
+  --color-tokyo-accent-red: #f7768e;
+  --color-tokyo-accent-yellow: #e0af68;
+  --color-tokyo-accent-pink: #bb9af7;
 
   --font-vt323: 'VT323', monospace;
   /* Usage: font-nerd */
@@ -38,8 +38,8 @@
   * {
     scrollbar-color: color-mix(
         in srgb,
-        var(--color-darcula-accent-cyan) 100%,
-        var(--color-darcula-surface-0)
+        var(--color-tokyo-accent-cyan) 100%,
+        var(--color-tokyo-surface-0)
       )
       transparent;
     scrollbar-width: thin;
@@ -58,8 +58,8 @@
   *::-webkit-scrollbar-thumb {
     background: linear-gradient(
       180deg,
-      var(--color-darcula-accent-cyan),
-      var(--color-darcula-accent-pink)
+      var(--color-tokyo-accent-cyan),
+      var(--color-tokyo-accent-pink)
     );
     border-radius: 999px;
     border: 2px solid color-mix(in srgb, var(--surface-strong) 90%, transparent);
@@ -67,49 +67,53 @@
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #5eead4, #f472b6);
+    background: linear-gradient(
+      180deg,
+      var(--color-tokyo-accent-blue),
+      var(--color-tokyo-accent-pink)
+    );
   }
 }
 
 @layer components {
-  .darcula-glow-cyan {
-    @apply text-darcula-accent-cyan;
-    text-shadow: 0 0 12px var(--color-darcula-accent-cyan);
+  .tokyo-glow-cyan {
+    @apply text-tokyo-accent-cyan;
+    text-shadow: 0 0 12px var(--color-tokyo-accent-cyan);
   }
 
-  .darcula-glow-cyan-hover {
-    @apply text-darcula-accent-cyan;
+  .tokyo-glow-cyan-hover {
+    @apply text-tokyo-accent-cyan;
   }
 
-  .darcula-glow-cyan-hover:hover,
-  .darcula-glow-cyan-hover:focus-visible {
-    text-shadow: 0 0 12px var(--color-darcula-accent-cyan);
+  .tokyo-glow-cyan-hover:hover,
+  .tokyo-glow-cyan-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-tokyo-accent-cyan);
   }
 
-  .darcula-glow-red-hover {
-    @apply text-darcula-accent-red;
+  .tokyo-glow-red-hover {
+    @apply text-tokyo-accent-red;
   }
 
-  .darcula-glow-red-hover:hover,
-  .darcula-glow-red-hover:focus-visible {
-    text-shadow: 0 0 12px var(--color-darcula-accent-red);
+  .tokyo-glow-red-hover:hover,
+  .tokyo-glow-red-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-tokyo-accent-red);
   }
 
-  .darcula-glow-green-hover {
-    @apply text-darcula-accent-green;
+  .tokyo-glow-green-hover {
+    @apply text-tokyo-accent-green;
   }
 
-  .darcula-glow-green-hover:hover,
-  .darcula-glow-green-hover:focus-visible {
-    text-shadow: 0 0 12px var(--color-darcula-accent-green);
+  .tokyo-glow-green-hover:hover,
+  .tokyo-glow-green-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-tokyo-accent-green);
   }
 
-  .darcula-glow-orange-hover {
-    @apply text-darcula-accent-orange;
+  .tokyo-glow-orange-hover {
+    @apply text-tokyo-accent-orange;
   }
 
-  .darcula-glow-orange-hover:hover,
-  .darcula-glow-orange-hover:focus-visible {
-    text-shadow: 0 0 12px var(--color-darcula-accent-orange);
+  .tokyo-glow-orange-hover:hover,
+  .tokyo-glow-orange-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-tokyo-accent-orange);
   }
 }
