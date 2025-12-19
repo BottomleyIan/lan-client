@@ -70,3 +70,46 @@
     background: linear-gradient(180deg, #5eead4, #f472b6);
   }
 }
+
+@layer components {
+  .darcula-glow-cyan {
+    @apply text-darcula-accent-cyan;
+    text-shadow: 0 0 12px var(--color-darcula-accent-cyan);
+  }
+
+  .darcula-glow-cyan-hover {
+    @apply text-darcula-accent-cyan;
+  }
+
+  .darcula-glow-cyan-hover:hover,
+  .darcula-glow-cyan-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-darcula-accent-cyan);
+  }
+
+  .darcula-glow-red-hover {
+    @apply text-darcula-accent-red;
+  }
+
+  .darcula-glow-red-hover:hover,
+  .darcula-glow-red-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-darcula-accent-red);
+  }
+
+  .darcula-glow-green-hover {
+    @apply text-darcula-accent-green;
+  }
+
+  .darcula-glow-green-hover:hover,
+  .darcula-glow-green-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-darcula-accent-green);
+  }
+
+  .darcula-glow-orange-hover {
+    @apply text-darcula-accent-orange;
+  }
+
+  .darcula-glow-orange-hover:hover,
+  .darcula-glow-orange-hover:focus-visible {
+    text-shadow: 0 0 12px var(--color-darcula-accent-orange);
+  }
+}

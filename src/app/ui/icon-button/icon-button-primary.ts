@@ -2,9 +2,6 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { IconButton } from './icon-button';
 import type { IconName } from '../icon/icon';
 
-const glowClass =
-  'text-darcula-accent-cyan hover:[text-shadow:0_0_12px_var(--color-darcula-accent-cyan)]';
-
 @Component({
   selector: 'app-icon-button-primary',
   imports: [IconButton],
@@ -27,7 +24,7 @@ export class IconButtonPrimary {
   readonly label = input.required<string>();
   readonly disabled = input(false);
   readonly strokeWidth = input<number>(1.8);
-  readonly buttonClass = input<string>(glowClass);
+  readonly buttonClass = input<string>('darcula-glow-cyan-hover');
   readonly iconClass = input<string | null>(null);
   readonly text = input<string | null>(null);
   readonly pressed = output<void>();

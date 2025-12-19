@@ -2,9 +2,6 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { IconButton } from './icon-button';
 import type { IconName } from '../icon/icon';
 
-const confirmClass =
-  'text-darcula-accent-green hover:[text-shadow:0_0_12px_var(--color-darcula-accent-green)]';
-
 @Component({
   selector: 'app-icon-button-confirm',
   imports: [IconButton],
@@ -27,7 +24,7 @@ export class IconButtonConfirm {
   readonly label = input.required<string>();
   readonly disabled = input(false);
   readonly strokeWidth = input<number>(1.8);
-  readonly buttonClass = input<string>(confirmClass);
+  readonly buttonClass = input<string>('darcula-glow-green-hover');
   readonly iconClass = input<string | null>(null);
   readonly text = input<string | null>(null);
   readonly pressed = output<void>();
