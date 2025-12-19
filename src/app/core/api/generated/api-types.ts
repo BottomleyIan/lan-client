@@ -93,6 +93,7 @@ export interface HandlersTaskDTO {
   deleted_at?: string;
   id?: number;
   status_code?: string;
+  tags?: string[];
   title?: string;
   updated_at?: string;
 }
@@ -150,6 +151,7 @@ export interface HandlersCreateTaskRequest {
   body?: string;
   reason?: string;
   status_code?: string;
+  tags?: string[];
   title?: string;
 }
 
@@ -177,6 +179,7 @@ export interface HandlersUpdatePlaylistTrackRequest {
 
 export interface HandlersUpdateTaskRequest {
   body?: string;
+  tags?: string[];
   title?: string;
 }
 
