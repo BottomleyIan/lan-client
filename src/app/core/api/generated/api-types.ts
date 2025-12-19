@@ -87,6 +87,29 @@ export interface HandlersScanDTO {
   status?: string;
 }
 
+export interface HandlersTaskDTO {
+  body?: string;
+  created_at?: string;
+  deleted_at?: string;
+  id?: number;
+  status_code?: string;
+  title?: string;
+  updated_at?: string;
+}
+
+export interface HandlersTaskStatusDTO {
+  code?: string;
+  label?: string;
+}
+
+export interface HandlersTaskTransitionDTO {
+  changed_at?: string;
+  id?: number;
+  reason?: string;
+  status_code?: string;
+  task_id?: number;
+}
+
 export interface HandlersTrackDTO {
   album?: HandlersAlbumSummaryDTO;
   album_id?: number;
@@ -123,6 +146,18 @@ export interface HandlersCreatePlaylistRequest {
   name?: string;
 }
 
+export interface HandlersCreateTaskRequest {
+  body?: string;
+  reason?: string;
+  status_code?: string;
+  title?: string;
+}
+
+export interface HandlersCreateTaskTransitionRequest {
+  reason?: string;
+  status_code?: string;
+}
+
 export interface HandlersEnqueuePlaylistTrackRequest {
   track_id?: number;
 }
@@ -138,6 +173,11 @@ export interface HandlersUpdateArtistRequest {
 
 export interface HandlersUpdatePlaylistTrackRequest {
   position?: number;
+}
+
+export interface HandlersUpdateTaskRequest {
+  body?: string;
+  title?: string;
 }
 
 export interface HandlersUpdateTrackRequest {
