@@ -32,6 +32,13 @@
       <div class="flex w-60 max-w-60 flex-col place-self-center">
         <div class="flex w-full items-center justify-between place-self-center text-3xl">
           <app-icon-button-primary
+            icon="shuffle"
+            [label]="shuffleLabel()"
+            [active]="isShuffle()"
+            activeClass="text-tokyo-accent-orange"
+            (pressed)="toggleShuffle()"
+          />
+          <app-icon-button-primary
             icon="previous"
             label="Previous track"
             (pressed)="player.previous()"

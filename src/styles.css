@@ -81,6 +81,11 @@
     text-shadow: 0 0 12px var(--color-tokyo-accent-cyan);
   }
 
+  .tokyo-glow-orange {
+    @apply text-tokyo-accent-orange;
+    text-shadow: 0 0 12px var(--color-tokyo-accent-cyan);
+  }
+
   .tokyo-glow-cyan-hover {
     @apply text-tokyo-accent-cyan;
   }

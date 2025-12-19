@@ -15,6 +15,7 @@ const icons = {
   previous: { glyph: '\udb83\udf28', label: 'Previous' }, //nf-md-skip_previous_outline 󰼨
   refresh: { glyph: '\udb81\udc50', label: 'Refresh' }, //nf-md-refresh 󰑐
   settings: { glyph: '\udb81\udc93', label: 'Settings' }, //nf-md-cog 󰒓
+  shuffle: { glyph: '\udb81\udc9f', label: 'Shuffle' }, //nf-md-shuffle 󰒟
   tasklist: { glyph: '\uf0ae', label: 'Tasklist' }, // 
   trash: { glyph: '\udb80\uddb4', label: 'Delete' }, //nf-md-delete 󰆴
   stop: { glyph: '\udb81\udcdb', label: 'Stop' }, //nf-md-stop 󰓛

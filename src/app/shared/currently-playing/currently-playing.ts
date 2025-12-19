@@ -42,11 +42,13 @@ export class CurrentlyPlaying {
   readonly position = signal(98);
   readonly current$: Observable<PlayerServiceTrack | null>;
   private readonly isPlaying: Signal<boolean>;
+  readonly isShuffle: Signal<boolean>;
   private readonly currentTrack: Signal<PlayerServiceTrack | null>;
 
   constructor(public player: PlayerService) {
     this.current$ = this.player.currentTrack$;
     this.isPlaying = toSignal(this.player.isPlaying$, { initialValue: false });
+    this.isShuffle = toSignal(this.player.shuffle$, { initialValue: false });
     this.currentTrack = toSignal(this.current$, { initialValue: null });
     effect(
       () => {
@@ -60,6 +62,7 @@ export class CurrentlyPlaying {
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
 
   readonly playLabel = computed(() => (this.isPlaying() ? 'Pause playback' : 'Play track'));
+  readonly shuffleLabel = computed(() => (this.isShuffle() ? 'Disable shuffle' : 'Enable shuffle'));
 
   readonly statusLabel = computed(() => (this.isPlaying() ? 'Playing' : 'Paused'));
   formatTime(totalSeconds: number): string {
@@ -75,5 +78,9 @@ export class CurrentlyPlaying {
     } else {
       this.player.play();
     }
+  }
+
+  toggleShuffle(): void {
+    this.player.toggleShuffle();
   }
 }

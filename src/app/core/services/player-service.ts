@@ -50,6 +50,10 @@ export class PlayerService {
     map((s) => s.volume),
     distinctUntilChanged(),
   );
+  readonly shuffle$ = this.state$.pipe(
+    map((s) => s.shuffle),
+    distinctUntilChanged(),
+  );
 
   readonly currentTrack$ = this.state$.pipe(
     map((s) => (s.currentIndex >= 0 ? (s.queue[s.currentIndex] ?? null) : null)),
@@ -68,7 +72,11 @@ export class PlayerService {
   play(): void {
     const s = this.snapshot;
     if (s.queue.length === 0) return;
-    if (s.currentIndex === -1) this.setState({ currentIndex: 0 });
+    if (s.currentIndex === -1) {
+      const startIndex = s.shuffle ? this.nextShuffleIndex(-1, s.queue.length) : 0;
+      this.setState({ currentIndex: startIndex, isPlaying: true });
+      return;
+    }
     this.setState({ isPlaying: true });
   }
 
@@ -86,6 +94,14 @@ export class PlayerService {
     const s = this.snapshot;
     if (s.queue.length === 0) return;
 
+    if (s.shuffle) {
+      const nextIndex = this.nextShuffleIndex(s.currentIndex, s.queue.length);
+      if (nextIndex >= 0) {
+        this.setState({ currentIndex: nextIndex, isPlaying: true });
+      }
+      return;
+    }
+
     const atEnd = s.currentIndex >= s.queue.length - 1;
     if (atEnd) {
       if (s.repeat === 'all') this.setState({ currentIndex: 0, isPlaying: true });
@@ -98,6 +114,13 @@ export class PlayerService {
   previous(): void {
     const s = this.snapshot;
     if (s.queue.length === 0) return;
+    if (s.shuffle) {
+      const prevIndex = this.nextShuffleIndex(s.currentIndex, s.queue.length);
+      if (prevIndex >= 0) {
+        this.setState({ currentIndex: prevIndex, isPlaying: true });
+      }
+      return;
+    }
     const prev = Math.max(0, s.currentIndex - 1);
     this.setState({ currentIndex: prev, isPlaying: true });
   }
@@ -113,6 +136,23 @@ export class PlayerService {
 
   volumeDown(step = 0.1): void {
     this.setVolume(this.snapshot.volume - step);
+  }
+
+  toggleShuffle(): void {
+    this.setState({ shuffle: !this.snapshot.shuffle });
+  }
+
+  private nextShuffleIndex(currentIndex: number, length: number): number {
+    if (length <= 0) return -1;
+    if (length === 1) return 0;
+    if (currentIndex < 0 || currentIndex >= length) {
+      return Math.floor(Math.random() * length);
+    }
+    let nextIndex = currentIndex;
+    while (nextIndex === currentIndex) {
+      nextIndex = Math.floor(Math.random() * length);
+    }
+    return nextIndex;
   }
   stop(): void {
     this.setState({ isPlaying: false, currentIndex: -1 });
