@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, interval, map } from 'rxjs';
+import { BehaviorSubject, Subject, distinctUntilChanged, map } from 'rxjs';
 
 export type RepeatMode = 'off' | 'one' | 'all';
 
@@ -38,6 +38,8 @@ const initialState: PlayerState = {
 export class PlayerService {
   private readonly stateSubject = new BehaviorSubject<PlayerState>(initialState);
   readonly state$ = this.stateSubject.asObservable();
+  private readonly seekSubject = new Subject<number>();
+  readonly seek$ = this.seekSubject.asObservable();
 
   // Derived streams (use these in components)
   readonly queue$ = this.state$.pipe(map((s) => s.queue));
@@ -70,25 +72,6 @@ export class PlayerService {
   // Synchronous snapshot helper for command handlers
   private get snapshot(): PlayerState {
     return this.stateSubject.value;
-  }
-
-  constructor() {
-    interval(1000).subscribe(() => {
-      const s = this.snapshot;
-      if (!s.isPlaying) {
-        return;
-      }
-      const current = s.currentIndex >= 0 ? s.queue[s.currentIndex] : null;
-      const durationMs = current?.durationMs ?? 0;
-      if (durationMs <= 0) {
-        return;
-      }
-      const nextPosition = Math.min(s.positionMs + 1000, durationMs);
-      this.setState({ positionMs: nextPosition });
-      if (nextPosition >= durationMs) {
-        this.setState({ isPlaying: false });
-      }
-    });
   }
 
   private setState(patch: Partial<PlayerState>): void {
@@ -223,6 +206,18 @@ export class PlayerService {
     const current = s.currentIndex >= 0 ? s.queue[s.currentIndex] : null;
     const durationMs = current?.durationMs ?? 0;
     const clamped = Math.min(Math.max(0, positionMs), durationMs);
+    this.setState({ positionMs: clamped });
+    this.seekSubject.next(clamped);
+  }
+
+  updatePositionFromEngine(positionMs: number): void {
+    const s = this.snapshot;
+    const current = s.currentIndex >= 0 ? s.queue[s.currentIndex] : null;
+    const durationMs = current?.durationMs ?? 0;
+    const clamped = Math.min(Math.max(0, positionMs), durationMs);
+    if (clamped === s.positionMs) {
+      return;
+    }
     this.setState({ positionMs: clamped });
   }
 }

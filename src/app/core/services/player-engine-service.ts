@@ -8,12 +8,13 @@ import { trackUrl } from '../api/track-url';
 @Injectable({ providedIn: 'root' })
 export class PlayerEngineService {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly player = inject(PlayerService);
   private readonly audio = new Audio();
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
   private sourceNode: MediaElementAudioSourceNode | null = null;
 
-  constructor(private player: PlayerService) {
+  constructor() {
     this.audio.crossOrigin = 'anonymous';
     // When track or play state changes, apply to audio
     combineLatest([this.player.currentTrack$, this.player.isPlaying$, this.player.volume$])
@@ -22,6 +23,7 @@ export class PlayerEngineService {
         if (!track) {
           this.audio.pause();
           this.audio.src = '';
+          this.player.updatePositionFromEngine(0);
           return;
         }
 
@@ -38,6 +40,17 @@ export class PlayerEngineService {
 
     // When track ends, go next
     this.audio.addEventListener('ended', () => this.player.next());
+    this.audio.addEventListener('timeupdate', () => {
+      const positionMs = Math.floor(this.audio.currentTime * 1000);
+      this.player.updatePositionFromEngine(positionMs);
+    });
+    this.audio.addEventListener('loadedmetadata', () => {
+      this.player.updatePositionFromEngine(Math.floor(this.audio.currentTime * 1000));
+    });
+
+    this.player.seek$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((positionMs) => {
+      this.audio.currentTime = positionMs / 1000;
+    });
   }
 
   getAnalyser(): AnalyserNode | null {
