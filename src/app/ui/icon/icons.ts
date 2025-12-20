@@ -30,6 +30,10 @@ const icons = {
   calendar: { glyph: '\udb80\udced', label: 'Calendar' }, // 󰃭
   volumeDown: { glyph: '\udb80\udf74', label: 'Volume down' }, //nf-md-minus 󰍴
   volumeUp: { glyph: '\udb81\udc15', label: 'Volume up' }, //nf-md-plus 󰐕
+  volumeMute: { glyph: '\udb81\udf5f', label: 'Volume muted' }, // 󱅟
+  volumeLow: { glyph: '\udb81\udf5f', label: 'Low volume' }, // 󱅟
+  volumeMedium: { glyph: '\udb81\udd80', label: 'Medium volume' }, // 󱆀
+  volumeHigh: { glyph: '\udb81\udd7e', label: 'High volume' }, // 󱅾
   x: { glyph: '\udb80\udd56', label: 'X' }, // 󰅖
 } satisfies Record<string, IconDefinition>;
 

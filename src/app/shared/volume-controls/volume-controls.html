@@ -1,17 +1,17 @@
-<div class="flex w-full items-center justify-between gap-2 place-self-center text-3xl">
-  <app-icon-button-primary icon="volumeDown" label="Decrease volume" (pressed)="handleDecrease()" />
-  <div
-    class="bg-tokyo-surface-0 relative h-4 flex-1 overflow-hidden"
-    role="progressbar"
-    aria-label="Volume level"
-    [attr.aria-valuenow]="volumePercent()"
-    [attr.aria-valuemin]="0"
-    [attr.aria-valuemax]="100"
-  >
-    <div
-      class="h-full bg-gradient-to-r from-cyan-300 to-emerald-300 transition-[width] duration-200 ease-out"
-      [style.width.%]="volumePercent()"
-    ></div>
-  </div>
-  <app-icon-button-primary icon="volumeUp" label="Increase volume" (pressed)="handleIncrease()" />
+<div class="flex w-full items-center gap-3 place-self-center">
+  <app-icon-button-primary
+    [icon]="volumeIcon()"
+    [label]="muteLabel()"
+    [buttonClass]="volumeButtonClass()"
+    (pressed)="toggleMute()"
+  />
+  <app-slider
+    class="flex-1"
+    [min]="0"
+    [max]="100"
+    [step]="1"
+    [value]="volumePercent()"
+    label="Volume level"
+    (valueChange)="setVolumePercent($event)"
+  />
 </div>

@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
     <div class="flex w-full items-center">
       <input
         type="range"
-        class="bg-tokyo-surface-0 focus-visible:ring-tokyo-accent-cyan/70 h-2 w-full cursor-pointer rounded-full focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed"
+        class="bg-tokyo-surface-0 focus-visible:ring-tokyo-accent-cyan/70 h-2 w-full cursor-pointer appearance-none border-none focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed"
         [class.tokyo-glow-cyan]="isDragging()"
         [class.opacity-60]="disabled()"
         [min]="min()"
