@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, distinctUntilChanged, map } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, interval, map } from 'rxjs';
 
 export type RepeatMode = 'off' | 'one' | 'all';
 
@@ -21,6 +21,7 @@ export interface PlayerState {
   repeat: RepeatMode;
   shuffle: boolean;
   volume: number; // 0 to 1
+  positionMs: number;
 }
 
 const initialState: PlayerState = {
@@ -30,6 +31,7 @@ const initialState: PlayerState = {
   repeat: 'off',
   shuffle: false,
   volume: 0.7,
+  positionMs: 0,
 };
 
 @Injectable({ providedIn: 'root' })
@@ -60,10 +62,33 @@ export class PlayerService {
     map((s) => (s.currentIndex >= 0 ? (s.queue[s.currentIndex] ?? null) : null)),
     distinctUntilChanged(),
   );
+  readonly positionMs$ = this.state$.pipe(
+    map((s) => s.positionMs),
+    distinctUntilChanged(),
+  );
 
   // Synchronous snapshot helper for command handlers
   private get snapshot(): PlayerState {
     return this.stateSubject.value;
+  }
+
+  constructor() {
+    interval(1000).subscribe(() => {
+      const s = this.snapshot;
+      if (!s.isPlaying) {
+        return;
+      }
+      const current = s.currentIndex >= 0 ? s.queue[s.currentIndex] : null;
+      const durationMs = current?.durationMs ?? 0;
+      if (durationMs <= 0) {
+        return;
+      }
+      const nextPosition = Math.min(s.positionMs + 1000, durationMs);
+      this.setState({ positionMs: nextPosition });
+      if (nextPosition >= durationMs) {
+        this.setState({ isPlaying: false });
+      }
+    });
   }
 
   private setState(patch: Partial<PlayerState>): void {
@@ -75,7 +100,7 @@ export class PlayerService {
     if (s.queue.length === 0) return;
     if (s.currentIndex === -1) {
       const startIndex = s.shuffle ? this.nextShuffleIndex(-1, s.queue.length) : 0;
-      this.setState({ currentIndex: startIndex, isPlaying: true });
+      this.setState({ currentIndex: startIndex, isPlaying: true, positionMs: 0 });
       return;
     }
     this.setState({ isPlaying: true });
@@ -88,7 +113,7 @@ export class PlayerService {
   playAt(index: number): void {
     const s = this.snapshot;
     if (index < 0 || index >= s.queue.length) return;
-    this.setState({ currentIndex: index, isPlaying: true });
+    this.setState({ currentIndex: index, isPlaying: true, positionMs: 0 });
   }
 
   next(): void {
@@ -98,18 +123,18 @@ export class PlayerService {
     if (s.shuffle) {
       const nextIndex = this.nextShuffleIndex(s.currentIndex, s.queue.length);
       if (nextIndex >= 0) {
-        this.setState({ currentIndex: nextIndex, isPlaying: true });
+        this.setState({ currentIndex: nextIndex, isPlaying: true, positionMs: 0 });
       }
       return;
     }
 
     const atEnd = s.currentIndex >= s.queue.length - 1;
     if (atEnd) {
-      if (s.repeat === 'all') this.setState({ currentIndex: 0, isPlaying: true });
+      if (s.repeat === 'all') this.setState({ currentIndex: 0, isPlaying: true, positionMs: 0 });
       else this.setState({ isPlaying: false }); // stop
       return;
     }
-    this.setState({ currentIndex: s.currentIndex + 1, isPlaying: true });
+    this.setState({ currentIndex: s.currentIndex + 1, isPlaying: true, positionMs: 0 });
   }
 
   previous(): void {
@@ -118,12 +143,12 @@ export class PlayerService {
     if (s.shuffle) {
       const prevIndex = this.nextShuffleIndex(s.currentIndex, s.queue.length);
       if (prevIndex >= 0) {
-        this.setState({ currentIndex: prevIndex, isPlaying: true });
+        this.setState({ currentIndex: prevIndex, isPlaying: true, positionMs: 0 });
       }
       return;
     }
     const prev = Math.max(0, s.currentIndex - 1);
-    this.setState({ currentIndex: prev, isPlaying: true });
+    this.setState({ currentIndex: prev, isPlaying: true, positionMs: 0 });
   }
 
   setVolume(volume: number): void {
@@ -168,7 +193,7 @@ export class PlayerService {
   }
 
   stop(): void {
-    this.setState({ isPlaying: false, currentIndex: -1 });
+    this.setState({ isPlaying: false, currentIndex: -1, positionMs: 0 });
   }
 
   setQueue(queue: PlayerServiceTrack[], opts?: { autoplay?: boolean; startIndex?: number }): void {
@@ -181,12 +206,23 @@ export class PlayerService {
       opts?.startIndex ?? (prevTrackId ? queue.findIndex((t) => t.id === prevTrackId) : -1);
 
     if (nextIndex < 0) nextIndex = queue.length ? 0 : -1;
+    const nextTrackId = nextIndex >= 0 ? (queue[nextIndex]?.id ?? null) : null;
+    const shouldResetPosition = prevTrackId !== nextTrackId;
 
     this.stateSubject.next({
       ...prev,
       queue,
       currentIndex: nextIndex,
       isPlaying: autoplay ? nextIndex >= 0 : prev.isPlaying, // keep play state unless explicitly autoplay
+      positionMs: shouldResetPosition ? 0 : prev.positionMs,
     });
+  }
+
+  seek(positionMs: number): void {
+    const s = this.snapshot;
+    const current = s.currentIndex >= 0 ? s.queue[s.currentIndex] : null;
+    const durationMs = current?.durationMs ?? 0;
+    const clamped = Math.min(Math.max(0, positionMs), durationMs);
+    this.setState({ positionMs: clamped });
   }
 }

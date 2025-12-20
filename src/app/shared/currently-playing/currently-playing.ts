@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   effect,
+  inject,
   signal,
   type Signal,
 } from '@angular/core';
@@ -21,6 +22,8 @@ import { AddImageToTrackButto } from '../../features/tracks/add-image-to-track-b
 import { StarRating } from '../star-rating/star-rating';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { TracksApi } from '../../core/api/tracks.api';
+import { Slider } from '../../ui/slider/slider';
+import { formatDurationMs } from '../utils/time';
 
 @Component({
   selector: 'app-currently-playing',
@@ -34,6 +37,7 @@ import { TracksApi } from '../../core/api/tracks.api';
     VolumeControls,
     AddImageToTrackButto,
     StarRating,
+    Slider,
   ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,21 +49,24 @@ export class CurrentlyPlaying {
     this.imageFailed.set(true);
   }
 
-  readonly position = signal(98);
-  readonly current$: Observable<PlayerServiceTrack | null>;
-  private readonly isPlaying: Signal<boolean>;
-  readonly isShuffle: Signal<boolean>;
-  private readonly currentTrack: Signal<PlayerServiceTrack | null>;
-  private readonly tracksApi: TracksApi;
+  readonly player = inject(PlayerService);
+  private readonly tracksApi = inject(TracksApi);
+  readonly current$: Observable<PlayerServiceTrack | null> = this.player.currentTrack$;
+  private readonly isPlaying: Signal<boolean> = toSignal(this.player.isPlaying$, {
+    initialValue: false,
+  });
+  readonly isShuffle: Signal<boolean> = toSignal(this.player.shuffle$, { initialValue: false });
+  private readonly currentTrack: Signal<PlayerServiceTrack | null> = toSignal(this.current$, {
+    initialValue: null,
+  });
 
-  constructor(
-    public player: PlayerService,
-    tracksApi: TracksApi,
-  ) {
-    this.current$ = this.player.currentTrack$;
-    this.isPlaying = toSignal(this.player.isPlaying$, { initialValue: false });
-    this.isShuffle = toSignal(this.player.shuffle$, { initialValue: false });
-    this.currentTrack = toSignal(this.current$, { initialValue: null });
+  readonly durationMs = computed(() => this.currentTrack()?.durationMs ?? 0);
+  readonly positionMs = toSignal(this.player.positionMs$, { initialValue: 0 });
+  readonly formattedCurrentTime = computed(() => formatDurationMs(this.positionMs()));
+  readonly formattedDuration = computed(() => formatDurationMs(this.durationMs()));
+  readonly isSeekDisabled = computed(() => this.durationMs() <= 0);
+
+  constructor() {
     effect(
       () => {
         this.currentTrack();
@@ -67,7 +74,6 @@ export class CurrentlyPlaying {
       },
       { allowSignalWrites: true },
     );
-    this.tracksApi = tracksApi;
   }
 
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
@@ -76,12 +82,6 @@ export class CurrentlyPlaying {
   readonly shuffleLabel = computed(() => (this.isShuffle() ? 'Disable shuffle' : 'Enable shuffle'));
 
   readonly statusLabel = computed(() => (this.isPlaying() ? 'Playing' : 'Paused'));
-  formatTime(totalSeconds: number): string {
-    const safeSeconds = Math.max(0, Math.floor(totalSeconds));
-    const minutes = Math.floor(safeSeconds / 60);
-    const seconds = (safeSeconds % 60).toString().padStart(2, '0');
-    return `${minutes}:${seconds}`;
-  }
 
   togglePlayback(): void {
     if (this.isPlaying()) {
@@ -93,6 +93,10 @@ export class CurrentlyPlaying {
 
   toggleShuffle(): void {
     this.player.toggleShuffle();
+  }
+
+  setCurrentTime(nextTimeMs: number): void {
+    this.player.seek(nextTimeMs);
   }
 
   makeHandleRatingChange(trackId: string | number): (r: number) => void {

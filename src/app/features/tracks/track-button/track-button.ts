@@ -1,5 +1,4 @@
-import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { BigButtonDirective } from '../../../ui/directives/big-button';
 
 import { type PlayerServiceTrack } from '../../../core/services/player-service';
@@ -7,18 +6,26 @@ import { type PlayerServiceTrack } from '../../../core/services/player-service';
 import { PlayerFacade } from '../../../core/services/player-facade';
 import { H2Directive } from '../../../ui/directives/h2';
 import { Icon } from '../../../ui/icon/icon';
+import { formatDurationMs } from '../../../shared/utils/time';
 
 @Component({
   selector: 'app-track-button',
-  imports: [BigButtonDirective, CommonModule, H2Directive, Icon],
+  imports: [BigButtonDirective, H2Directive, Icon],
   templateUrl: './track-button.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TrackButton {
-  @Input({ required: true }) track!: PlayerServiceTrack;
-  constructor(public player: PlayerFacade) {}
+  readonly track = input.required<PlayerServiceTrack>();
+  readonly player = inject(PlayerFacade);
+
+  protected readonly formattedDuration = computed(() => {
+    const durationMs = this.track().durationMs ?? 0;
+    return durationMs > 0 ? formatDurationMs(durationMs) : null;
+  });
 
   enqueue(): void {
-    this.player.enqueueAndPlay$(this.track.id).subscribe({
+    const track = this.track();
+    this.player.enqueueAndPlay$(track.id).subscribe({
       next: (res) => console.log('added', res),
       error: (err) => console.error(err),
     });
