@@ -6,7 +6,7 @@
   >
     <div class="grid grid-cols-3 items-center gap-2">
       <div class="flex flex-1 items-center gap-2">
-        <div class="bg-tokyo-surface-0 aspect-square h-22 max-h-22">
+        <div class="bg-tokyo-surface-0 relative aspect-square h-22 max-h-22">
           @if (track.imageUrl) {
             <img
               [src]="track.imageUrl"
@@ -16,6 +16,11 @@
               loading="lazy"
               (error)="onImageError()"
             />
+          }
+          @if (imageFailed()) {
+            <div class="absolute right-1 bottom-0 text-3xl">
+              <app-add-image-to-track-button [trackId]="track.id" [trackTitle]="track.title" />
+            </div>
           }
         </div>
         <div class="w-[38ch]">

@@ -17,6 +17,7 @@ import { EqualizerDisplay } from '../equalizer-display/equalizer-display';
 import { VolumeControls } from '../volume-controls/volume-controls';
 import { H2Directive } from '../../ui/directives/h2';
 import { ContainerDivDirective } from '../../ui/directives/container-div';
+import { AddImageToTrackButto } from '../../features/tracks/add-image-to-track-button/add-image-to-track-button';
 
 @Component({
   selector: 'app-currently-playing',
@@ -28,6 +29,7 @@ import { ContainerDivDirective } from '../../ui/directives/container-div';
     EqualizerDisplay,
     ContainerDivDirective,
     VolumeControls,
+    AddImageToTrackButto,
   ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

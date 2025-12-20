@@ -14,6 +14,7 @@ import type { IconName } from '../icon/icon';
       [buttonClass]="buttonClass()"
       [iconClass]="iconClass()"
       [text]="text()"
+      [type]="type()"
       [active]="active()"
       [activeClass]="activeClass()"
       (pressed)="pressed.emit()"
@@ -29,6 +30,7 @@ export class IconButtonPrimary {
   readonly buttonClass = input<string>('tokyo-glow-cyan-hover');
   readonly iconClass = input<string | null>(null);
   readonly text = input<string | null>(null);
+  readonly type = input<string | null>('button');
   readonly active = input<boolean | null>(null);
   readonly activeClass = input<string | null>(null);
   readonly pressed = output<void>();

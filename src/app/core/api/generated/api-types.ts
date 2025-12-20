@@ -183,6 +183,10 @@ export interface HandlersUpdateTaskRequest {
   title?: string;
 }
 
+export interface HandlersUpdateTrackImageRequest {
+  url?: string;
+}
+
 export interface HandlersUpdateTrackRequest {
   rating?: number;
 }

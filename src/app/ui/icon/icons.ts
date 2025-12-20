@@ -6,7 +6,10 @@ type IconDefinition = {
 const icons = {
   album: { glyph: '\udb80\udc25', label: 'Album' }, // 󰀥
   artist: { glyph: '\uedc5', label: 'Artist' }, // 
+  check: { glyph: '\udb80\udd2c', label: 'Check' }, // 󰄬
+  x: { glyph: '\udb80\udd56', label: 'X' }, // 󰅖
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖
+  imageAdd: { glyph: '\udb82\udc7c', label: 'Add Image' }, // 󰡼
   next: { glyph: '\udb83\udf27', label: 'Next' }, //nf-md-skip_next_outline 󰼧
   notes: { glyph: '\udb80\udfea', label: 'Notes' }, // 󰏪
   pause: { glyph: '\udb80\udfe4', label: 'Pause' }, //nf-md-pause 󰏤

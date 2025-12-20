@@ -10,6 +10,7 @@ import { Icon, type IconName } from '../icon/icon';
       [class]="buttonClasses()"
       [attr.aria-label]="label()"
       [attr.title]="label()"
+      [attr.type]="type()"
       [attr.aria-disabled]="disabled()"
       [attr.aria-pressed]="active() === null ? null : active()"
       [disabled]="disabled()"
@@ -37,6 +38,7 @@ export class IconButton {
   readonly buttonClass = input<string>('text-red-500 hover:text-red-600');
   readonly iconClass = input<string | null>(null);
   readonly text = input<string | null>(null);
+  readonly type = input<string | null>('button');
   readonly active = input<boolean | null>(null);
   readonly activeClass = input<string | null>(null);
   readonly pressed = output<void>();

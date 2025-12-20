@@ -1,0 +1,47 @@
+<app-icon-button-primary
+  icon="imageAdd"
+  [label]="'Update image for ' + trackTitle()"
+  (pressed)="openDialog()"
+/>
+
+<dialog #dialogEl>
+  <form [formGroup]="form" (ngSubmit)="accept()">
+    <h2 class="text-lg font-semibold">Update track image</h2>
+    <p class="text-sm text-slate-400">
+      {{ trackTitle() }}
+    </p>
+
+    <div class="mt-4 flex flex-col gap-2">
+      <label class="text-sm font-semibold text-slate-100" for="track-image-url"> Image URL </label>
+
+      <input
+        uiInput
+        id="track-image-url"
+        type="url"
+        placeholder="https://example.com/image.jpg"
+        formControlName="url"
+        [attr.aria-invalid]="url.invalid && url.touched ? true : null"
+      />
+
+      @if (url.invalid && url.touched) {
+        <p class="text-xs font-semibold text-rose-200">Image URL is required.</p>
+      }
+    </div>
+
+    <div class="mt-6 flex justify-end gap-2">
+      <app-icon-button-danger
+        icon="x"
+        label="Cancel"
+        [disabled]="isSaving()"
+        (pressed)="closeDialog()"
+      />
+
+      <app-icon-button-primary
+        icon="check"
+        label="Save"
+        [disabled]="form.invalid || isSaving()"
+        type="submit"
+      />
+    </div>
+  </form>
+</dialog>

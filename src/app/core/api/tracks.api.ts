@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { HttpClient, HttpParams } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { HandlersTrackDTO, HandlersUpdateTrackRequest } from './generated/api-types';
+import type {
+  HandlersTrackDTO,
+  HandlersUpdateTrackImageRequest,
+  HandlersUpdateTrackRequest,
+} from './generated/api-types';
 import { apiUrl } from './api-url';
 
 @Injectable({ providedIn: 'root' })
@@ -34,5 +38,13 @@ export class TracksApi {
   /** PUT /tracks/:id */
   updateTrack(id: number | string, body: HandlersUpdateTrackRequest): Observable<HandlersTrackDTO> {
     return this.http.put<HandlersTrackDTO>(apiUrl(`api/tracks/${id}`), body);
+  }
+
+  /** POST /tracks/:id/image */
+  updateTrackImage(
+    id: number | string,
+    body: HandlersUpdateTrackImageRequest,
+  ): Observable<HandlersTrackDTO> {
+    return this.http.post<HandlersTrackDTO>(apiUrl(`api/tracks/${id}/image`), body);
   }
 }
