@@ -187,6 +187,10 @@ export interface HandlersUpdateTrackImageRequest {
   url?: string;
 }
 
+export interface HandlersUpdateTrackRatingRequest {
+  rating?: number;
+}
+
 export interface HandlersUpdateTrackRequest {
   rating?: number;
 }

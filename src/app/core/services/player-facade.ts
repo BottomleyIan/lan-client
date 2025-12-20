@@ -37,7 +37,6 @@ export class PlayerFacade {
   setPlaylistAndPlay$(playlistId: number | string): Observable<void> {
     const id = typeof playlistId === 'string' ? Number(playlistId) : playlistId;
 
-    console.log('start', playlistId);
     this.playlist.setActivePlaylist(id);
 
     return this.player.queue$.pipe(
@@ -101,6 +100,7 @@ export class PlayerFacade {
       genre: t?.genre ?? undefined,
       year: String(t?.year ?? ''),
       imageUrl: t?.id ? trackImageUrl(t?.id) : undefined,
+      rating: t?.rating ?? 0,
     };
   }
 }

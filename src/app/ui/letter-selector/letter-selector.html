@@ -2,7 +2,7 @@
   @for (letter of letters(); track letter) {
     <button
       type="button"
-      class="last-mb-2 data-[selected=true]:text-tokyo-accent-cyan hover:bg-tokyo-surface-0 relative flex items-center justify-center px-2 font-semibold first:mt-2 data-[selected=true]:pl-2"
+      class="last-mb-2 data-[selected=true]:text-tokyo-accent-orange hover:bg-tokyo-surface-0 relative flex items-center justify-center px-2 font-semibold first:mt-2 data-[selected=true]:pl-2 data-[selected=true]:text-3xl"
       [attr.id]="optionId(letter)"
       role="option"
       [attr.aria-selected]="isSelected(letter)"
@@ -11,7 +11,10 @@
       [attr.data-selected]="isSelected(letter)"
       (click)="select(letter)"
     >
-      <span [attr.data-selected]="isSelected(letter)" class="data-[selected=true]:tokyo-glow-cyan">
+      <span
+        [attr.data-selected]="isSelected(letter)"
+        class="data-[selected=true]:tokyo-glow-orange"
+      >
         {{ letter === ' ' ? '␣' : letter }}
       </span>
     </button>

@@ -1,0 +1,10 @@
+@for (star of stars; track star) {
+  <app-icon-button-primary
+    [active]="star <= rating()"
+    activeClass="text-tokyo-accent-orange"
+    [icon]="iconFor(star)"
+    [label]="labelFor(star)"
+    [buttonClass]="buttonClassFor(star)"
+    (pressed)="setRating(star)"
+  />
+}

@@ -10,7 +10,7 @@ import { Panel } from '../../ui/panel/panel';
 import { IconButtonPrimary } from '../../ui/icon-button/icon-button-primary';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService, type PlayerServiceTrack } from '../../core/services/player-service';
-import type { Observable } from 'rxjs';
+import { type Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { EqualizerDisplay } from '../equalizer-display/equalizer-display';
@@ -18,6 +18,8 @@ import { VolumeControls } from '../volume-controls/volume-controls';
 import { H2Directive } from '../../ui/directives/h2';
 import { ContainerDivDirective } from '../../ui/directives/container-div';
 import { AddImageToTrackButto } from '../../features/tracks/add-image-to-track-button/add-image-to-track-button';
+import { StarRating } from '../star-rating/star-rating';
+import type { TracksApi } from '../../core/api/tracks.api';
 
 @Component({
   selector: 'app-currently-playing',
@@ -30,6 +32,7 @@ import { AddImageToTrackButto } from '../../features/tracks/add-image-to-track-b
     ContainerDivDirective,
     VolumeControls,
     AddImageToTrackButto,
+    StarRating,
   ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,8 +49,12 @@ export class CurrentlyPlaying {
   private readonly isPlaying: Signal<boolean>;
   readonly isShuffle: Signal<boolean>;
   private readonly currentTrack: Signal<PlayerServiceTrack | null>;
+  private readonly tracksApi: TracksApi;
 
-  constructor(public player: PlayerService) {
+  constructor(
+    public player: PlayerService,
+    tracksApi: TracksApi,
+  ) {
     this.current$ = this.player.currentTrack$;
     this.isPlaying = toSignal(this.player.isPlaying$, { initialValue: false });
     this.isShuffle = toSignal(this.player.shuffle$, { initialValue: false });
@@ -59,6 +66,7 @@ export class CurrentlyPlaying {
       },
       { allowSignalWrites: true },
     );
+    this.tracksApi = tracksApi;
   }
 
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
@@ -84,5 +92,16 @@ export class CurrentlyPlaying {
 
   toggleShuffle(): void {
     this.player.toggleShuffle();
+  }
+
+  makeHandleRatingChange(trackId: string | number): (r: number) => void {
+    return (_rating: number): void => {
+      this.tracksApi.updateTrackRating(trackId, { rating: _rating }).subscribe({
+        next: (resp) => {
+          this.player.updateTrackInQueue(trackId.toString(), { rating: resp.rating });
+        },
+        error: (err) => console.error(err),
+      });
+    };
   }
 }

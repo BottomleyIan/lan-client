@@ -38,7 +38,7 @@
   * {
     scrollbar-color: color-mix(
         in srgb,
-        var(--color-tokyo-accent-cyan) 100%,
+        var(--color-tokyo-text-subtle) 30%,
         var(--color-tokyo-surface-0)
       )
       transparent;

@@ -5,10 +5,12 @@ import { BigButtonDirective } from '../../../ui/directives/big-button';
 import { type PlayerServiceTrack } from '../../../core/services/player-service';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerFacade } from '../../../core/services/player-facade';
+import { H2Directive } from '../../../ui/directives/h2';
+import { Icon } from '../../../ui/icon/icon';
 
 @Component({
   selector: 'app-track-button',
-  imports: [BigButtonDirective, CommonModule],
+  imports: [BigButtonDirective, CommonModule, H2Directive, Icon],
   templateUrl: './track-button.html',
 })
 export class TrackButton {

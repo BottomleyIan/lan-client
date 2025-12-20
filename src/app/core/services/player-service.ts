@@ -11,6 +11,7 @@ export type PlayerServiceTrack = {
   genre?: string;
   year?: string;
   imageUrl?: string;
+  rating: number;
 };
 
 export interface PlayerState {
@@ -57,7 +58,7 @@ export class PlayerService {
 
   readonly currentTrack$ = this.state$.pipe(
     map((s) => (s.currentIndex >= 0 ? (s.queue[s.currentIndex] ?? null) : null)),
-    distinctUntilChanged((a, b) => a?.id === b?.id),
+    distinctUntilChanged(),
   );
 
   // Synchronous snapshot helper for command handlers
@@ -154,6 +155,18 @@ export class PlayerService {
     }
     return nextIndex;
   }
+
+  updateTrackInQueue(trackId: string, patch: Partial<PlayerServiceTrack>): void {
+    const s = this.snapshot;
+    const idx = s.queue.findIndex((t) => t.id === trackId);
+    if (idx < 0) return;
+
+    const updated = { ...s.queue[idx], ...patch };
+    const newQueue = s.queue.slice();
+    newQueue[idx] = updated;
+    this.setState({ queue: newQueue });
+  }
+
   stop(): void {
     this.setState({ isPlaying: false, currentIndex: -1 });
   }

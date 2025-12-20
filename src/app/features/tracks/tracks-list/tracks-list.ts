@@ -51,6 +51,7 @@ export class TracksList {
           genre: t.genre ?? undefined,
           year: String(t.year ?? ''),
           imageUrl: trackImageUrl(t.id),
+          rating: t.rating ?? 0,
         }),
       );
   }

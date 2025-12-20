@@ -5,6 +5,7 @@ import type { Observable } from 'rxjs';
 import type {
   HandlersTrackDTO,
   HandlersUpdateTrackImageRequest,
+  HandlersUpdateTrackRatingRequest,
   HandlersUpdateTrackRequest,
 } from './generated/api-types';
 import { apiUrl } from './api-url';
@@ -46,5 +47,12 @@ export class TracksApi {
     body: HandlersUpdateTrackImageRequest,
   ): Observable<HandlersTrackDTO> {
     return this.http.post<HandlersTrackDTO>(apiUrl(`api/tracks/${id}/image`), body);
+  }
+  /** PATCH /tracks/:id/image */
+  updateTrackRating(
+    id: number | string,
+    body: HandlersUpdateTrackRatingRequest,
+  ): Observable<HandlersTrackDTO> {
+    return this.http.patch<HandlersTrackDTO>(apiUrl(`api/tracks/${id}/rating`), body);
   }
 }
