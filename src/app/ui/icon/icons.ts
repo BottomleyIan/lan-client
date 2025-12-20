@@ -7,7 +7,8 @@ const icons = {
   album: { glyph: '\udb80\udc25', label: 'Album' }, // 󰀥
   artist: { glyph: '\uedc5', label: 'Artist' }, // 
   check: { glyph: '\udb80\udd2c', label: 'Check' }, // 󰄬
-  x: { glyph: '\udb80\udd56', label: 'X' }, // 󰅖
+  chevronDown: { glyph: '\udb80\udd40', label: 'Chevron Down' }, // 󰅀
+  chevron: { glyph: '\udb80\udd43', label: 'Chevron Up' }, // 󰅃
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖
   imageAdd: { glyph: '\udb82\udc7c', label: 'Add Image' }, // 󰡼
   next: { glyph: '\udb83\udf27', label: 'Next' }, //nf-md-skip_next_outline 󰼧
@@ -21,10 +22,15 @@ const icons = {
   shuffle: { glyph: '\udb81\udc9f', label: 'Shuffle' }, //nf-md-shuffle 󰒟
   tasklist: { glyph: '\uf0ae', label: 'Tasklist' }, // 
   trash: { glyph: '\udb80\uddb4', label: 'Delete' }, //nf-md-delete 󰆴
+  sortAsc: { glyph: '\uf15d', label: 'Sort Asc' }, // 
+  sortDesc: { glyph: '\uf15e', label: 'Sort Desc' }, //
   stop: { glyph: '\udb81\udcdb', label: 'Stop' }, //nf-md-stop 󰓛
+  star: { glyph: '\udb81\udcce', label: 'Star' }, //󰓎
+  starOutline: { glyph: '\udb81\udcd2', label: 'Star Outline' }, //󰓒
   calendar: { glyph: '\udb80\udced', label: 'Calendar' }, // 󰃭
   volumeDown: { glyph: '\udb80\udf74', label: 'Volume down' }, //nf-md-minus 󰍴
   volumeUp: { glyph: '\udb81\udc15', label: 'Volume up' }, //nf-md-plus 󰐕
+  x: { glyph: '\udb80\udd56', label: 'X' }, // 󰅖
 } satisfies Record<string, IconDefinition>;
 
 type IconName = keyof typeof icons;

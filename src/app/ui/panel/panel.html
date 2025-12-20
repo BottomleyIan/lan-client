@@ -23,7 +23,7 @@
           <div class="text-xs text-slate-400">{{ meta() }}</div>
         }
         @if (hasActions()) {
-          <div class="flex items-center gap-1">
+          <div class="flex items-center gap-1 text-2xl">
             @for (action of actions(); track action.label) {
               <app-icon-button-primary
                 [icon]="action.icon"
