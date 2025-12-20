@@ -19,7 +19,8 @@ import { H2Directive } from '../../ui/directives/h2';
 import { ContainerDivDirective } from '../../ui/directives/container-div';
 import { AddImageToTrackButto } from '../../features/tracks/add-image-to-track-button/add-image-to-track-button';
 import { StarRating } from '../star-rating/star-rating';
-import type { TracksApi } from '../../core/api/tracks.api';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { TracksApi } from '../../core/api/tracks.api';
 
 @Component({
   selector: 'app-currently-playing',
