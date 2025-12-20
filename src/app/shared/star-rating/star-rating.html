@@ -1,10 +1,14 @@
 @for (star of stars; track star) {
   <app-icon-button-primary
-    [active]="star <= rating()"
+    [active]="star <= selectedRating()"
     activeClass="text-tokyo-accent-orange"
     [icon]="iconFor(star)"
     [label]="labelFor(star)"
     [buttonClass]="buttonClassFor(star)"
+    (pointerenter)="setHover(star)"
+    (pointerleave)="clearHover()"
+    (focusin)="setHover(star)"
+    (focusout)="clearHover()"
     (pressed)="setRating(star)"
   />
 }
