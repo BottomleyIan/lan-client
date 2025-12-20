@@ -52,6 +52,7 @@ export class TracksList {
           year: String(t.year ?? ''),
           imageUrl: trackImageUrl(t.id),
           rating: t.rating ?? 0,
+          durationMs: (t?.duration_seconds ?? 0) * 1000,
         }),
       );
   }

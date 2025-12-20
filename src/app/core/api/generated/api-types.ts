@@ -118,6 +118,7 @@ export interface HandlersTrackDTO {
   artist_id?: number;
   created_at?: string;
   deleted_at?: string;
+  duration_seconds?: number;
   ext?: string;
   filename?: string;
   folder_id?: number;

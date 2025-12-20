@@ -101,6 +101,7 @@ export class PlayerFacade {
       year: String(t?.year ?? ''),
       imageUrl: t?.id ? trackImageUrl(t?.id) : undefined,
       rating: t?.rating ?? 0,
+      durationMs: (t?.duration_seconds ?? 0) * 1000,
     };
   }
 }

@@ -5,6 +5,11 @@
       <div class="flex flex-row gap-4">
         <div class="line-clamp-1 text-sm text-gray-400">{{ track.artist }}</div>
 
+        @if (track.durationMs) {
+          <div class="mt-1 text-xs text-gray-500">
+            {{ track.durationMs }}
+          </div>
+        }
         @if (track.year) {
           <div class="mt-1 text-xs text-gray-500">
             {{ track.year }}

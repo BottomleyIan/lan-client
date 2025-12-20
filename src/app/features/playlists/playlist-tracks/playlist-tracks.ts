@@ -57,6 +57,7 @@ export class PlaylistTracks {
       const track = playlistTrack.track;
       const title = track?.title?.trim() || track?.filename?.trim() || 'Untitled';
       const trackId = track?.id ?? playlistTrack.track_id ?? null;
+      console.log(track);
       return {
         id: String(trackId ?? playlistTrack.id ?? title),
         trackId: trackId ?? null,
@@ -64,6 +65,7 @@ export class PlaylistTracks {
         artist: track?.artist?.name?.trim() || undefined,
         year: track?.year !== undefined ? String(track.year) : undefined,
         imageUrl: trackId !== null ? trackImageUrl(trackId) : undefined,
+        durationMs: (track?.duration_seconds ?? 0) * 1000,
       };
     });
   }
