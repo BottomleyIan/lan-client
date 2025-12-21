@@ -10,10 +10,11 @@ import { PlaylistsApi } from '../../../core/api/playlists.api';
 import type { HandlersPlaylistTrackDTO } from '../../../core/api/generated/api-types';
 import { trackImageUrl } from '../../../core/api/track-image';
 import { PlaylistTrack, type PlaylistTrackVm } from '../playlist-track/playlist-track';
+import { Panel } from '../../../ui/panel/panel';
 
 @Component({
   selector: 'app-playlist-tracks',
-  imports: [CommonModule, ScrollingModule, PlaylistTrack],
+  imports: [CommonModule, ScrollingModule, PlaylistTrack, Panel],
   templateUrl: './playlist-tracks.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
