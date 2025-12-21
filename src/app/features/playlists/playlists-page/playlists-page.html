@@ -1,12 +1,6 @@
 <div class="flex h-full flex-row gap-2">
-  <app-playlists-list
-    class="flex-1"
-    [selectedPlaylistId]="selectedPlaylistId()"
-    [previous]="null"
-    [next]="null"
-    [onPlaylistSelected]="handlePlaylistSelected"
-  />
+  <app-playlists-list class="flex-1" [previous]="null" [next]="null" />
   <div class="flex-1">
-    <app-playlist-detail [selectedPlaylistId]="selectedPlaylistId()" />
+    <app-playlist-detail />
   </div>
 </div>

@@ -9,6 +9,8 @@ const icons = {
   check: { glyph: '\udb80\udd2c', label: 'Check' }, // 󰄬
   chevronDown: { glyph: '\udb80\udd40', label: 'Chevron Down' }, // 󰅀
   chevron: { glyph: '\udb80\udd43', label: 'Chevron Up' }, // 󰅃
+  chevronLeft: { glyph: '\udb80\udd41', label: 'Chevron Left' }, // 󰅁
+  chevronRight: { glyph: '\udb80\udd42', label: 'Chevron ' }, // 󰅂
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖
   imageAdd: { glyph: '\udb82\udc7c', label: 'Add Image' }, // 󰡼
   next: { glyph: '\udb83\udf27', label: 'Next' }, //nf-md-skip_next_outline 󰼧
@@ -17,6 +19,7 @@ const icons = {
   play: { glyph: '\udb83\udf1b', label: 'Play' }, //nf-md-play_outline 󰼛
   playlist: { glyph: '\udb83\udcb8', label: 'Playlist' }, //󰲸
   previous: { glyph: '\udb83\udf28', label: 'Previous' }, //nf-md-skip_previous_outline 󰼨
+
   refresh: { glyph: '\udb81\udc50', label: 'Refresh' }, //nf-md-refresh 󰑐
   settings: { glyph: '\udb81\udc93', label: 'Settings' }, //nf-md-cog 󰒓
   shuffle: { glyph: '\udb81\udc9f', label: 'Shuffle' }, //nf-md-shuffle 󰒟

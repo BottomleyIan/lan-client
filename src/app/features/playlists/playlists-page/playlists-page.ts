@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { PlaylistsList } from '../playlists-list/playlists-list';
 import { PlaylistDetail } from '../playlist-detail/playlist-detail';
 
@@ -8,10 +8,4 @@ import { PlaylistDetail } from '../playlist-detail/playlist-detail';
   templateUrl: './playlists-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PlaylistsPage {
-  protected readonly selectedPlaylistId = signal('1');
-
-  protected handlePlaylistSelected = (playlistId: string): void => {
-    this.selectedPlaylistId.set(playlistId);
-  };
-}
+export class PlaylistsPage {}

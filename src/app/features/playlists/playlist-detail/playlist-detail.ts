@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, input } from '@angular/core';
-import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { Component, inject } from '@angular/core';
+import { map, of, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { Panel, type PanelAction } from '../../../ui/panel/panel';
 import { PlaylistTracks } from '../playlist-tracks/playlist-tracks';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -34,14 +34,11 @@ export class PlaylistDetail {
 
   constructor(public player: PlayerFacade) {}
 
-  readonly selectedPlaylistId = input.required<string>();
-  readonly selectedPlaylistId$ = toObservable(this.selectedPlaylistId).pipe(distinctUntilChanged());
-
-  readonly vm$: Observable<PlaylistVm | null> = this.selectedPlaylistId$.pipe(
+  readonly vm$: Observable<PlaylistVm | null> = this.playlistService.activePlaylistId$.pipe(
     switchMap((id) =>
-      id
-        ? this.playlistsApi.getPlaylist(id).pipe(map((album) => this.toAlbumVm(id, album)))
-        : of(null),
+      id == null
+        ? of(null)
+        : this.playlistsApi.getPlaylist(id).pipe(map((album) => this.toAlbumVm(String(id), album))),
     ),
   );
 

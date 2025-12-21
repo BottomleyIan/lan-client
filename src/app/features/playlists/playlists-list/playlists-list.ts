@@ -19,6 +19,8 @@ import { PlaylistButton, type PlaylistButtonModel } from '../playlist-button/pla
 import { CreatePlaylistForm } from '../create-playlist-form/create-playlist-form';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { shareReplay, startWith, switchMap } from 'rxjs';
+import { PlaylistService } from '../../../core/services/playlist-service';
+import { PlayerFacade } from '../../../core/services/player-facade';
 
 @Component({
   selector: 'app-playlists-list',
@@ -34,12 +36,12 @@ import { shareReplay, startWith, switchMap } from 'rxjs';
 })
 export class PlaylistsList {
   private readonly playlistsApi = inject(PlaylistsApi);
+  private readonly playlistService = inject(PlaylistService);
+  private readonly player = inject(PlayerFacade);
   private readonly host = inject(ElementRef<HTMLElement>);
 
-  readonly selectedPlaylistId = input.required<string>();
   readonly previous = input<(() => void) | null>(null);
   readonly next = input<(() => void) | null>(null);
-  readonly onPlaylistSelected = input<(playlistId: string) => void>(() => {});
 
   private readonly refreshToken = signal(0);
   private readonly playlists$ = toObservable(this.refreshToken).pipe(
@@ -49,6 +51,9 @@ export class PlaylistsList {
   );
   private readonly allPlaylists = toSignal(this.playlists$, {
     initialValue: [] as HandlersPlaylistDTO[],
+  });
+  private readonly activePlaylistId = toSignal(this.playlistService.activePlaylistId$, {
+    initialValue: null,
   });
   private readonly activeIndex = signal<number>(-1);
 
@@ -68,13 +73,13 @@ export class PlaylistsList {
 
   constructor() {
     effect(() => {
-      const incomingId = this.selectedPlaylistId();
+      const incomingId = this.activePlaylistId();
       const list = this.playlists();
-      if (!incomingId) {
+      if (incomingId == null) {
         this.activeIndex.set(-1);
         return;
       }
-      const idx = list.findIndex((p) => p.id === incomingId);
+      const idx = list.findIndex((p) => p.id === String(incomingId));
       this.activeIndex.set(idx);
       if (idx >= 0) {
         this.scrollToIndex(idx);
@@ -83,13 +88,13 @@ export class PlaylistsList {
   }
 
   protected isSelected(playlist: PlaylistButtonModel): boolean {
-    return this.selectedPlaylistId() === playlist.id;
+    return String(this.activePlaylistId() ?? '') === playlist.id;
   }
 
   protected trackByPlaylistId = (_: number, playlist: PlaylistButtonModel): string => playlist.id;
 
   protected handlePlaylistSelected(playlistId: string): void {
-    this.onPlaylistSelected()(playlistId);
+    this.player.setPlaylistAndPlay$(playlistId).subscribe({ error: console.error });
   }
 
   protected refreshPlaylists(): void {

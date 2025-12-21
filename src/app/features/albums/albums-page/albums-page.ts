@@ -4,11 +4,10 @@ import { Panel } from '../../../ui/panel/panel';
 import { LetterSelector, type LetterOption } from '../../../ui/letter-selector/letter-selector';
 import { AlbumsList } from '../albums-list/albums-list';
 import { AlbumDetail } from '../album-detail/album-detail';
-import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 
 @Component({
   selector: 'app-albums-page',
-  imports: [CommonModule, Panel, LetterSelector, AlbumsList, AlbumDetail, IconButtonPrimary],
+  imports: [CommonModule, Panel, LetterSelector, AlbumsList, AlbumDetail],
   templateUrl: './albums-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
