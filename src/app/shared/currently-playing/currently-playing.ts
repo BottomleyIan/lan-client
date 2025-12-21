@@ -22,8 +22,7 @@ import { AddImageToTrackButto } from '../../features/tracks/add-image-to-track-b
 import { StarRating } from '../star-rating/star-rating';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { TracksApi } from '../../core/api/tracks.api';
-import { Slider } from '../../ui/slider/slider';
-import { formatDurationMs } from '../utils/time';
+import { PlaybackSeek } from '../playback-seek/playback-seek';
 
 @Component({
   selector: 'app-currently-playing',
@@ -37,7 +36,7 @@ import { formatDurationMs } from '../utils/time';
     VolumeControls,
     AddImageToTrackButto,
     StarRating,
-    Slider,
+    PlaybackSeek,
   ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -59,12 +58,6 @@ export class CurrentlyPlaying {
   private readonly currentTrack: Signal<PlayerServiceTrack | null> = toSignal(this.current$, {
     initialValue: null,
   });
-
-  readonly durationMs = computed(() => this.currentTrack()?.durationMs ?? 0);
-  readonly positionMs = toSignal(this.player.positionMs$, { initialValue: 0 });
-  readonly formattedCurrentTime = computed(() => formatDurationMs(this.positionMs()));
-  readonly formattedDuration = computed(() => formatDurationMs(this.durationMs()));
-  readonly isSeekDisabled = computed(() => this.durationMs() <= 0);
 
   constructor() {
     effect(
@@ -93,10 +86,6 @@ export class CurrentlyPlaying {
 
   toggleShuffle(): void {
     this.player.toggleShuffle();
-  }
-
-  setCurrentTime(nextTimeMs: number): void {
-    this.player.seek(nextTimeMs);
   }
 
   makeHandleRatingChange(trackId: string | number): (r: number) => void {

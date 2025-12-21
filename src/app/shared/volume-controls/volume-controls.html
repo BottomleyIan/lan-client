@@ -1,10 +1,12 @@
-<div class="flex w-full items-center gap-3 place-self-center">
-  <app-icon-button-primary
-    [icon]="volumeIcon()"
-    [label]="muteLabel()"
-    [buttonClass]="volumeButtonClass()"
-    (pressed)="toggleMute()"
-  />
+<div class="flex w-full items-center gap-2">
+  <div class="font-vt323c text-tokyo-accent-cyan text-3xl">
+    <app-icon-button-primary
+      [icon]="volumeIcon()"
+      [label]="muteLabel()"
+      [buttonClass]="volumeButtonClass()"
+      (pressed)="toggleMute()"
+    />
+  </div>
   <app-slider
     class="flex-1"
     [min]="0"

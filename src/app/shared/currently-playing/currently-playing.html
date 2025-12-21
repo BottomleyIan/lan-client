@@ -4,8 +4,8 @@
     class="relative flex h-full max-h-full flex-col overflow-hidden bg-black p-2"
     role="group"
   >
-    <div class="grid grid-cols-4 items-center gap-2">
-      <div class="flex flex-1 items-center gap-2">
+    <div class="grid grid-cols-4 items-center gap-x-6">
+      <div class="row-span-2 flex flex-1 items-center gap-2">
         <div class="bg-tokyo-surface-0 relative aspect-square h-22 max-h-22">
           @if (track.imageUrl) {
             <img
@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="flex w-60 max-w-60 flex-col place-self-center">
-        <div class="flex w-full items-center justify-between place-self-center text-3xl">
+        <div class="flex w-full items-center justify-between place-self-center text-4xl">
           <app-icon-button-primary
             icon="shuffle"
             [label]="shuffleLabel()"
@@ -57,28 +57,13 @@
           <app-icon-button-primary icon="stop" label="Stop playback" (pressed)="player.pause()" />
           <app-icon-button-primary icon="next" label="Next track" (pressed)="player.next()" />
         </div>
-
-        <div class="mt-2 flex w-full flex-col gap-2">
-          <div
-            class="font-vt323c text-tokyo-accent-cyan flex w-full items-center justify-between text-xs font-semibold"
-          >
-            <span>{{ formattedCurrentTime() }}</span>
-            <span>{{ formattedDuration() }}</span>
-          </div>
-          <app-slider
-            [min]="0"
-            [max]="durationMs()"
-            [step]="1000"
-            [value]="positionMs()"
-            label="Playback position"
-            [disabled]="isSeekDisabled()"
-            (valueChange)="setCurrentTime($event)"
-          />
-        </div>
       </div>
       <app-volume-controls />
-      <div class="flex flex-col gap-3 place-self-end">
+      <div class="row-span-2 flex flex-col gap-3 place-self-end">
         <app-equalizer-display />
+      </div>
+      <div class="col-span-2">
+        <app-playback-seek />
       </div>
     </div>
   </section>

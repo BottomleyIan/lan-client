@@ -40,7 +40,9 @@ export class VolumeControls {
     return 'volumeHigh';
   });
   readonly muteLabel = computed(() => (this.isMuted() ? 'Restore volume' : 'Mute volume'));
-  readonly volumeButtonClass = computed(() => 'text-tokyo-accent-cyan tokyo-glow-cyan-hover');
+  readonly volumeButtonClass = computed(
+    () => 'text-tokyo-accent-cyan tokyo-glow-cyan-hover h-auto',
+  );
 
   setVolumePercent(nextPercent: number): void {
     const clamped = Math.min(100, Math.max(0, nextPercent));

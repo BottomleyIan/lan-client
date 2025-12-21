@@ -1,0 +1,17 @@
+<div class="flex w-full flex-col gap-2">
+  <div
+    class="font-vt323c text-tokyo-accent-cyan flex w-full items-center justify-between text-sm font-semibold"
+  >
+    <span>{{ formattedCurrentTime() }}</span>
+    <span>{{ formattedDuration() }}</span>
+  </div>
+  <app-slider
+    [min]="0"
+    [max]="durationMs()"
+    [step]="1000"
+    [value]="positionMs()"
+    [label]="label()"
+    [disabled]="isSeekDisabled()"
+    (valueChange)="handleSeek($event)"
+  />
+</div>

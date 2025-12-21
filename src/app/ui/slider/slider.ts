@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
     <div class="flex w-full items-center">
       <input
         type="range"
-        class="bg-tokyo-surface-0 focus-visible:ring-tokyo-accent-cyan/70 h-2 w-full cursor-pointer appearance-none border-none focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed"
+        class="focus-visible:ring-tokyo-accent-cyan/70 h-2 w-full cursor-pointer appearance-none border-none focus-visible:ring-2 focus-visible:outline-none disabled:cursor-not-allowed"
         [class.tokyo-glow-cyan]="isDragging()"
         [class.opacity-60]="disabled()"
         [min]="min()"
@@ -18,6 +18,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output, signal } f
         [attr.aria-valuemin]="min()"
         [attr.aria-valuemax]="max()"
         [attr.aria-valuenow]="value()"
+        [style.background]="trackBackground()"
         [style.accent-color]="accentColor()"
         (input)="handleInput($event)"
         (pointerdown)="startDrag()"
@@ -42,6 +43,16 @@ export class Slider {
 
   protected readonly isDragging = signal(false);
   protected readonly accentColor = computed(() => 'var(--color-tokyo-accent-cyan)');
+  protected readonly trackBackground = computed(() => {
+    const min = this.min();
+    const max = this.max();
+    const value = this.value();
+    const range = max - min;
+    const percent = range > 0 ? Math.min(100, Math.max(0, ((value - min) / range) * 100)) : 0;
+    const filled = 'var(--color-tokyo-accent-cyan)';
+    const empty = 'var(--color-tokyo-surface-0)';
+    return `linear-gradient(to right, ${filled} 0%, ${filled} ${percent}%, ${empty} ${percent}%, ${empty} 100%)`;
+  });
 
   protected handleInput(event: Event): void {
     const target = event.target as HTMLInputElement | null;
