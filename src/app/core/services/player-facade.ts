@@ -91,6 +91,10 @@ export class PlayerFacade {
     );
   }
 
+  enqueueToEnd$(trackId: number | string): Observable<void> {
+    return this.playlist.enqueue(trackId).pipe(map(() => void 0));
+  }
+
   private mapPlaylistTrackToPlayerTrack(pt: HandlersPlaylistTrackDTO): PlayerServiceTrack {
     const t = pt.track;
     return {
