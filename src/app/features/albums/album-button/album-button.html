@@ -1,6 +1,6 @@
 <button
   uiBigButton
-  class="flex w-full flex-row overflow-hidden"
+  class="flex w-full flex-row gap-3 overflow-hidden"
   [attr.aria-selected]="selected"
   [attr.data-selected]="selected"
 >
@@ -18,9 +18,15 @@
     }
   </div>
 
-  <div class="p-3 text-left">
-    <div class="line-clamp-1 leading-tight font-medium">{{ album.title }}</div>
-    <div class="line-clamp-1 text-sm text-gray-400">{{ album.artist }}</div>
+  <div class="py-2 text-left">
+    <h2
+      uiH2
+      [attr.data-selected]="selected"
+      class="text-tokyo-text-text data-[selected=true]:text-tokyo-accent-orange line-clamp-1 leading-tight data-[selected=true]:text-3xl"
+    >
+      {{ album.title }}
+    </h2>
+    <div class="text-tokyo-text-muted line-clamp-1 text-sm">{{ album.artist }}</div>
 
     @if (album.year) {
       <div class="mt-1 text-xs text-gray-500">
