@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { distinctUntilChanged, map, of, startWith, Subject, switchMap } from 'rxjs';
@@ -14,7 +14,7 @@ import { Panel } from '../../../ui/panel/panel';
 
 @Component({
   selector: 'app-playlist-tracks',
-  imports: [CommonModule, ScrollingModule, PlaylistTrack, Panel],
+  imports: [CommonModule, NgOptimizedImage, ScrollingModule, PlaylistTrack, Panel],
   templateUrl: './playlist-tracks.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
