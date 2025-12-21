@@ -10,6 +10,8 @@ export type PlaylistTrackVm = {
   artist?: string;
   year?: string;
   imageUrl?: string;
+  rating?: number;
+  durationMs?: number;
 };
 
 @Component({

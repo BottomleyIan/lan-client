@@ -1,14 +1,28 @@
 <div
   class="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:bg-white/10"
 >
-  <app-track-overview
-    [title]="track().title"
-    [artist]="track().artist ?? ''"
-    [rating]="5"
-    [year]="track().year"
-    [durationMs]="0"
-    [selected]="true"
-  />
+  <div class="flex min-w-0 flex-1 items-center gap-4">
+    <div
+      class="bg-tokyo-surface-0 relative aspect-square h-14 w-14 shrink-0 overflow-hidden rounded-lg"
+    >
+      @if (track().imageUrl) {
+        <img
+          [src]="track().imageUrl"
+          [alt]="track().title"
+          class="h-full w-full object-cover"
+          loading="lazy"
+        />
+      }
+    </div>
+    <app-track-overview
+      [title]="track().title"
+      [artist]="track().artist ?? ''"
+      [rating]="track().rating ?? 0"
+      [year]="track().year"
+      [durationMs]="track().durationMs ?? 0"
+      [selected]="true"
+    />
+  </div>
   <app-icon-button
     icon="trash"
     [label]="'Remove ' + track().title + ' from playlist'"
