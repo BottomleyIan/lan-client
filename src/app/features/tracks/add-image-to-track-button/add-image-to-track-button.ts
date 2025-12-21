@@ -14,11 +14,18 @@ import { TracksApi } from '../../../core/api/tracks.api';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { InputDirective } from '../../../ui/directives/input';
+import { DialogDirective } from '../../../ui/directives/dialog';
 
 @Component({
   selector: 'app-add-image-to-track-button',
   standalone: true,
-  imports: [ReactiveFormsModule, IconButtonPrimary, IconButtonDanger, InputDirective],
+  imports: [
+    ReactiveFormsModule,
+    IconButtonPrimary,
+    IconButtonDanger,
+    InputDirective,
+    DialogDirective,
+  ],
   templateUrl: './add-image-to-track-button.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
