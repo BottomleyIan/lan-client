@@ -1,8 +1,8 @@
-.empty-state .empty-state-ascii pre {
+.empty-state .empty-state-art {
   transition: opacity 220ms ease;
 }
 
-.empty-state:hover .empty-state-ascii pre {
+.empty-state:hover .empty-state-art {
   opacity: 1;
 }
 
@@ -12,6 +12,27 @@
 
 .empty-state:hover .empty-state-image {
   animation: megablast-flicker 520ms linear forwards;
+}
+
+.empty-state .empty-state-balloon {
+  position: absolute;
+  left: 50%;
+  bottom: -10%;
+  transform: translate(-50%, 140%);
+  opacity: 0;
+  z-index: 20;
+  pointer-events: none;
+  text-shadow:
+    0 0 6px rgba(248, 113, 113, 0.7),
+    0 0 14px rgba(248, 113, 113, 0.45);
+}
+
+.empty-state:hover .empty-state-art {
+  animation: ascii-fade 1s ease 520ms forwards;
+}
+
+.empty-state:hover .empty-state-balloon {
+  animation: balloon-rise 7200ms ease-out 520ms forwards;
 }
 
 @keyframes megablast-flicker {
@@ -52,6 +73,26 @@
     opacity: 0.18;
   }
   100% {
+    opacity: 0;
+  }
+}
+
+@keyframes balloon-rise {
+  0% {
+    transform: translate(-50%, 140%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -320%);
+    opacity: 0.95;
+  }
+}
+
+@keyframes ascii-fade {
+  to {
     opacity: 0;
   }
 }
