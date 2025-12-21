@@ -1,7 +1,20 @@
-<button uiBigButton class="flex w-full flex-row overflow-hidden text-left" (click)="openDialog()">
+<button
+  uiBigButton
+  class="group flex w-full flex-row overflow-hidden text-left"
+  [attr.aria-disabled]="isWorking()"
+  [attr.aria-selected]="selected()"
+  [attr.data-selected]="selected()"
+  (click)="addToPlaylist()"
+>
   <div class="flex w-full gap-3 p-3">
     <div>
-      <h2 uiH2 class="line-clamp-1 leading-tight font-medium">{{ track().title }}</h2>
+      <h2
+        uiH2
+        [attr.data-selected]="selected()"
+        class="text-tokyo-text-text data-[selected=true]:text-tokyo-accent-orange line-clamp-1 leading-tight data-[selected=true]:text-3xl"
+      >
+        {{ track().title }}
+      </h2>
       <div class="flex flex-row gap-4">
         <div class="line-clamp-1 text-sm text-gray-400">{{ track().artist }}</div>
 
@@ -29,35 +42,3 @@
     </div>
   </div>
 </button>
-
-<app-dialog #dialog [labelledById]="dialogTitleId()" [describedById]="dialogDescriptionId()">
-  <div class="p-6">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <h2 class="text-lg font-semibold" [id]="dialogTitleId()">{{ track().title }}</h2>
-        <p class="mt-1 text-sm text-slate-400" [id]="dialogDescriptionId()">
-          Choose how you want to use this track.
-        </p>
-      </div>
-      <app-icon-button-danger icon="x" label="Close dialog" (pressed)="closeDialog()" />
-    </div>
-
-    <div class="mt-6 flex flex-wrap justify-end gap-2">
-      <app-icon-button-primary
-        #playButton
-        icon="play"
-        label="Play track"
-        text="Play"
-        [disabled]="isWorking()"
-        (pressed)="playTrack()"
-      />
-      <app-icon-button-primary
-        icon="playlist"
-        label="Add track to end of playlist"
-        text="Add to playlist"
-        [disabled]="isWorking()"
-        (pressed)="addToPlaylist()"
-      />
-    </div>
-  </div>
-</app-dialog>

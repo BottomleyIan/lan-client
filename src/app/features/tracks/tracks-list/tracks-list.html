@@ -1,8 +1,8 @@
 <cdk-virtual-scroll-viewport
   class="@container ml-2 block h-full"
-  [itemSize]="98"
-  [minBufferPx]="98 * 5"
-  [maxBufferPx]="98 * 10"
+  [itemSize]="itemSizePx"
+  [minBufferPx]="itemSizePx * 5"
+  [maxBufferPx]="itemSizePx * 10"
 >
   <div class="flex flex-col gap-2">
     <div
@@ -11,10 +11,12 @@
       role="option"
       [attr.id]="itemId(track.id)"
       [attr.aria-selected]="i === activeIndex()"
+      [attr.data-selected]="i === activeIndex()"
+      tabindex="-1"
       [class.ring-2]="i === activeIndex()"
       [class.ring-indigo-500]="i === activeIndex()"
     >
-      <app-track-button [track]="track" />
+      <app-track-button [track]="track" [selected]="i === activeIndex()" />
     </div>
   </div>
 </cdk-virtual-scroll-viewport>

@@ -8,7 +8,7 @@ import { PlayerService, PlayerServiceTrack } from './player-service';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlaylistService } from './playlist-service';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, combineLatest, of, throwError } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class PlayerFacade {
@@ -92,7 +92,40 @@ export class PlayerFacade {
   }
 
   enqueueToEnd$(trackId: number | string): Observable<void> {
-    return this.playlist.enqueue(trackId).pipe(map(() => void 0));
+    const targetId = String(trackId);
+    return combineLatest([this.player.isPlaying$, this.playlist.activePlaylistTracks$]).pipe(
+      take(1),
+      switchMap(([isPlaying, playlistTracks]) => {
+        const existingIndex = playlistTracks.findIndex(
+          (pt) => String(pt.track?.id ?? pt.track_id ?? '') === targetId,
+        );
+        if (existingIndex >= 0) {
+          if (!isPlaying) {
+            this.player.playAt(existingIndex);
+          }
+          return of(void 0);
+        }
+        return this.playlist.enqueue(trackId).pipe(
+          switchMap((created) => {
+            if (isPlaying) {
+              return of(void 0);
+            }
+            const createdTrackId = String(created.track?.id ?? created.track_id ?? '');
+            return this.playlist.activePlaylistTracks$.pipe(
+              map((list) =>
+                list.findIndex(
+                  (pt) => String(pt.track?.id ?? pt.track_id ?? '') === createdTrackId,
+                ),
+              ),
+              filter((idx) => idx >= 0),
+              take(1),
+              tap((idx) => this.player.playAt(idx)),
+              map(() => void 0),
+            );
+          }),
+        );
+      }),
+    );
   }
 
   private mapPlaylistTrackToPlayerTrack(pt: HandlersPlaylistTrackDTO): PlayerServiceTrack {

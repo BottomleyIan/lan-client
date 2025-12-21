@@ -59,6 +59,7 @@ export class TracksList {
   protected readonly tracks = toSignal(this.tracksVm$, {
     initialValue: [] as PlayerServiceTrack[],
   });
+  protected readonly itemSizePx = 30;
   protected readonly activeDescendantId = computed(() => {
     const track = this.tracks()[this.activeIndex()];
     return track ? this.itemId(track.id) : null;
