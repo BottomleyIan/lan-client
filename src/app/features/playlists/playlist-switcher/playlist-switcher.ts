@@ -9,6 +9,7 @@ import { AppDialog } from '../../../ui/dialog/dialog';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { CreatePlaylistForm } from '../create-playlist-form/create-playlist-form';
+import { Panel } from '../../../ui/panel/panel';
 
 type PlaylistOption = {
   id: number;
@@ -17,7 +18,7 @@ type PlaylistOption = {
 
 @Component({
   selector: 'app-playlist-switcher',
-  imports: [AppDialog, IconButtonPrimary, IconButtonDanger, CreatePlaylistForm],
+  imports: [AppDialog, IconButtonPrimary, IconButtonDanger, CreatePlaylistForm, Panel],
   templateUrl: './playlist-switcher.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

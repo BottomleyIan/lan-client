@@ -1,23 +1,14 @@
 <div
   class="flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-left transition hover:bg-white/10"
 >
-  <div class="flex items-center gap-4">
-    <div
-      class="grid h-12 w-12 shrink-0 place-items-center rounded-lg bg-gradient-to-br from-indigo-500/15 via-slate-900/40 to-emerald-400/20 text-xs font-semibold tracking-[0.08em] text-indigo-100 uppercase"
-      aria-hidden="true"
-    >
-      {{ track().title.charAt(0).toUpperCase() }}
-    </div>
-    <div class="leading-tight">
-      <div class="text-sm font-semibold text-slate-100">{{ track().title }}</div>
-      <div class="text-xs text-slate-400">
-        {{ track().artist || 'Unknown artist' }}
-        @if (track().year) {
-          <span class="text-slate-500"> · {{ track().year }}</span>
-        }
-      </div>
-    </div>
-  </div>
+  <app-track-overview
+    [title]="track().title"
+    [artist]="track().artist ?? ''"
+    [rating]="5"
+    [year]="track().year"
+    [durationMs]="0"
+    [selected]="true"
+  />
   <app-icon-button
     icon="trash"
     [label]="'Remove ' + track().title + ' from playlist'"

@@ -8,10 +8,11 @@ import { PlayerFacade } from '../../../core/services/player-facade';
 import { H2Directive } from '../../../ui/directives/h2';
 import { Icon } from '../../../ui/icon/icon';
 import { formatDurationMs } from '../../../shared/utils/time';
+import { TrackOverview } from '../track-overview/track-overview';
 
 @Component({
   selector: 'app-track-button',
-  imports: [BigButtonDirective, H2Directive, Icon],
+  imports: [BigButtonDirective, H2Directive, Icon, TrackOverview],
   templateUrl: './track-button.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

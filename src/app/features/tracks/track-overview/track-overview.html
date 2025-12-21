@@ -1,0 +1,35 @@
+<div class="flex w-full gap-3 p-3">
+  <div>
+    <h2
+      uiH2
+      [attr.data-selected]="selected()"
+      class="text-tokyo-text-text data-[selected=true]:text-tokyo-accent-orange line-clamp-1 leading-tight data-[selected=true]:text-3xl"
+    >
+      {{ title() }}
+    </h2>
+    <div class="flex flex-row gap-4">
+      <div class="line-clamp-1 text-sm text-gray-400">{{ artist() }}</div>
+
+      @if (formattedDuration()) {
+        <div class="mt-1 text-xs text-gray-500">
+          {{ formattedDuration() }}
+        </div>
+      }
+      @if (year()) {
+        <div class="mt-1 text-xs text-gray-500">
+          {{ year() }}
+        </div>
+      }
+    </div>
+  </div>
+  <div class="flex grow flex-row justify-end">
+    @for (level of [1, 2, 3, 4, 5]; track $index) {
+      <app-icon
+        [name]="rating() >= level ? 'star' : 'starOutline'"
+        [class.text-tokyo-text-subtle]="rating() < level"
+        [class.text-tokyo-text-muted]="rating() >= level"
+        [class.tokyo-glow-cyan]="rating() >= level"
+      />
+    }
+  </div>
+</div>

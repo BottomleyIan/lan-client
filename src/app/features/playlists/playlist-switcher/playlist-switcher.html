@@ -1,27 +1,30 @@
-<div
-  class="flex items-center gap-3 rounded-xl border border-slate-800/70 bg-slate-950/40 px-3 py-2"
->
-  <app-icon-button-primary
-    icon="chevronLeft"
-    label="Previous playlist"
-    [disabled]="!hasPrevious()"
-    (pressed)="selectPrevious()"
-  />
-  <div class="flex-1 truncate text-center text-sm font-semibold text-slate-100">
-    {{ activeName() }}
-  </div>
-  @if (hasNext()) {
+<app-panel label="">
+  <div
+    class="flex items-center gap-3 rounded-xl border border-slate-800/70 bg-slate-950/40 px-3 py-2 text-3xl"
+  >
     <app-icon-button-primary
-      icon="chevronRight"
-      label="Next playlist"
-      [disabled]="!hasNext()"
-      (pressed)="selectNext()"
+      icon="chevronLeft"
+      label="Previous playlist"
+      [disabled]="!hasPrevious()"
+      (pressed)="selectPrevious()"
     />
-  } @else {
-    <app-icon-button-primary icon="volumeUp" label="Create playlist" (pressed)="openDialog()" />
-  }
-</div>
-
+    <div
+      class="font-vt323 text-tokyo-accent-orange flex-1 truncate text-center font-semibold text-slate-100"
+    >
+      {{ activeName() }}
+    </div>
+    @if (hasNext()) {
+      <app-icon-button-primary
+        icon="chevronRight"
+        label="Next playlist"
+        [disabled]="!hasNext()"
+        (pressed)="selectNext()"
+      />
+    } @else {
+      <app-icon-button-primary icon="volumeUp" label="Create playlist" (pressed)="openDialog()" />
+    }
+  </div>
+</app-panel>
 <app-dialog
   #dialog
   [labelledById]="'create-playlist-title'"

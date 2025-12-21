@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IconButton } from '../../../ui/icon-button/icon-button';
+import { TrackOverview } from '../../tracks/track-overview/track-overview';
 
 export type PlaylistTrackVm = {
   id: string;
@@ -13,7 +14,7 @@ export type PlaylistTrackVm = {
 
 @Component({
   selector: 'app-playlist-track',
-  imports: [CommonModule, IconButton],
+  imports: [CommonModule, IconButton, TrackOverview],
   templateUrl: './playlist-track.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
