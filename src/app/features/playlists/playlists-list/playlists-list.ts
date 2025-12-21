@@ -16,10 +16,13 @@ import { Panel } from '../../../ui/panel/panel';
 import { PlaylistsApi } from '../../../core/api/playlists.api';
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 import { PlaylistButton, type PlaylistButtonModel } from '../playlist-button/playlist-button';
+import { CreatePlaylistForm } from '../create-playlist-form/create-playlist-form';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { shareReplay, startWith, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-playlists-list',
-  imports: [CommonModule, Panel, ScrollingModule, PlaylistButton],
+  imports: [CommonModule, Panel, ScrollingModule, PlaylistButton, CreatePlaylistForm],
   templateUrl: './playlists-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -38,7 +41,13 @@ export class PlaylistsList {
   readonly next = input<(() => void) | null>(null);
   readonly onPlaylistSelected = input<(playlistId: string) => void>(() => {});
 
-  private readonly allPlaylists = toSignal(this.playlistsApi.getPlaylists(), {
+  private readonly refreshToken = signal(0);
+  private readonly playlists$ = toObservable(this.refreshToken).pipe(
+    startWith(0),
+    switchMap(() => this.playlistsApi.getPlaylists()),
+    shareReplay({ bufferSize: 1, refCount: true }),
+  );
+  private readonly allPlaylists = toSignal(this.playlists$, {
     initialValue: [] as HandlersPlaylistDTO[],
   });
   private readonly activeIndex = signal<number>(-1);
@@ -83,11 +92,24 @@ export class PlaylistsList {
     this.onPlaylistSelected()(playlistId);
   }
 
+  protected refreshPlaylists(): void {
+    this.refreshToken.update((value) => value + 1);
+  }
+
   protected itemId(id: string): string {
     return `playlists-list-item-${id}`;
   }
 
   protected onKeydown(event: KeyboardEvent): void {
+    if (event.target instanceof HTMLElement) {
+      const tag = event.target.tagName.toLowerCase();
+      if (
+        ['input', 'textarea', 'select', 'button'].includes(tag) ||
+        event.target.isContentEditable
+      ) {
+        return;
+      }
+    }
     const key = event.key;
     if (key === 'ArrowDown') {
       event.preventDefault();
