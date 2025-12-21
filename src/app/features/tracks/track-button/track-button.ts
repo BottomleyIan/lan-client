@@ -30,6 +30,7 @@ export class TrackButton {
   readonly track = input.required<PlayerServiceTrack>();
   readonly player = inject(PlayerFacade);
   private readonly dialog = viewChild.required<AppDialog>('dialog');
+  private readonly playButton = viewChild.required<IconButtonPrimary>('playButton');
 
   protected readonly formattedDuration = computed(() => {
     const durationMs = this.track().durationMs ?? 0;
@@ -43,6 +44,7 @@ export class TrackButton {
 
   protected openDialog(): void {
     this.dialog().open();
+    queueMicrotask(() => this.playButton().focus());
   }
 
   protected closeDialog(): void {

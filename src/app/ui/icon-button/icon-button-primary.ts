@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@angular/core';
 import { IconButton } from './icon-button';
 import type { IconName } from '../icon/icon';
 
@@ -34,4 +34,10 @@ export class IconButtonPrimary {
   readonly active = input<boolean | null>(null);
   readonly activeClass = input<string | null>(null);
   readonly pressed = output<void>();
+
+  private readonly button = viewChild.required<IconButton>(IconButton);
+
+  focus(): void {
+    this.button().focus();
+  }
 }

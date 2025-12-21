@@ -38,10 +38,10 @@
   * {
     scrollbar-color: color-mix(
         in srgb,
-        var(--color-tokyo-text-subtle) 30%,
+        var(--color-tokyo-text-subtle) 35%,
         var(--color-tokyo-surface-0)
       )
-      transparent;
+      var(--color-tokyo-surface-1);
     scrollbar-width: thin;
   }
 
@@ -51,7 +51,7 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: color-mix(in srgb, var(--surface-strong) 80%, transparent);
+    background: color-mix(in srgb, var(--color-tokyo-surface-2) 80%, transparent);
     border-radius: 999px;
   }
 
@@ -62,7 +62,7 @@
       var(--color-tokyo-accent-pink)
     );
     border-radius: 999px;
-    border: 2px solid color-mix(in srgb, var(--surface-strong) 90%, transparent);
+    border: 2px solid color-mix(in srgb, var(--color-tokyo-surface-2) 90%, transparent);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
   }
 

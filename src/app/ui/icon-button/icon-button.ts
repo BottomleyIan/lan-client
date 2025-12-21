@@ -1,4 +1,5 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import type { ElementRef } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, viewChild } from '@angular/core';
 import { Icon, type IconName } from '../icon/icon';
 
 @Component({
@@ -6,6 +7,7 @@ import { Icon, type IconName } from '../icon/icon';
   imports: [Icon],
   template: `
     <button
+      #buttonEl
       type="button"
       [class]="buttonClasses()"
       [attr.aria-label]="label()"
@@ -43,6 +45,8 @@ export class IconButton {
   readonly activeClass = input<string | null>(null);
   readonly pressed = output<void>();
 
+  private readonly buttonEl = viewChild.required<ElementRef<HTMLButtonElement>>('buttonEl');
+
   private readonly baseButtonClass =
     'inline-flex h-9 items-center justify-center gap-2 rounded-md px-2 transition focus-visible:ring-2 focus-visible:ring-rose-400/80 focus-visible:ring-offset-0 focus-visible:outline-none disabled:cursor-not-allowed disabled:text-tokyo-text-muted disabled:opacity-70';
 
@@ -62,5 +66,9 @@ export class IconButton {
       return;
     }
     this.pressed.emit();
+  }
+
+  focus(): void {
+    this.buttonEl().nativeElement.focus();
   }
 }
