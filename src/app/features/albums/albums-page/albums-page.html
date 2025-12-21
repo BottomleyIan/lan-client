@@ -5,6 +5,7 @@
       field="letter1"
       [value]="letter1()"
       (valueChanged)="updateLetter1($event)"
+      [autoSelectOnAdvance]="true"
       [next]="focusLetter2"
     />
   </app-panel>
@@ -15,7 +16,7 @@
       field="letter2"
       [value]="letter2()"
       (valueChanged)="updateLetter2($event)"
-      [previous]="focusLetter1"
+      [previous]="focusLetter1FromLetter2"
       [next]="focusAlbumList"
       [includeSpace]="true"
     />
@@ -25,12 +26,12 @@
     class="flex-1"
     [letters]="selectedLetters()"
     [selectedAlbumId]="selectedAlbumId()"
-    [previous]="focusLetter2"
-    [next]="null"
+    [previous]="focusLetter2FromAlbums"
+    [next]="focusTracksList"
     [onAlbumSelected]="handleAlbumSelected"
   />
   <div class="flex-1">
-    <app-album-detail [selectedAlbumId]="selectedAlbumId()" />
+    <app-album-detail [selectedAlbumId]="selectedAlbumId()" [previous]="focusAlbumListFromTracks" />
   </div>
   <app-panel label="?">
     <div class="flex flex-col text-3xl">

@@ -6,7 +6,7 @@
     [meta]="vm.year ?? ''"
     [stableGutter]="false"
   >
-    <app-tracks-list [albumId]="vm.id" />
+    <app-tracks-list [albumId]="vm.id" [previous]="previous()" />
   </app-panel>
 } @else {
   <app-panel>Something goes here</app-panel>

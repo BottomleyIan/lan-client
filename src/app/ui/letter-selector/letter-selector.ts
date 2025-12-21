@@ -40,8 +40,8 @@ const ALPHA_LETTERS = [
   'Y',
   'Z',
 ] as const;
-const LETTERS = ['*', ...DIGITS, ...ALPHA_LETTERS] as const;
-const LETTERS_WITH_SPACE = ['*', ' ', ...DIGITS, ...ALPHA_LETTERS] as const;
+const LETTERS = ['*', ...ALPHA_LETTERS, ...DIGITS] as const;
+const LETTERS_WITH_SPACE = ['*', ' ', ...ALPHA_LETTERS, ...DIGITS] as const;
 export type LetterOption = (typeof LETTERS_WITH_SPACE)[number];
 
 @Component({
@@ -65,6 +65,7 @@ export class LetterSelector {
   readonly field = input.required<string>();
   readonly previous = input<(() => void) | undefined>(undefined);
   readonly next = input<(() => void) | undefined>(undefined);
+  readonly autoSelectOnAdvance = input(false);
   readonly includeSpace = input(false);
   readonly value = input<LetterOption>('*');
   readonly valueChanged = output<LetterOption>();
@@ -121,6 +122,9 @@ export class LetterSelector {
       const next = this.next();
       if (next) {
         event.preventDefault();
+        if (this.autoSelectOnAdvance() && this.selected() === '*') {
+          this.selectFirstLetter();
+        }
         next();
       }
       return;
@@ -181,6 +185,16 @@ export class LetterSelector {
   private emitSelection(): void {
     this.valueChanged.emit(this.selected());
     this.scrollSelectedIntoView();
+  }
+
+  private selectFirstLetter(): void {
+    const letters = this.letters();
+    const first = letters.find((letter) => letter !== '*' && letter !== ' ');
+    if (!first || this.selected() === first) {
+      return;
+    }
+    this.selected.set(first);
+    this.emitSelection();
   }
 
   private scrollSelectedIntoView(): void {

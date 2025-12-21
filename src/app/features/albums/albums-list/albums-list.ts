@@ -130,6 +130,10 @@ export class AlbumsList {
       const next = this.next();
       if (next) {
         event.preventDefault();
+        const current = this.albums()[this.activeIndex()];
+        if (current) {
+          this.selectAlbum(current, false);
+        }
         next();
       }
       return;
@@ -145,6 +149,16 @@ export class AlbumsList {
 
   focus(): void {
     this.host.nativeElement.focus();
+  }
+
+  selectFirstAlbum(): void {
+    const list = this.albums();
+    if (!list.length) {
+      this.focus();
+      return;
+    }
+    this.selectAlbum(list[0], true);
+    this.scrollToIndex(0);
   }
 
   private moveSelection(offset: 1 | -1): void {

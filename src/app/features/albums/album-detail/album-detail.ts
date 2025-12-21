@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ViewChild, inject, input } from '@angular/core';
 import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 
@@ -23,22 +23,35 @@ type AlbumDetailVm = {
 
 @Component({
   selector: 'app-album-detail',
-  standalone: true,
   imports: [CommonModule, Panel, TracksList],
   templateUrl: './album-detail.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlbumDetail {
+  private readonly albumsApi = inject(AlbumsApi);
+
   vm$: Observable<AlbumDetailVm | null>;
 
   readonly selectedAlbumId = input<string | null>(null);
   readonly selectedAlbumId$ = toObservable(this.selectedAlbumId).pipe(distinctUntilChanged());
+  readonly previous = input<(() => void) | null>(null);
 
-  constructor(private albumsApi: AlbumsApi) {
+  @ViewChild(TracksList) private tracksList?: TracksList;
+
+  constructor() {
     this.vm$ = this.selectedAlbumId$.pipe(
       switchMap((id) =>
         id ? this.albumsApi.getAlbum(id).pipe(map((album) => this.toAlbumVm(id, album))) : of(null),
       ),
     );
+  }
+
+  focusTracks(): void {
+    if (this.tracksList) {
+      this.tracksList.focusFirstTrack();
+      return;
+    }
+    queueMicrotask(() => this.tracksList?.focusFirstTrack());
   }
 
   private toAlbumVm(id: string, a: HandlersAlbumDTO): AlbumDetailVm {

@@ -21,6 +21,7 @@ export class AlbumsPage {
   @ViewChild('letter1Ref') private letter1Selector?: LetterSelector;
   @ViewChild('letter2Ref') private letter2Selector?: LetterSelector;
   @ViewChild(AlbumsList) private albumsList?: AlbumsList;
+  @ViewChild(AlbumDetail) private albumDetail?: AlbumDetail;
 
   protected readonly selectedLetters = computed(() => this.combineLetters());
 
@@ -33,7 +34,25 @@ export class AlbumsPage {
   };
 
   protected focusAlbumList = (): void => {
+    this.albumsList?.selectFirstAlbum();
+  };
+
+  protected focusAlbumListFromTracks = (): void => {
     this.albumsList?.focus();
+  };
+
+  protected focusLetter2FromAlbums = (): void => {
+    this.selectedAlbumId.set(null);
+    this.letter2Selector?.focus();
+  };
+
+  protected focusLetter1FromLetter2 = (): void => {
+    this.letter2.set('*');
+    this.letter1Selector?.focus();
+  };
+
+  protected focusTracksList = (): void => {
+    this.albumDetail?.focusTracks();
   };
 
   protected handleAlbumSelected = (albumId: string): void => {
