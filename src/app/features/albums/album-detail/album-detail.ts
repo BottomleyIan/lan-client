@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ViewChild, inject, input } from '@angular/core';
 import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
@@ -23,7 +23,7 @@ type AlbumDetailVm = {
 
 @Component({
   selector: 'app-album-detail',
-  imports: [CommonModule, Panel, TracksList],
+  imports: [CommonModule, NgOptimizedImage, Panel, TracksList],
   templateUrl: './album-detail.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

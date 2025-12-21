@@ -10,7 +10,6 @@ import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
   selector: 'app-albums-page',
   imports: [CommonModule, Panel, LetterSelector, AlbumsList, AlbumDetail, IconButtonPrimary],
   templateUrl: './albums-page.html',
-  styleUrl: './albums-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AlbumsPage {
