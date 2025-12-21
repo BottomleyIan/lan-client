@@ -1,4 +1,3 @@
-import type { ElementRef } from '@angular/core';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,21 +10,15 @@ import type { FormControl } from '@angular/forms';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { TracksApi } from '../../../core/api/tracks.api';
-import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
+import { AppDialog } from '../../../ui/dialog/dialog';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
+import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { InputDirective } from '../../../ui/directives/input';
-import { DialogDirective } from '../../../ui/directives/dialog';
 
 @Component({
   selector: 'app-add-image-to-track-button',
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    IconButtonPrimary,
-    IconButtonDanger,
-    InputDirective,
-    DialogDirective,
-  ],
+  imports: [AppDialog, ReactiveFormsModule, IconButtonPrimary, IconButtonDanger, InputDirective],
   templateUrl: './add-image-to-track-button.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -36,7 +29,7 @@ export class AddImageToTrackButto {
   readonly trackId = input.required<number | string>();
   readonly trackTitle = input<string>('');
 
-  private readonly dialogEl = viewChild.required<ElementRef<HTMLDialogElement>>('dialogEl');
+  private readonly dialog = viewChild.required<AppDialog>('dialog');
 
   protected readonly isSaving = signal(false);
 
@@ -51,11 +44,11 @@ export class AddImageToTrackButto {
   protected openDialog(): void {
     this.form.reset({ url: '' });
     this.url.markAsUntouched();
-    this.dialogEl().nativeElement.showModal();
+    this.dialog().open();
   }
 
   protected closeDialog(): void {
-    this.dialogEl().nativeElement.close();
+    this.dialog().close();
   }
 
   protected accept(): void {
