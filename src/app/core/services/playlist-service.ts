@@ -29,6 +29,9 @@ export class PlaylistService {
   private readonly refreshTracksSubject = new Subject<void>();
   readonly refreshTracks$ = this.refreshTracksSubject.asObservable();
 
+  private readonly refreshPlaylistsSubject = new Subject<void>();
+  readonly refreshPlaylists$ = this.refreshPlaylistsSubject.asObservable();
+
   // playlist (unchanged from before)
   readonly activePlaylist$: Observable<HandlersPlaylistDTO | null> = this.activePlaylistId$.pipe(
     switchMap((playlistId) =>
@@ -81,6 +84,10 @@ export class PlaylistService {
   setActivePlaylist(playlistId: number | null): void {
     this.activePlaylistIdSubject.next(playlistId);
     this.refreshTracksSubject.next(); // load immediately
+  }
+
+  refreshPlaylists(): void {
+    this.refreshPlaylistsSubject.next();
   }
 
   enqueue(trackId: number | string): Observable<HandlersPlaylistTrackDTO> {

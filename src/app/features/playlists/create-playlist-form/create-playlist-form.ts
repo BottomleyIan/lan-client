@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, output, signal } from '@ang
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { PlaylistsApi } from '../../../core/api/playlists.api';
+import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 import { CancelButtonDirective } from '../../../ui/directives/cancel-button';
 import { ConfirmButtonDirective } from '../../../ui/directives/confirm-button';
 import { FormDirective } from '../../../ui/directives/form';
@@ -29,7 +30,7 @@ export class CreatePlaylistForm {
   });
   protected readonly nameControl = this.createForm.controls.name;
 
-  readonly playlistCreated = output<void>();
+  readonly playlistCreated = output<HandlersPlaylistDTO>();
 
   addPlaylist(): void {
     const trimmedName = this.nameControl.value.trim();
@@ -53,9 +54,9 @@ export class CreatePlaylistForm {
           this.isCreating.set(false);
         }),
       )
-      .subscribe(() => {
+      .subscribe((created) => {
         this.createForm.reset({ name: '' });
-        this.playlistCreated.emit();
+        this.playlistCreated.emit(created);
       });
   }
 

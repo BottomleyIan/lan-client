@@ -1,6 +1,5 @@
 <app-panel class="flex-1" label="Playlists" badge="∞" meta="All your mixes">
   <div class="flex h-full flex-col gap-4 px-3 pb-3">
-    <app-create-playlist-form (playlistCreated)="refreshPlaylists()" />
     <cdk-virtual-scroll-viewport
       class="@container block h-full flex-1"
       [itemSize]="64"

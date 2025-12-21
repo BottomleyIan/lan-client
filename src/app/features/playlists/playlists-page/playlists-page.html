@@ -1,6 +1,9 @@
-<div class="flex h-full flex-row gap-2">
-  <app-playlists-list class="flex-1" [previous]="null" [next]="null" />
-  <div class="flex-1">
-    <app-playlist-detail />
+<div class="flex h-full flex-col gap-2">
+  <app-playlist-switcher />
+  <div class="flex min-h-0 flex-1 flex-row gap-2">
+    <app-playlists-list class="flex-1" />
+    <div class="flex-1">
+      <app-playlist-detail />
+    </div>
   </div>
 </div>

@@ -6,7 +6,6 @@ import {
   computed,
   effect,
   inject,
-  input,
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -16,15 +15,13 @@ import { Panel } from '../../../ui/panel/panel';
 import { PlaylistsApi } from '../../../core/api/playlists.api';
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 import { PlaylistButton, type PlaylistButtonModel } from '../playlist-button/playlist-button';
-import { CreatePlaylistForm } from '../create-playlist-form/create-playlist-form';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { shareReplay, startWith, switchMap } from 'rxjs';
 import { PlaylistService } from '../../../core/services/playlist-service';
 import { PlayerFacade } from '../../../core/services/player-facade';
 
 @Component({
   selector: 'app-playlists-list',
-  imports: [CommonModule, Panel, ScrollingModule, PlaylistButton, CreatePlaylistForm],
+  imports: [CommonModule, Panel, ScrollingModule, PlaylistButton],
   templateUrl: './playlists-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
@@ -40,12 +37,8 @@ export class PlaylistsList {
   private readonly player = inject(PlayerFacade);
   private readonly host = inject(ElementRef<HTMLElement>);
 
-  readonly previous = input<(() => void) | null>(null);
-  readonly next = input<(() => void) | null>(null);
-
-  private readonly refreshToken = signal(0);
-  private readonly playlists$ = toObservable(this.refreshToken).pipe(
-    startWith(0),
+  private readonly playlists$ = this.playlistService.refreshPlaylists$.pipe(
+    startWith(void 0),
     switchMap(() => this.playlistsApi.getPlaylists()),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
@@ -58,10 +51,12 @@ export class PlaylistsList {
   private readonly activeIndex = signal<number>(-1);
 
   protected readonly playlists = computed<PlaylistButtonModel[]>(() =>
-    this.allPlaylists().map((p) => ({
-      id: String(p.id),
-      name: p.name ?? 'Untitled playlist',
-    })),
+    [...this.allPlaylists()]
+      .sort((a, b) => (a.id ?? Number.MAX_SAFE_INTEGER) - (b.id ?? Number.MAX_SAFE_INTEGER))
+      .map((p) => ({
+        id: String(p.id),
+        name: p.name ?? 'Untitled playlist',
+      })),
   );
 
   protected readonly activeDescendantId = computed(() => {
@@ -97,10 +92,6 @@ export class PlaylistsList {
     this.player.setPlaylistAndPlay$(playlistId).subscribe({ error: console.error });
   }
 
-  protected refreshPlaylists(): void {
-    this.refreshToken.update((value) => value + 1);
-  }
-
   protected itemId(id: string): string {
     return `playlists-list-item-${id}`;
   }
@@ -124,22 +115,6 @@ export class PlaylistsList {
     if (key === 'ArrowUp') {
       event.preventDefault();
       this.moveSelection(-1);
-      return;
-    }
-    if (key === 'ArrowLeft') {
-      const previous = this.previous();
-      if (previous) {
-        event.preventDefault();
-        previous();
-      }
-      return;
-    }
-    if (key === 'ArrowRight') {
-      const next = this.next();
-      if (next) {
-        event.preventDefault();
-        next();
-      }
       return;
     }
     if (key === 'Enter' || key === ' ') {
