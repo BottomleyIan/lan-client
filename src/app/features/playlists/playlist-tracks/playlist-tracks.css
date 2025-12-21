@@ -1,0 +1,57 @@
+.empty-state .empty-state-ascii pre {
+  transition: opacity 220ms ease;
+}
+
+.empty-state:hover .empty-state-ascii pre {
+  opacity: 1;
+}
+
+.empty-state .empty-state-image {
+  transition: opacity 280ms ease;
+}
+
+.empty-state:hover .empty-state-image {
+  animation: megablast-flicker 520ms linear forwards;
+}
+
+@keyframes megablast-flicker {
+  0% {
+    opacity: 0.6;
+  }
+  7% {
+    opacity: 0.12;
+  }
+  13% {
+    opacity: 0.68;
+  }
+  19% {
+    opacity: 0.22;
+  }
+  27% {
+    opacity: 0.55;
+  }
+  36% {
+    opacity: 0.08;
+  }
+  44% {
+    opacity: 0.62;
+  }
+  53% {
+    opacity: 0.18;
+  }
+  61% {
+    opacity: 0.48;
+  }
+  71% {
+    opacity: 0.1;
+  }
+  82% {
+    opacity: 0.4;
+  }
+  92% {
+    opacity: 0.18;
+  }
+  100% {
+    opacity: 0;
+  }
+}

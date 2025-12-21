@@ -16,6 +16,7 @@ import { Panel } from '../../../ui/panel/panel';
   selector: 'app-playlist-tracks',
   imports: [CommonModule, NgOptimizedImage, ScrollingModule, PlaylistTrack, Panel],
   templateUrl: './playlist-tracks.html',
+  styleUrl: './playlist-tracks.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistTracks {
