@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { distinctUntilChanged, map, of, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -15,14 +16,7 @@ import { PlaylistService } from '../../../core/services/playlist-service';
 
 @Component({
   selector: 'app-playlist-tracks',
-  imports: [
-    CommonModule,
-    NgOptimizedImage,
-    ScrollingModule,
-    CdkDropList,
-    CdkDrag,
-    PlaylistTrack,
-  ],
+  imports: [CommonModule, NgOptimizedImage, ScrollingModule, CdkDropList, CdkDrag, PlaylistTrack],
   templateUrl: './playlist-tracks.html',
   styleUrl: './playlist-tracks.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -100,5 +94,4 @@ export class PlaylistTracks {
         error: (err) => console.error(err),
       });
   }
-
 }

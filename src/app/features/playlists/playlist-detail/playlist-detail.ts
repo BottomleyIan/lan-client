@@ -5,8 +5,7 @@ import type { Observable } from 'rxjs';
 
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Panel, type PanelAction } from '../../../ui/panel/panel';
+import { Panel } from '../../../ui/panel/panel';
 import { PlaylistTracks } from '../playlist-tracks/playlist-tracks';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlaylistsApi } from '../../../core/api/playlists.api';
@@ -28,9 +27,6 @@ type PlaylistVm = {
 export class PlaylistDetail {
   private readonly playlistsApi = inject(PlaylistsApi);
   private readonly playlistService = inject(PlaylistService);
-  private readonly activePlaylistId = toSignal(this.playlistService.activePlaylistId$, {
-    initialValue: null,
-  });
 
   constructor(public player: PlayerFacade) {}
 

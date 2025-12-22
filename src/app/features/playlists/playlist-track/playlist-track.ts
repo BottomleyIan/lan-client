@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { CommonModule } from '@angular/common';
 import { IconButton } from '../../../ui/icon-button/icon-button';
 import { TrackOverview } from '../../tracks/track-overview/track-overview';
-import { PlaylistService } from '../../../core/services/playlist-service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { PlayerService } from '../../../core/services/player-service';
 
