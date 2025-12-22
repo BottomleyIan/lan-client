@@ -48,39 +48,4 @@ export class PlaylistDetail {
       title: a.name?.trim() || 'Untitled',
     };
   }
-
-  panelActions(vm: PlaylistVm): PanelAction[] {
-    const playlistId = Number(vm.id);
-    const isValidId = Number.isFinite(playlistId);
-    const isProtected = isValidId && playlistId === 1;
-    const isActive = isValidId && this.activePlaylistId() === playlistId;
-    return [
-      {
-        icon: 'play',
-        label: 'Play playlist',
-        disabled: isActive,
-        onPress: () => this.playPlaylist(playlistId),
-      },
-      {
-        icon: 'trash',
-        label: 'Delete playlist',
-        disabled: isProtected,
-        onPress: () => this.confirmDeletePlaylist(playlistId),
-      },
-    ];
-  }
-
-  private playPlaylist(playlistId: number): void {
-    if (!Number.isFinite(playlistId)) {
-      return;
-    }
-    this.player.setPlaylistAndPlay$(playlistId).subscribe({ error: console.error });
-  }
-
-  private confirmDeletePlaylist(playlistId: number): void {
-    if (!Number.isFinite(playlistId)) {
-      return;
-    }
-    window.alert(`Delete playlist ${playlistId} is not implemented yet.`);
-  }
 }

@@ -111,6 +111,7 @@ export class PlaylistService {
       .addPlaylistTrack(playlistId, { track_id: trackIdNum })
       .pipe(tap(() => this.refreshTracksSubject.next()));
   }
+
   private toNumberId(value: number | string, name: string): number {
     const n = typeof value === 'number' ? value : Number(value);
     // reject NaN, Infinity, 0/negative if your ids are positive

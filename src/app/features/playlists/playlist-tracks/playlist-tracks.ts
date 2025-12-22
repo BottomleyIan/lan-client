@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { distinctUntilChanged, map, of, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
+import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
