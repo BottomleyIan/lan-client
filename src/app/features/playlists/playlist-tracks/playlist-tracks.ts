@@ -1,9 +1,9 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { distinctUntilChanged, map, of, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
-import { CdkDropList, CdkDrag } from '@angular/cdk/drag-drop';
+import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -11,16 +11,25 @@ import { PlaylistsApi } from '../../../core/api/playlists.api';
 import type { HandlersPlaylistTrackDTO } from '../../../core/api/generated/api-types';
 import { trackImageUrl } from '../../../core/api/track-image';
 import { PlaylistTrack, type PlaylistTrackVm } from '../playlist-track/playlist-track';
-import { Panel } from '../../../ui/panel/panel';
+import { PlaylistService } from '../../../core/services/playlist-service';
 
 @Component({
   selector: 'app-playlist-tracks',
-  imports: [CommonModule, NgOptimizedImage, ScrollingModule, PlaylistTrack, Panel],
+  imports: [
+    CommonModule,
+    NgOptimizedImage,
+    ScrollingModule,
+    CdkDropList,
+    CdkDrag,
+    PlaylistTrack,
+  ],
   templateUrl: './playlist-tracks.html',
   styleUrl: './playlist-tracks.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PlaylistTracks {
+  private readonly playlistsApi = inject(PlaylistsApi);
+  private readonly playlistService = inject(PlaylistService);
   private readonly refresh$ = new Subject<void>();
 
   readonly playlistId = input.required<string>();
@@ -41,8 +50,6 @@ export class PlaylistTracks {
     ),
   );
 
-  constructor(private playlistsApi: PlaylistsApi) {}
-
   protected trackByTrackId = (_: number, track: PlaylistTrackVm): string => track.id;
 
   protected removeTrack(playlistId: string, track: PlaylistTrackVm): void {
@@ -61,7 +68,7 @@ export class PlaylistTracks {
       const title = track?.title?.trim() || track?.filename?.trim() || 'Untitled';
       const trackId = track?.id ?? playlistTrack.track_id ?? null;
       return {
-        id: String(trackId ?? playlistTrack.id ?? title),
+        id: String(playlistTrack.id ?? title),
         trackId: trackId ?? null,
         title,
         artist: track?.artist?.name?.trim() || undefined,
@@ -72,4 +79,26 @@ export class PlaylistTracks {
       };
     });
   }
+
+  drop(event: CdkDragDrop<PlaylistTrackVm[]>): void {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    const track = event.item.data;
+    if (!track || track.trackId === null) {
+      return;
+    }
+
+    this.playlistsApi
+      .updatePlaylistTrack(this.playlistId(), track.trackId, { position: event.currentIndex })
+      .subscribe({
+        next: () => {
+          this.refresh$.next();
+          this.playlistService.refreshTracks();
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
 }

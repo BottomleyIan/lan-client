@@ -1,8 +1,13 @@
 @if (tracks$ | async; as tracks) {
   @if (tracks.length > 0) {
-    <div cdkDropList class="@container ml-2 block flex h-full flex-col gap-2">
+    <div
+      cdkDropList
+      class="@container ml-2 block flex h-full flex-col gap-2"
+      [cdkDropListData]="tracks"
+      (cdkDropListDropped)="drop($event)"
+    >
       @for (track of tracks; track track.id) {
-        <div cdkDrag>
+        <div cdkDrag [cdkDragData]="track">
           <app-playlist-track
             [track]="track"
             [removable]="track.trackId !== null"

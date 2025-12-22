@@ -15,12 +15,13 @@ import {
 } from 'rxjs';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { HandlersPlaylistDTO, HandlersPlaylistTrackDTO } from '../api/generated/api-types';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlaylistsApi } from '../api/playlists.api';
 
 @Injectable({ providedIn: 'root' })
 export class PlaylistService {
+  private readonly playlistsApi = inject(PlaylistsApi);
   private activePlaylistIdSubject = new BehaviorSubject<number | null>(1);
   readonly activePlaylistId$ = this.activePlaylistIdSubject
     .asObservable()
@@ -76,7 +77,7 @@ export class PlaylistService {
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
-  constructor(private playlistsApi: PlaylistsApi) {
+  constructor() {
     // kick off the combineLatest immediately
     queueMicrotask(() => this.refreshTracksSubject.next());
   }
@@ -88,6 +89,10 @@ export class PlaylistService {
 
   refreshPlaylists(): void {
     this.refreshPlaylistsSubject.next();
+  }
+
+  refreshTracks(): void {
+    this.refreshTracksSubject.next();
   }
 
   enqueue(trackId: number | string): Observable<HandlersPlaylistTrackDTO> {
