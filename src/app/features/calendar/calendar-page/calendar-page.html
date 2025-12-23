@@ -44,9 +44,9 @@
             >
               <div class="text-right text-xs font-semibold text-slate-300">{{ day }}</div>
               @if (tasksForDay(day).length > 0) {
-                <div class="mt-2 flex flex-col gap-2">
+                <div class="mt-2 flex flex-wrap gap-2">
                   @for (task of tasksForDay(day); track task.id) {
-                    <app-calendar-task [task]="task" />
+                    <app-calendar-task [task]="task" [showLabel]="tasksForDay(day).length === 1" />
                   }
                 </div>
               }

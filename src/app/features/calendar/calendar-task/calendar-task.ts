@@ -1,13 +1,20 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
+import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 
 @Component({
   selector: 'app-calendar-task',
-  imports: [CommonModule],
+  imports: [CommonModule, TaskIcon],
   templateUrl: './calendar-task.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarTask {
   readonly task = input.required<HandlersTaskDTO>();
+  readonly showLabel = input(true);
+
+  protected readonly label = computed(() => {
+    const task = this.task();
+    return task.title?.trim() || task.body?.trim() || 'Task';
+  });
 }

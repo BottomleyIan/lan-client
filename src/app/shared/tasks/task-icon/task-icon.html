@@ -1,0 +1,5 @@
+@if (statusConfig(); as config) {
+  <span class="inline-flex items-center justify-center" [class]="accentClass()">
+    <app-icon [name]="config.icon" />
+  </span>
+}

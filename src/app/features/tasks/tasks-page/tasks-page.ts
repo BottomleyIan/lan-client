@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TasksApi } from '../../../core/api/tasks.api';
+import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 
 @Component({
   selector: 'app-tasks-page',
-  imports: [CommonModule],
+  imports: [CommonModule, TaskIcon],
   template: `
     <section class="flex flex-col gap-4 p-4">
       <div>
@@ -18,7 +19,10 @@ import { TasksApi } from '../../../core/api/tasks.api';
           <div class="flex flex-col gap-3">
             @for (task of tasks; track task.id) {
               <div class="rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-slate-100">
-                <pre class="text-xs whitespace-pre-wrap text-slate-200">{{ task | json }}</pre>
+                <div class="flex items-start gap-2">
+                  <app-task-icon [task]="task" />
+                  <pre class="text-xs whitespace-pre-wrap text-slate-200">{{ task | json }}</pre>
+                </div>
               </div>
             }
           </div>

@@ -6,6 +6,7 @@ import { TasksApi } from '../../../core/api/tasks.api';
 import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
 import { Panel } from '../../../ui/panel/panel';
 import { CalendarTask } from '../calendar-task/calendar-task';
+import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 
 @Component({
   selector: 'app-calendar-page',
@@ -82,7 +83,7 @@ export class CalendarPage {
     const byDay = new Map<number, HandlersTaskDTO[]>();
 
     for (const task of this.tasks()) {
-      if (!isAllowedStatus(task.status)) {
+      if (!isAllowedTaskStatus(task.status)) {
         continue;
       }
       const date = resolveTaskDate(task);
@@ -120,26 +121,10 @@ const MONTH_NAMES = [
 
 type DateParts = { year: number; month: number; day: number };
 
-const ALLOWED_TASK_STATUSES = new Set([
-  'LATER',
-  'NOW',
-  'DONE',
-  'TODO',
-  'DOING',
-  'CANCELLED',
-  'IN-PROGRESS',
-  'WAITING',
-]);
-
-function isAllowedStatus(status?: string): boolean {
-  return status ? ALLOWED_TASK_STATUSES.has(status) : false;
-}
-
 function resolveTaskDate(task: HandlersTaskDTO): DateParts | null {
   return (
     parseDateParts(task.deadline_at) ??
     parseDateParts(task.scheduled_at) ??
-    parseDateParts(task.created_at) ??
     parseDatePartsFromFields(task)
   );
 }

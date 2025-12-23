@@ -1,3 +1,6 @@
-<pre class="text-[11px] leading-snug whitespace-pre-wrap text-slate-200"
-  >{{ task() | json }}
-</pre>
+<div class="flex items-start gap-2" [attr.title]="label()">
+  <app-task-icon [task]="task()" />
+  @if (showLabel()) {
+    <span class="text-xs text-slate-200">{{ label() }}</span>
+  }
+</div>
