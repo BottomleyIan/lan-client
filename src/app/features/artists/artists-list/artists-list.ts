@@ -14,16 +14,16 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { combineLatest, map, shareReplay, startWith } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { AlbumsApi } from '../../../core/api/albums.api';
-import { albumImageUrl } from '../../../core/api/album-image';
-import type { HandlersAlbumDTO } from '../../../core/api/generated/api-types';
-import { AlbumButton, type AlbumButtonModel } from '../album-button/album-button';
+import { ArtistsApi } from '../../../core/api/artists.api';
+import type { HandlersArtistDTO } from '../../../core/api/generated/api-types';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ArtistButton, ArtistButtonModel } from '../artist-button/artist-button';
 
 @Component({
-  selector: 'app-albums-list',
-  imports: [CommonModule, ScrollingModule, AlbumButton],
-  templateUrl: './albums-list.html',
+  selector: 'app-artists-list',
+  imports: [CommonModule, ScrollingModule, ArtistButton],
+  templateUrl: './artists-list.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     tabindex: '0',
@@ -32,32 +32,32 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
     '(keydown)': 'onKeydown($event)',
   },
 })
-export class AlbumsList {
-  private readonly albumsApi = inject(AlbumsApi);
+export class ArtistsList {
+  private readonly artistsApi = inject(ArtistsApi);
   private readonly host = inject(ElementRef<HTMLElement>);
 
   readonly letters = input<string>('');
-  readonly selectedAlbumId = input<string | null>(null);
+  readonly selectedArtistId = input<string | null>(null);
   readonly previous = input<(() => void) | null>(null);
   readonly next = input<(() => void) | null>(null);
-  readonly onAlbumSelected = input<(albumId: string) => void>(() => {});
+  readonly onArtistSelected = input<(albumId: string) => void>(() => {});
 
-  private readonly allAlbums$ = this.albumsApi.getAlbums().pipe(
-    map((dto) => this.mapAlbums(dto)),
+  private readonly allArtists$ = this.artistsApi.getArtists().pipe(
+    map((dto) => this.mapArtists(dto)),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
 
   private readonly filterPrefix = computed(() => this.letters().trim().toLowerCase());
   private readonly activeIndex = signal<number>(-1);
 
-  protected readonly albums$ = combineLatest([
-    this.allAlbums$,
+  protected readonly artist$ = combineLatest([
+    this.allArtists$,
     toObservable(this.filterPrefix).pipe(startWith(this.filterPrefix())),
   ]).pipe(
     map(([albums, startswith]) => {
       if (!startswith) return albums;
       return albums.filter((a) => {
-        const lower = (a.title ?? '').toLowerCase();
+        const lower = (a.name ?? '').toLowerCase();
         if (lower.startsWith('the ')) {
           return lower.startsWith(`the ${startswith}`);
         }
@@ -66,10 +66,10 @@ export class AlbumsList {
     }),
   );
 
-  protected readonly albums = toSignal(this.albums$, { initialValue: [] as AlbumButtonModel[] });
+  protected readonly artists = toSignal(this.artist$, { initialValue: [] as ArtistButtonModel[] });
 
   protected readonly activeDescendantId = computed(() => {
-    const album = this.albums()[this.activeIndex()];
+    const album = this.artists()[this.activeIndex()];
     return album ? this.itemId(album.id) : null;
   });
 
@@ -77,8 +77,8 @@ export class AlbumsList {
 
   constructor() {
     effect(() => {
-      const incomingId = this.selectedAlbumId();
-      const list = this.albums();
+      const incomingId = this.selectedArtistId();
+      const list = this.artists();
       if (!incomingId) {
         this.activeIndex.set(-1);
         return;
@@ -91,14 +91,14 @@ export class AlbumsList {
     });
   }
 
-  protected isSelected(album: AlbumButtonModel): boolean {
-    return this.selectedAlbumId() === album.id;
+  protected isSelected(album: ArtistButtonModel): boolean {
+    return this.selectedArtistId() === album.id;
   }
 
-  protected trackByAlbumId = (_: number, album: AlbumButtonModel): string => album.id;
+  protected trackByArtistId = (_: number, album: ArtistButtonModel): string => album.id;
 
-  protected handleAlbumSelected(albumId: string): void {
-    this.onAlbumSelected()(albumId);
+  protected handleArtistSelected(albumId: string): void {
+    this.onArtistSelected()(albumId);
   }
 
   protected itemId(id: string): string {
@@ -129,19 +129,19 @@ export class AlbumsList {
       const next = this.next();
       if (next) {
         event.preventDefault();
-        const current = this.albums()[this.activeIndex()];
+        const current = this.artists()[this.activeIndex()];
         if (current) {
-          this.selectAlbum(current, false);
+          this.selectArtist(current, false);
         }
         next();
       }
       return;
     }
     if (key === 'Enter' || key === ' ') {
-      const current = this.albums()[this.activeIndex()];
+      const current = this.artists()[this.activeIndex()];
       if (current) {
         event.preventDefault();
-        this.selectAlbum(current, false);
+        this.selectArtist(current, false);
       }
     }
   }
@@ -150,33 +150,33 @@ export class AlbumsList {
     this.host.nativeElement.focus();
   }
 
-  selectFirstAlbum(): void {
-    const list = this.albums();
+  selectFirstArtist(): void {
+    const list = this.artists();
     if (!list.length) {
       this.focus();
       return;
     }
-    this.selectAlbum(list[0], true);
+    this.selectArtist(list[0], true);
     this.scrollToIndex(0);
   }
 
   private moveSelection(offset: 1 | -1): void {
-    const list = this.albums();
+    const list = this.artists();
     if (!list.length) {
       return;
     }
     const current = this.activeIndex();
     const base = current >= 0 ? current : 0;
     const nextIndex = Math.min(list.length - 1, Math.max(0, base + offset));
-    const nextAlbum = list[nextIndex];
-    this.selectAlbum(nextAlbum);
+    const nextArtist = list[nextIndex];
+    this.selectArtist(nextArtist);
     this.scrollToIndex(nextIndex);
   }
 
-  private selectAlbum(album: AlbumButtonModel, refocus = true): void {
-    const list = this.albums();
+  private selectArtist(album: ArtistButtonModel, refocus = true): void {
+    const list = this.artists();
     this.activeIndex.set(list.findIndex((a) => a.id === album.id));
-    this.handleAlbumSelected(album.id);
+    this.handleArtistSelected(album.id);
     if (refocus) {
       this.focus();
     }
@@ -186,12 +186,10 @@ export class AlbumsList {
     this.viewport?.scrollToIndex(index, 'smooth');
   }
 
-  private mapAlbums(items: HandlersAlbumDTO[]): AlbumButtonModel[] {
+  private mapArtists(items: HandlersArtistDTO[]): ArtistButtonModel[] {
     return items.map((a) => ({
       id: String(a.id),
-      title: String(a.title),
-      artist: String(a.artist?.name || 'Unknown artist'),
-      coverUrl: a.id || a.id == 0 ? albumImageUrl(a.id) : undefined,
+      name: String(a.name),
     }));
   }
 }

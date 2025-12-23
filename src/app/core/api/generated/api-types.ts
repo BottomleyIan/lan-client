@@ -175,11 +175,11 @@ export interface HandlersCreateJournalEntryRequest {
 export interface HandlersCreateLogseqTaskRequest {
   /** @example "Include the new journals endpoints." */
   body?: string;
-  /** @example "2025-12-23 Tue 17:00" */
+  /** @example "2025-12-23" */
   deadline?: string;
   /** @example "Write release notes" */
   description?: string;
-  /** @example "2025-12-23 Tue 11:00" */
+  /** @example "2025-12-23T11:00:00Z" */
   scheduled?: string;
   /** @example "TODO" */
   status?: string;

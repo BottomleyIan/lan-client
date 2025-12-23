@@ -4,49 +4,47 @@
   role="group"
   [attr.aria-label]="ariaLabel()"
 >
-  <!--
-  <div
-    class="relative z-10 flex items-center justify-between gap-3 px-3 pt-2"
-    [class.hidden]="hidden()"
-  >
-    -->
   @if (!!label() || !!badge()) {
-    <div
-      class="flex items-center gap-3 px-3 py-1 text-[12px] tracking-[0.12em] text-slate-400 uppercase"
-    >
-      <h2 uiH2>{{ label() }}</h2>
-      @if (badge()) {
-        <span
-          class="rounded-full border border-white/15 bg-black/25 px-2.5 py-1 font-mono text-[11px] font-semibold tracking-[0.08em] text-slate-200"
-          >{{ badge() }}</span
+    <div class="relative z-10 flex items-center justify-between gap-3" [class.hidden]="hidden()">
+      @if (!!label() || !!badge()) {
+        <div
+          class="flex items-center gap-3 px-3 py-1 text-[12px] tracking-[0.12em] text-slate-400 uppercase"
         >
+          <h2 uiH2>{{ label() }}</h2>
+          @if (badge()) {
+            <span
+              class="rounded-full border border-white/15 bg-black/25 px-2.5 py-1 font-mono text-[11px] font-semibold tracking-[0.08em] text-slate-200"
+              >{{ badge() }}</span
+            >
+          }
+        </div>
       }
-    </div>
-  }
-  @if (meta() || hasActions()) {
-    <div class="flex items-center gap-3">
-      @if (meta()) {
-        <div class="text-xs text-slate-400">{{ meta() }}</div>
-      }
-      @if (hasActions()) {
-        <div class="flex items-center gap-1 text-2xl">
-          @for (action of actions(); track action.label) {
-            <app-icon-button-primary
-              [icon]="action.icon"
-              [label]="action.label"
-              [disabled]="action.disabled ?? false"
-              [buttonClass]="buttonClassFor(action)"
-              [iconClass]="action.iconClass ?? null"
-              [active]="action.active ?? null"
-              [activeClass]="action.activeClass ?? null"
-              (pressed)="handleAction(action)"
-            />
+      @if (meta() || hasActions()) {
+        <div class="flex items-center gap-3">
+          @if (meta()) {
+            <div class="text-xs text-slate-400">{{ meta() }}</div>
+          }
+          @if (hasActions()) {
+            <div class="mr-2 flex items-center gap-1 text-2xl">
+              @for (action of actions(); track action.label) {
+                <app-icon-button-primary
+                  [icon]="action.icon"
+                  [label]="action.label"
+                  [disabled]="action.disabled ?? false"
+                  [buttonClass]="buttonClassFor(action)"
+                  [iconClass]="action.iconClass ?? null"
+                  [active]="action.active ?? null"
+                  [activeClass]="action.activeClass ?? null"
+                  (pressed)="handleAction(action)"
+                />
+              }
+            </div>
           }
         </div>
       }
     </div>
   }
-  <!--</div>-->
+
   <div
     class="relative z-10 flex-1 overflow-auto"
     [style.scrollbar-gutter]="stableGutter() ? 'stable' : null"

@@ -1,4 +1,4 @@
-@if (albums$ | async; as albums) {
+@if (artist$ | async; as artists) {
   <cdk-virtual-scroll-viewport
     class="@container ml-2 block h-full"
     [itemSize]="98"
@@ -8,15 +8,15 @@
   >
     <div class="flex flex-col gap-2">
       <div
-        *cdkVirtualFor="let album of albums; trackBy: trackByAlbumId"
+        *cdkVirtualFor="let artist of artists; trackBy: trackByArtistId"
         class="block rounded-xl first:mt-2 last:mb-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-        [attr.id]="itemId(album.id)"
+        [attr.id]="itemId(artist.id)"
         role="option"
-        [attr.aria-selected]="isSelected(album)"
+        [attr.aria-selected]="isSelected(artist)"
         tabindex="-1"
-        (click)="handleAlbumSelected(album.id)"
+        (click)="handleArtistSelected(artist.id)"
       >
-        <app-album-button [album]="album" [selected]="isSelected(album)" />
+        <app-artist-button [artist]="artist" [selected]="isSelected(artist)" />
       </div>
     </div>
   </cdk-virtual-scroll-viewport>

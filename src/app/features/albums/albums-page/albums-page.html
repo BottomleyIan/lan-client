@@ -22,15 +22,44 @@
     />
   </app-panel>
 
-  <app-albums-list
+  <app-panel
     class="flex-1"
-    [letters]="selectedLetters()"
-    [selectedAlbumId]="selectedAlbumId()"
-    [previous]="focusLetter2FromAlbums"
-    [next]="focusTracksList"
-    [onAlbumSelected]="handleAlbumSelected"
-  />
+    label="Albums"
+    badge="Alpha"
+    [actions]="getPanelActions()"
+    meta=""
+    [stableGutter]="false"
+  >
+    @if (showArtistList()) {
+      <app-artists-list
+        class="flex-1"
+        [letters]="selectedLetters()"
+        [selectedArtistId]="selectedAlbumId()"
+        [previous]="focusLetter2FromAlbums"
+        [next]="focusTracksList"
+        [onArtistSelected]="handleArtistSelected"
+      />
+    }
+    @if (showAlbumList()) {
+      <app-albums-list
+        class="flex-1"
+        [letters]="selectedLetters()"
+        [selectedAlbumId]="selectedAlbumId()"
+        [previous]="focusLetter2FromAlbums"
+        [next]="focusTracksList"
+        [onAlbumSelected]="handleAlbumSelected"
+      />
+    }
+  </app-panel>
   <div class="flex-1">
-    <app-album-detail [selectedAlbumId]="selectedAlbumId()" [previous]="focusAlbumListFromTracks" />
+    @if (showArtistList()) {
+      <div></div>
+    }
+    @if (showAlbumList()) {
+      <app-album-detail
+        [selectedAlbumId]="selectedAlbumId()"
+        [previous]="focusAlbumListFromTracks"
+      />
+    }
   </div>
 </div>

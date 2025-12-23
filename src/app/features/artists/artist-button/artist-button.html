@@ -1,0 +1,16 @@
+<button
+  uiBigButton
+  class="flex w-full flex-row gap-3 overflow-hidden"
+  [attr.aria-selected]="selected"
+  [attr.data-selected]="selected"
+>
+  <div class="py-2 text-left">
+    <h2
+      uiH2
+      [attr.data-selected]="selected"
+      class="text-tokyo-text-text data-[selected=true]:text-tokyo-accent-orange line-clamp-1 leading-tight data-[selected=true]:text-3xl"
+    >
+      {{ artist.name }}
+    </h2>
+  </div>
+</button>

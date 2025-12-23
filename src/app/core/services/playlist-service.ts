@@ -39,11 +39,11 @@ export class PlaylistService {
       playlistId == null
         ? of(null)
         : this.playlistsApi.getPlaylist(playlistId).pipe(
-          catchError((err) => {
-            console.error('Failed to load playlist', err);
-            return of(null);
-          }),
-        ),
+            catchError((err) => {
+              console.error('Failed to load playlist', err);
+              return of(null);
+            }),
+          ),
     ),
     shareReplay({ bufferSize: 1, refCount: true }),
   );
