@@ -11,7 +11,7 @@
           <app-playlist-track
             [track]="track"
             [removable]="track.trackId !== null"
-            (remove)="removeTrack(playlistId(), track)"
+            (remove)="removeTrack(track)"
           />
         </div>
       }

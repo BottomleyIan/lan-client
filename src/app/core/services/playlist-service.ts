@@ -125,4 +125,27 @@ export class PlaylistService {
     }
     return n;
   }
+
+  removeTrack(trackId: number): void {
+    const rawPlaylistId = this.activePlaylistIdSubject.value;
+    if (rawPlaylistId == null) return;
+    this.playlistsApi.deletePlaylistTrack(rawPlaylistId, trackId).subscribe({
+      next: () => {
+        this.refreshTracks();
+      },
+      error: (err) => console.error(err),
+    });
+  }
+
+  updateTrackPosition(trackId: number, position: number): void {
+    const rawPlaylistId = this.activePlaylistIdSubject.value;
+    if (rawPlaylistId == null) return;
+
+    this.playlistsApi.updatePlaylistTrack(rawPlaylistId, trackId, { position }).subscribe({
+      next: () => {
+        this.refreshTracks();
+      },
+      error: (err) => console.error(err),
+    });
+  }
 }

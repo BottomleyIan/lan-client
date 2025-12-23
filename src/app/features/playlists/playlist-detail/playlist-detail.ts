@@ -6,7 +6,7 @@ import type { Observable } from 'rxjs';
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 
 import { Panel } from '../../../ui/panel/panel';
-import { PlaylistTracks } from '../playlist-tracks/playlist-tracks';
+import { PlaylistServiceTracks } from '../playlist-service-tracks/playlist-service-tracks';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlaylistsApi } from '../../../core/api/playlists.api';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -21,7 +21,7 @@ type PlaylistVm = {
 
 @Component({
   selector: 'app-playlist-detail',
-  imports: [CommonModule, Panel, PlaylistTracks],
+  imports: [CommonModule, Panel, PlaylistServiceTracks],
   templateUrl: './playlist-detail.html',
 })
 export class PlaylistDetail {
