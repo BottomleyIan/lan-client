@@ -1,11 +1,10 @@
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ScrollingModule } from '@angular/cdk/scrolling';
-import { distinctUntilChanged, map } from 'rxjs';
+import { map } from 'rxjs';
 import type { Observable } from 'rxjs';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { CdkDropList, CdkDrag, CdkDragDrop } from '@angular/cdk/drag-drop';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import type { HandlersPlaylistTrackDTO } from '../../../core/api/generated/api-types';
@@ -22,9 +21,6 @@ import { PlaylistService } from '../../../core/services/playlist-service';
 })
 export class PlaylistServiceTracks {
   private readonly playlistService = inject(PlaylistService);
-
-  readonly playlistId = input.required<string>();
-  readonly playlistId$ = toObservable(this.playlistId).pipe(distinctUntilChanged());
 
   readonly tracks$: Observable<PlaylistTrackVm[]> = this.playlistService.activePlaylistTracks$.pipe(
     map((tracks) => this.toTracksVm(tracks)),
