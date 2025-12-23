@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Icon, type IconName } from '../icon/icon';
 
@@ -15,6 +15,16 @@ export class NavLink {
   readonly iconName = input<IconName | null>(null);
   readonly iconColorVar = input<string | null>(null);
   readonly srOnly = input(false);
+  readonly showSkipLink = input(false);
 
   protected readonly routerLinkActiveOptions = computed(() => ({ exact: this.exact() }));
+  protected readonly skipLinkDismissed = signal(false);
+
+  protected resetSkipLink(): void {
+    this.skipLinkDismissed.set(false);
+  }
+
+  protected dismissSkipLink(): void {
+    this.skipLinkDismissed.set(true);
+  }
 }

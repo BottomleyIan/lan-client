@@ -59,6 +59,25 @@ export interface HandlersHealth {
   time?: string;
 }
 
+export interface HandlersJournalDTO {
+  created_at?: string;
+  day?: number;
+  hash?: string;
+  last_checked_at?: string;
+  month?: number;
+  size_bytes?: number;
+  tags?: string[];
+  updated_at?: string;
+  year?: number;
+}
+
+export interface HandlersJournalDayDTO {
+  day?: number;
+  month?: number;
+  raw?: string;
+  year?: number;
+}
+
 export interface HandlersPlaylistDTO {
   created_at?: string;
   deleted_at?: string;
@@ -87,28 +106,31 @@ export interface HandlersScanDTO {
   status?: string;
 }
 
+export interface HandlersSettingDTO {
+  created_at?: string;
+  key?: string;
+  updated_at?: string;
+  value?: string;
+}
+
+export interface HandlersSettingKeyDTO {
+  description?: string;
+  key?: string;
+}
+
 export interface HandlersTaskDTO {
   body?: string;
   created_at?: string;
-  deleted_at?: string;
+  day?: number;
+  deadline_at?: string;
   id?: number;
-  status_code?: string;
-  tags?: string[];
+  month?: number;
+  position?: number;
+  scheduled_at?: string;
+  status?: string;
   title?: string;
   updated_at?: string;
-}
-
-export interface HandlersTaskStatusDTO {
-  code?: string;
-  label?: string;
-}
-
-export interface HandlersTaskTransitionDTO {
-  changed_at?: string;
-  id?: number;
-  reason?: string;
-  status_code?: string;
-  task_id?: number;
+  year?: number;
 }
 
 export interface HandlersTrackDTO {
@@ -144,21 +166,34 @@ export interface HandlersCreateFolderRequest {
   path?: string;
 }
 
+export interface HandlersCreateJournalEntryRequest {
+  body?: string;
+  description?: string;
+  tags?: string[];
+}
+
+export interface HandlersCreateLogseqTaskRequest {
+  /** @example "Include the new journals endpoints." */
+  body?: string;
+  /** @example "2025-12-23 Tue 17:00" */
+  deadline?: string;
+  /** @example "Write release notes" */
+  description?: string;
+  /** @example "2025-12-23 Tue 11:00" */
+  scheduled?: string;
+  /** @example "TODO" */
+  status?: string;
+  /** @example ["tag1","tag2"] */
+  tags?: string[];
+}
+
 export interface HandlersCreatePlaylistRequest {
   name?: string;
 }
 
-export interface HandlersCreateTaskRequest {
-  body?: string;
-  reason?: string;
-  status_code?: string;
-  tags?: string[];
-  title?: string;
-}
-
-export interface HandlersCreateTaskTransitionRequest {
-  reason?: string;
-  status_code?: string;
+export interface HandlersCreateSettingRequest {
+  key?: string;
+  value?: string;
 }
 
 export interface HandlersEnqueuePlaylistTrackRequest {
@@ -178,10 +213,8 @@ export interface HandlersUpdatePlaylistTrackRequest {
   position?: number;
 }
 
-export interface HandlersUpdateTaskRequest {
-  body?: string;
-  tags?: string[];
-  title?: string;
+export interface HandlersUpdateSettingRequest {
+  value?: string;
 }
 
 export interface HandlersUpdateTrackImageRequest {

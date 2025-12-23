@@ -1,0 +1,32 @@
+<section class="flex flex-col gap-4">
+  <div class="flex items-center justify-between gap-3">
+    <h2 class="text-xl font-semibold text-slate-100">Settings</h2>
+    @if (settings$ | async; as settings) {
+      <span class="text-xs font-semibold tracking-[0.12em] text-slate-400 uppercase">
+        {{ settings.length }} settings
+      </span>
+    }
+  </div>
+
+  @if (settings$ | async; as settings) {
+    @if (settings.length === 0) {
+      <p class="text-sm text-slate-300">No settings configured yet.</p>
+    } @else {
+      <div class="overflow-hidden rounded-xl border border-white/10 bg-white/5">
+        <div role="list" class="divide-y divide-white/10">
+          @for (setting of settings; track setting.id) {
+            <app-settings-list-entry
+              [setting]="setting"
+              [isSaving]="isSaving(setting.key)"
+              [draftValue]="draftFor(setting)"
+              (draftChange)="updateDraft(setting, $event)"
+              (inputBlur)="handleBlur(setting)"
+            />
+          }
+        </div>
+      </div>
+    }
+  } @else {
+    <p class="text-sm text-slate-400" aria-live="polite">Loading settings…</p>
+  }
+</section>

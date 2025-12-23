@@ -14,7 +14,8 @@ const icons = {
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖
   imageAdd: { glyph: '\udb82\udc7c', label: 'Add Image' }, // 󰡼
   next: { glyph: '\udb83\udf27', label: 'Next' }, //nf-md-skip_next_outline 󰼧
-  notes: { glyph: '\udb80\udfea', label: 'Notes' }, // 󰏪
+  notes: { glyph: '\udb80\udfeb', label: 'Notes' }, // 󰏫
+  notesAdd: { glyph: '\udb83\uddeb', label: 'Notes' }, // 󰷫
   pause: { glyph: '\udb80\udfe4', label: 'Pause' }, //nf-md-pause 󰏤
   play: { glyph: '\udb83\udf1b', label: 'Play' }, //nf-md-play_outline 󰼛
   playlist: { glyph: '\udb83\udcb8', label: 'Playlist' }, //󰲸
@@ -29,6 +30,12 @@ const icons = {
   sortDesc: { glyph: '\uf15e', label: 'Sort Desc' }, //
   stop: { glyph: '\udb81\udcdb', label: 'Stop' }, //nf-md-stop 󰓛
   star: { glyph: '\udb81\udcce', label: 'Star' }, //󰓎
+  taskMinus: { glyph: '\udb84\udf6a', label: 'Task Minus' }, //󱍪
+  taskPlus: { glyph: '\udb84\udf6d', label: 'Task Plus' }, //󱍭
+  taskRemove: { glyph: '\udb84\udf6f', label: 'Task' }, //󱍯
+  taskTodo: { glyph: '\udb84\udf6b', label: 'Task Todo' }, //󱍫
+  taskDone: { glyph: '\udb84\udf68', label: 'Task Done' }, //󱍨
+  taskAlert: { glyph: '\udb84\udf66', label: 'Task Alert' }, //󱍦
   starOutline: { glyph: '\udb81\udcd2', label: 'Star Outline' }, //󰓒
   calendar: { glyph: '\udb80\udced', label: 'Calendar' }, // 󰃭
   volumeDown: { glyph: '\udb80\udf74', label: 'Volume down' }, //nf-md-minus 󰍴

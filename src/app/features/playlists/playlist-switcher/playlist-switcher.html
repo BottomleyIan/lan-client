@@ -1,5 +1,7 @@
 <app-panel label="">
   <div
+    tabIndex="0"
+    (keydown)="onKeydown($event)"
     class="flex items-center gap-3 rounded-xl border border-slate-800/70 bg-slate-950/40 px-3 py-2 text-3xl"
   >
     <app-icon-button-primary

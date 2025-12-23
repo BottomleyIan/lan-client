@@ -2,17 +2,21 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TasksApi } from '../../../core/api/tasks.api';
+import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
 import { Panel } from '../../../ui/panel/panel';
+import { CalendarTask } from '../calendar-task/calendar-task';
 
 @Component({
   selector: 'app-calendar-page',
-  imports: [CommonModule, RouterLink, Panel],
+  imports: [CommonModule, RouterLink, Panel, CalendarTask],
   templateUrl: './calendar-page.html',
   styleUrl: './calendar-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarPage {
   private readonly route = inject(ActivatedRoute);
+  private readonly tasksApi = inject(TasksApi);
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
@@ -69,6 +73,33 @@ export class CalendarPage {
       return dayNumber > 0 && dayNumber <= daysInMonth ? dayNumber : null;
     });
   });
+
+  private readonly tasks = toSignal(this.tasksApi.getTasks(), { initialValue: [] });
+
+  protected readonly tasksByDay = computed(() => {
+    const year = this.year();
+    const month = this.month();
+    const byDay = new Map<number, HandlersTaskDTO[]>();
+
+    for (const task of this.tasks()) {
+      if (!isAllowedStatus(task.status)) {
+        continue;
+      }
+      const date = resolveTaskDate(task);
+      if (!date || date.year !== year || date.month !== month) {
+        continue;
+      }
+      const dayTasks = byDay.get(date.day) ?? [];
+      dayTasks.push(task);
+      byDay.set(date.day, dayTasks);
+    }
+
+    return byDay;
+  });
+
+  protected tasksForDay(day: number): HandlersTaskDTO[] {
+    return this.tasksByDay().get(day) ?? [];
+  }
 }
 
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
@@ -86,3 +117,47 @@ const MONTH_NAMES = [
   'November',
   'December',
 ] as const;
+
+type DateParts = { year: number; month: number; day: number };
+
+const ALLOWED_TASK_STATUSES = new Set([
+  'LATER',
+  'NOW',
+  'DONE',
+  'TODO',
+  'DOING',
+  'CANCELLED',
+  'IN-PROGRESS',
+  'WAITING',
+]);
+
+function isAllowedStatus(status?: string): boolean {
+  return status ? ALLOWED_TASK_STATUSES.has(status) : false;
+}
+
+function resolveTaskDate(task: HandlersTaskDTO): DateParts | null {
+  return (
+    parseDateParts(task.deadline_at) ??
+    parseDateParts(task.scheduled_at) ??
+    parseDateParts(task.created_at) ??
+    parseDatePartsFromFields(task)
+  );
+}
+
+function parseDateParts(raw?: string): DateParts | null {
+  if (!raw) {
+    return null;
+  }
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+}
+
+function parseDatePartsFromFields(task: HandlersTaskDTO): DateParts | null {
+  if (!task.year || !task.month || !task.day) {
+    return null;
+  }
+  return { year: task.year, month: task.month, day: task.day };
+}

@@ -3,15 +3,40 @@
 >
   <nav class="flex items-center gap-3" aria-label="Primary">
     <div class="flex items-center gap-3">
-      <app-nav-link routerLink="/playlists" label="Playlist" iconName="playlist" [srOnly]="true" />
-      <app-nav-link routerLink="/albums" label="Albums" iconName="album" [srOnly]="true" />
-      <app-nav-link routerLink="/artists" label="Artist" iconName="artist" [srOnly]="true" />
-      <app-nav-link routerLink="/tasks" label="Tasks" iconName="tasklist" [srOnly]="true" />
+      <app-nav-link
+        routerLink="/playlists"
+        label="Playlist"
+        iconName="playlist"
+        [srOnly]="true"
+        [showSkipLink]="true"
+      />
+      <app-nav-link
+        routerLink="/albums"
+        label="Albums"
+        iconName="album"
+        [srOnly]="true"
+        [showSkipLink]="true"
+      />
+      <app-nav-link
+        routerLink="/artists"
+        label="Artist"
+        iconName="artist"
+        [srOnly]="true"
+        [showSkipLink]="true"
+      />
+      <app-nav-link
+        routerLink="/tasks"
+        label="Tasks"
+        iconName="tasklist"
+        [srOnly]="true"
+        [showSkipLink]="true"
+      />
       <app-nav-link
         routerLink="/calendar/{{ currentYear() }}/{{ currentMonth() }}"
         label="Calendar"
         iconName="calendar"
         [srOnly]="true"
+        [showSkipLink]="true"
       />
       <app-nav-link
         routerLink="/notes"
@@ -19,6 +44,7 @@
         label="Notes"
         iconName="notes"
         [srOnly]="true"
+        [showSkipLink]="true"
       />
       <app-nav-link
         routerLink="/files"
@@ -26,6 +52,7 @@
         label="Files"
         iconName="files"
         [srOnly]="true"
+        [showSkipLink]="true"
       />
     </div>
   </nav>
@@ -38,11 +65,15 @@
     </h1>
     <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
   </div>
-  <app-nav-link
-    routerLink="/settings"
-    [exact]="true"
-    label="Settings"
-    iconName="settings"
-    [srOnly]="true"
-  />
+  <div class="flex items-center gap-2">
+    <app-notes-add-button />
+    <app-nav-link
+      routerLink="/settings"
+      [exact]="true"
+      label="Settings"
+      iconName="settings"
+      [srOnly]="true"
+      [showSkipLink]="true"
+    />
+  </div>
 </header>

@@ -10,6 +10,7 @@ import { TableHeadDirective } from '../../../ui/directives/thead';
 import { AddFolderForm } from '../add-folder-form/add-folder-form';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
+import { SettingsList } from '../settings-list/settings-list';
 
 type FolderRow = {
   readonly id: string;
@@ -19,6 +20,30 @@ type FolderRow = {
   readonly lastScanStatus: string;
   readonly lastScanAt: string;
 };
+
+type ColorSample = {
+  readonly name: string;
+  readonly cssVar: string;
+};
+
+const COLOR_SAMPLES: readonly ColorSample[] = [
+  { name: 'Surface 0', cssVar: 'var(--color-tokyo-surface-0)' },
+  { name: 'Surface 1', cssVar: 'var(--color-tokyo-surface-1)' },
+  { name: 'Surface 2', cssVar: 'var(--color-tokyo-surface-2)' },
+  { name: 'Surface 3', cssVar: 'var(--color-tokyo-surface-3)' },
+  { name: 'Border', cssVar: 'var(--color-tokyo-border)' },
+  { name: 'Text', cssVar: 'var(--color-tokyo-text)' },
+  { name: 'Text Muted', cssVar: 'var(--color-tokyo-text-muted)' },
+  { name: 'Text Subtle', cssVar: 'var(--color-tokyo-text-subtle)' },
+  { name: 'Accent Purple', cssVar: 'var(--color-tokyo-accent-purple)' },
+  { name: 'Accent Blue', cssVar: 'var(--color-tokyo-accent-blue)' },
+  { name: 'Accent Cyan', cssVar: 'var(--color-tokyo-accent-cyan)' },
+  { name: 'Accent Green', cssVar: 'var(--color-tokyo-accent-green)' },
+  { name: 'Accent Orange', cssVar: 'var(--color-tokyo-accent-orange)' },
+  { name: 'Accent Red', cssVar: 'var(--color-tokyo-accent-red)' },
+  { name: 'Accent Yellow', cssVar: 'var(--color-tokyo-accent-yellow)' },
+  { name: 'Accent Pink', cssVar: 'var(--color-tokyo-accent-pink)' },
+];
 
 @Component({
   selector: 'app-settings-page',
@@ -30,6 +55,7 @@ type FolderRow = {
     TableDirective,
     TableHeadDirective,
     AddFolderForm,
+    SettingsList,
   ],
   templateUrl: './settings-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -115,4 +141,6 @@ export class SettingsPage {
         this.refreshFolders();
       });
   }
+
+  protected readonly colorSamples = COLOR_SAMPLES;
 }

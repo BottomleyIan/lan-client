@@ -68,4 +68,26 @@
       <p class="text-sm text-slate-400" aria-live="polite">Loading folders…</p>
     }
   </div>
+  <div class="border-t border-white/10 px-5 py-4">
+    <app-settings-list />
+  </div>
+  <div class="border-t border-white/10 px-5 py-4">
+    <div class="flex flex-col gap-3">
+      <div>
+        <h2 class="text-xl font-semibold text-slate-100">Color Reference</h2>
+        <p class="text-sm text-slate-300">Darcula palette tokens.</p>
+      </div>
+      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+        @for (color of colorSamples; track color.name) {
+          <div class="rounded-lg border border-white/10 bg-white/5 p-3">
+            <div class="h-16 w-full rounded-md" [style.backgroundColor]="color.cssVar"></div>
+            <div class="mt-2 text-sm font-semibold" [style.color]="color.cssVar">
+              {{ color.name }}
+            </div>
+            <div class="text-xs text-slate-400">{{ color.cssVar }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 </app-panel>

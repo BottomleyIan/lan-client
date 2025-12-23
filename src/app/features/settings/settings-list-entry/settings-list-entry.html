@@ -1,0 +1,23 @@
+<div class="flex flex-col gap-3 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+  <div class="min-w-0">
+    <div class="truncate text-sm font-semibold text-slate-100">{{ setting().key }}</div>
+    @if (setting().description; as description) {
+      <div class="text-xs text-slate-400">{{ description }}</div>
+    }
+  </div>
+  <div class="flex flex-col gap-2 sm:min-w-[16rem] sm:items-end">
+    <label class="sr-only" [attr.for]="'setting-' + setting().id">
+      Value for {{ setting().key }}
+    </label>
+    <input
+      class="w-full rounded-md border border-white/10 bg-black/30 px-3 py-2 text-sm text-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400 disabled:opacity-70 sm:text-right"
+      [id]="'setting-' + setting().id"
+      type="text"
+      [value]="draftValue()"
+      [disabled]="isSaving()"
+      [attr.placeholder]="setting().exists ? '' : 'Not set'"
+      (input)="handleInput($event)"
+      (blur)="handleBlur()"
+    />
+  </div>
+</div>

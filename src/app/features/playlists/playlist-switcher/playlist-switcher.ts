@@ -109,4 +109,21 @@ export class PlaylistSwitcher {
     }
     this.player.setPlaylistAndPlay$(playlistId).subscribe({ error: console.error });
   }
+  protected onKeydown(event: KeyboardEvent): void {
+    const key = event.key;
+    if (key === 'ArrowDown') {
+      event.preventDefault();
+      //this.moveSelection(1);
+      return;
+    }
+    if (key === 'ArrowLeft') {
+      event.preventDefault();
+      this.selectPrevious();
+      return;
+    }
+    if (key === 'ArrowRight') {
+      this.selectNext();
+      return;
+    }
+  }
 }

@@ -13,9 +13,19 @@
   [class.before\:blur-xl]="rla.isActive"
   [class.before\:content-\[''\]]="rla.isActive"
   [attr.aria-current]="rla.isActive ? 'page' : null"
+  (click)="resetSkipLink()"
 >
   @if (iconName(); as icon) {
     <app-icon [name]="icon" [colorVar]="iconColorVar()" />
   }
   <span [class.sr-only]="srOnly()">{{ label() }}</span>
 </a>
+@if (showSkipLink() && rla.isActive && !skipLinkDismissed()) {
+  <a
+    class="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-3 focus-visible:left-3 focus-visible:z-50 focus-visible:rounded-lg focus-visible:bg-slate-900 focus-visible:px-3 focus-visible:py-2 focus-visible:text-slate-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400"
+    href="#main-content"
+    (blur)="dismissSkipLink()"
+  >
+    Skip to main content
+  </a>
+}

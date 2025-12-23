@@ -4,8 +4,10 @@ import { ArtistsPage } from './features/artists/artists-page/artists-page';
 import { AlbumsPage } from './features/albums/albums-page/albums-page';
 import { AlbumDetailPage } from './features/albums/album-detail-page/album-detail-page';
 import { CalendarPage } from './features/calendar/calendar-page/calendar-page';
+import { CalendarDayPage } from './features/calendar/calendar-day-page/calendar-day-page';
 
 export const routes: Routes = [
+  { path: 'calendar/:year/:month/:day', component: CalendarDayPage },
   { path: 'calendar/:year/:month', component: CalendarPage },
   { path: '', pathMatch: 'full', redirectTo: 'playlists' },
   { path: 'playlists', component: PlaylistsPage },

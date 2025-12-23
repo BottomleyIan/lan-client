@@ -1,54 +1,36 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
-type ColorSample = {
-  readonly name: string;
-  readonly cssVar: string;
-};
-
-const COLOR_SAMPLES: readonly ColorSample[] = [
-  { name: 'Surface 0', cssVar: 'var(--color-tokyo-surface-0)' },
-  { name: 'Surface 1', cssVar: 'var(--color-tokyo-surface-1)' },
-  { name: 'Surface 2', cssVar: 'var(--color-tokyo-surface-2)' },
-  { name: 'Surface 3', cssVar: 'var(--color-tokyo-surface-3)' },
-  { name: 'Border', cssVar: 'var(--color-tokyo-border)' },
-  { name: 'Text', cssVar: 'var(--color-tokyo-text)' },
-  { name: 'Text Muted', cssVar: 'var(--color-tokyo-text-muted)' },
-  { name: 'Text Subtle', cssVar: 'var(--color-tokyo-text-subtle)' },
-  { name: 'Accent Purple', cssVar: 'var(--color-tokyo-accent-purple)' },
-  { name: 'Accent Blue', cssVar: 'var(--color-tokyo-accent-blue)' },
-  { name: 'Accent Cyan', cssVar: 'var(--color-tokyo-accent-cyan)' },
-  { name: 'Accent Green', cssVar: 'var(--color-tokyo-accent-green)' },
-  { name: 'Accent Orange', cssVar: 'var(--color-tokyo-accent-orange)' },
-  { name: 'Accent Red', cssVar: 'var(--color-tokyo-accent-red)' },
-  { name: 'Accent Yellow', cssVar: 'var(--color-tokyo-accent-yellow)' },
-  { name: 'Accent Pink', cssVar: 'var(--color-tokyo-accent-pink)' },
-];
+import { TasksApi } from '../../../core/api/tasks.api';
 
 @Component({
   selector: 'app-tasks-page',
   imports: [CommonModule],
   template: `
-    <section class="flex flex-col gap-3 p-4">
+    <section class="flex flex-col gap-4 p-4">
       <div>
         <h1 class="text-2xl font-semibold text-slate-100">Tasks</h1>
-        <p class="text-sm text-slate-300">Darcula color reference.</p>
+        <p class="text-sm text-slate-300">All tasks from the server.</p>
       </div>
-      <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-        @for (color of colors; track color.name) {
-          <div class="rounded-lg border border-white/10 bg-white/5 p-3">
-            <div class="h-16 w-full rounded-md" [style.backgroundColor]="color.cssVar"></div>
-            <div class="mt-2 text-sm font-semibold" [style.color]="color.cssVar">
-              {{ color.name }}
-            </div>
-            <div class="text-xs text-slate-400">{{ color.cssVar }}</div>
+      @if (tasks$ | async; as tasks) {
+        @if (tasks.length === 0) {
+          <p class="text-sm text-slate-400">No tasks yet.</p>
+        } @else {
+          <div class="flex flex-col gap-3">
+            @for (task of tasks; track task.id) {
+              <div class="rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-slate-100">
+                <pre class="text-xs whitespace-pre-wrap text-slate-200">{{ task | json }}</pre>
+              </div>
+            }
           </div>
         }
-      </div>
+      } @else {
+        <p class="text-sm text-slate-400" aria-live="polite">Loading tasks…</p>
+      }
     </section>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TasksPage {
-  readonly colors = COLOR_SAMPLES;
+  private readonly tasksApi = inject(TasksApi);
+  protected readonly tasks$ = this.tasksApi.getTasks();
 }
