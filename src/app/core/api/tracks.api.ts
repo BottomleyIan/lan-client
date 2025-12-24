@@ -30,7 +30,6 @@ export class TracksApi {
     if (request?.include_unavailable !== undefined) {
       params = params.set('include_unavailable', String(request.include_unavailable));
     }
-    console.log(params, request);
     return this.http.get<HandlersTrackDTO[]>(apiUrl('api/tracks'), { params });
   }
 

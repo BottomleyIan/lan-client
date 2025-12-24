@@ -7,7 +7,7 @@ import type { IconName } from '../../ui/icon/icon';
   imports: [IconButtonPrimary],
   templateUrl: './star-rating.html',
   host: {
-    class: 'flex text-2xl',
+    class: 'flex',
     role: 'group',
     '[attr.aria-label]': 'label()',
   },
@@ -40,7 +40,7 @@ export class StarRating {
     if (star <= this.selectedRating()) {
       return 'text-tokyo-accent-yellow tokyo-glow-cyan-hover hover:text-tokyo-accent-cyan';
     }
-    return 'text-tokyo-accent-cyan hover:text-tokyo-accent-orange tokyo-glow-orange-hover';
+    return 'text-tokyo-accent-cyan/70 hover:text-tokyo-accent-orange tokyo-glow-orange-hover';
   }
 
   protected setHover(star: number): void {

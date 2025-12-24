@@ -134,6 +134,7 @@ export class PlayerFacade {
       id: String(t?.id ?? ''),
       title: t?.title?.trim() || t?.filename?.trim() || 'Untitled',
       artist: t?.artist?.name?.trim() || undefined,
+      album: t?.album || undefined,
       genre: t?.genre ?? undefined,
       year: String(t?.year ?? ''),
       imageUrl: t?.id ? trackImageUrl(t?.id) : undefined,

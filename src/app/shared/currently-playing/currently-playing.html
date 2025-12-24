@@ -1,12 +1,8 @@
-@if (current$ | async; as track) {
-  <section
-    uiContainerDiv
-    class="relative flex h-full max-h-full flex-col overflow-hidden bg-black p-2"
-    role="group"
-  >
-    <div class="grid grid-cols-4 items-center gap-x-6">
-      <div class="row-span-2 flex flex-1 items-center gap-2">
-        <div class="bg-tokyo-surface-0 relative aspect-square h-22 max-h-22">
+<section uiContainerDiv class="relative overflow-hidden bg-black p-2" role="group">
+  @if (current$ | async; as track) {
+    <div class="grid-currently-playing grid items-center gap-x-8">
+      <div class="grid-area-image flex flex-1 items-center gap-2">
+        <div class="image-container bg-tokyo-surface-0 relative">
           @if (track.imageUrl) {
             <img
               [src]="track.imageUrl"
@@ -23,19 +19,24 @@
             </div>
           }
         </div>
-        <div class="w-[38ch]">
-          <h2 uiH2 class="font-vt323c text-tokyo-accent-cyan truncate leading-6 font-semibold">
-            {{ track.title }}
-          </h2>
-          <div
-            class="font-vt323c text-tokyo-accent-cyan truncate leading-6 leading-snug font-semibold"
-          >
-            {{ track.artist }}
-          </div>
-          <app-star-rating [rating]="track.rating" [onChange]="makeHandleRatingChange(track.id)" />
-        </div>
       </div>
-      <div class="flex w-60 max-w-60 flex-col place-self-center">
+      <div class="grid-area-title">
+        <h2 uiH2 class="font-vt323c text-tokyo-accent-cyan truncate font-semibold">
+          <om-word-morph
+            styleClass="word-morph-text"
+            [words]="[
+              track.title,
+              track.album?.title ?? 'Unknown Album',
+              track.artist ?? 'Unknown Artist',
+            ]"
+          >
+          </om-word-morph>
+        </h2>
+      </div>
+      <div class="grid-area-rating place-self-center place-self-start justify-self-center text-4xl">
+        <app-star-rating [rating]="track.rating" [onChange]="makeHandleRatingChange(track.id)" />
+      </div>
+      <div class="grid-area-play flex w-60 max-w-60 flex-col place-self-center">
         <div class="flex w-full items-center justify-between place-self-center text-4xl">
           <app-icon-button-primary
             icon="shuffle"
@@ -58,17 +59,19 @@
           <app-icon-button-primary icon="next" label="Next track" (pressed)="player.next()" />
         </div>
       </div>
-      <app-volume-controls />
-      <div class="row-span-2 flex flex-col gap-3 place-self-end">
+      <div class="grid-area-volume">
+        <app-volume-controls />
+      </div>
+      <div class="grid-area-equalizer flex flex-col gap-3 place-self-end">
         <app-equalizer-display />
       </div>
-      <div class="col-span-2">
+      <div class="grid-area-seek">
         <app-playback-seek />
       </div>
     </div>
-  </section>
-} @else {
-  <app-panel label="Player 1" badge="2" [hidden]="true">
-    <div>Nothing queued</div>
-  </app-panel>
-}
+  } @else {
+    <om-retro-grid [gridColor]="'#fff'" [fadeColor]="'rgb(15, 15, 15)'">
+      <div class="grid-currently-playing grid items-center gap-x-8"></div>
+    </om-retro-grid>
+  }
+</section>

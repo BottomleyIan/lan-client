@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject, distinctUntilChanged, map } from 'rxjs';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { HandlersAlbumSummaryDTO } from '../api/generated/api-types';
 
 export type RepeatMode = 'off' | 'one' | 'all';
 
@@ -7,6 +9,7 @@ export type PlayerServiceTrack = {
   id: string;
   title: string;
   artist?: string;
+  album?: HandlersAlbumSummaryDTO;
   durationMs?: number;
   genre?: string;
   year?: string;

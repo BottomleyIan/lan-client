@@ -1,17 +1,15 @@
-<div class="flex w-full flex-col gap-2">
-  <div
-    class="font-vt323c text-tokyo-accent-cyan flex w-full items-center justify-between text-sm font-semibold"
-  >
-    <span>{{ formattedCurrentTime() }}</span>
-    <span>{{ formattedDuration() }}</span>
+<div class="font-vt323c text-tokyo-accent-cyan/70 flex w-full flex-row items-center gap-4 text-xl">
+  <span>{{ formattedCurrentTime() }}</span>
+  <div class="grow">
+    <app-slider
+      [min]="0"
+      [max]="durationMs()"
+      [step]="1000"
+      [value]="positionMs()"
+      [label]="label()"
+      [disabled]="isSeekDisabled()"
+      (valueChange)="handleSeek($event)"
+    />
   </div>
-  <app-slider
-    [min]="0"
-    [max]="durationMs()"
-    [step]="1000"
-    [value]="positionMs()"
-    [label]="label()"
-    [disabled]="isSeekDisabled()"
-    (valueChange)="handleSeek($event)"
-  />
+  <span>{{ formattedDuration() }}</span>
 </div>

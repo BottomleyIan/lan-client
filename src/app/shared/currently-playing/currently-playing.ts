@@ -23,6 +23,8 @@ import { StarRating } from '../star-rating/star-rating';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { TracksApi } from '../../core/api/tracks.api';
 import { PlaybackSeek } from '../playback-seek/playback-seek';
+import { NgxWordMorphComponent } from '@omnedia/ngx-word-morph';
+import { NgxRetroGridComponent } from '@omnedia/ngx-retro-grid';
 
 @Component({
   selector: 'app-currently-playing',
@@ -37,6 +39,8 @@ import { PlaybackSeek } from '../playback-seek/playback-seek';
     AddImageToTrackButto,
     StarRating,
     PlaybackSeek,
+    NgxWordMorphComponent,
+    NgxRetroGridComponent,
   ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

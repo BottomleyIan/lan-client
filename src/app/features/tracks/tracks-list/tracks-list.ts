@@ -191,6 +191,7 @@ export class TracksList {
           id: String(t.id),
           title: t.title?.trim() || t.filename?.trim() || 'Untitled',
           artist: t.artist?.name?.trim() || undefined,
+          album: t.album ?? undefined,
           genre: t.genre ?? undefined,
           year: String(t.year ?? ''),
           imageUrl: trackImageUrl(t.id),
