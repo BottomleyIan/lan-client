@@ -10,7 +10,7 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { combineLatest, distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
 import type { HandlersTrackDTO } from '../../../core/api/generated/api-types';
@@ -40,26 +40,19 @@ export class TracksList {
 
   readonly albumId = input<string | null>(null);
   readonly artistId = input<string | null>(null);
-  readonly albumId$ = toObservable(this.albumId).pipe(distinctUntilChanged());
-  readonly artistId$ = toObservable(this.artistId).pipe(distinctUntilChanged());
-  readonly filter$ = combineLatest([this.albumId$, this.artistId$]).pipe(
-    map(([albumId, artistId]) => ({
-      albumId: albumId || undefined,
-      artistId: artistId || undefined,
-    })),
-  );
   readonly previous = input<(() => void) | null>(null);
 
-  readonly tracksVm$: Observable<PlayerServiceTrack[]> = this.filter$.pipe(
-    switchMap(({ artistId, albumId }) =>
-      artistId || albumId
-        ? this.tracksApi
-            .getTracks({
-              albumId,
-              artistId,
-              expand: artistId ? 'album' : undefined,
-            })
-            .pipe(map((tracks) => this.toTracksVm(tracks)))
+  readonly filter = computed(() => ({
+    albumId: this.albumId() || undefined,
+    artistId: this.artistId() || undefined,
+    expand: this.artistId() ? 'album' : undefined,
+  }));
+
+  readonly tracksVm$: Observable<PlayerServiceTrack[]> = toObservable(this.filter).pipe(
+    distinctUntilChanged((a, b) => a.albumId === b.albumId && a.artistId === b.artistId),
+    switchMap((filter) =>
+      filter.artistId || filter.albumId
+        ? this.tracksApi.getTracks(filter).pipe(map((tracks) => this.toTracksVm(tracks)))
         : of([]),
     ),
   );
@@ -79,6 +72,7 @@ export class TracksList {
   constructor() {
     effect(() => {
       this.albumId();
+      this.artistId();
       this.activeIndex.set(-1);
     });
 
