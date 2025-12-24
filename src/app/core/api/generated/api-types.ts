@@ -78,6 +78,20 @@ export interface HandlersJournalDayDTO {
   year?: number;
 }
 
+export interface HandlersMetalPriceDTO {
+  gbp?: number;
+  name?: string;
+  symbol?: string;
+  updatedAt?: string;
+  updatedAtReadable?: string;
+  usd?: number;
+}
+
+export interface HandlersMetalsPricesDTO {
+  gold?: HandlersMetalPriceDTO;
+  silver?: HandlersMetalPriceDTO;
+}
+
 export interface HandlersPlaylistDTO {
   created_at?: string;
   deleted_at?: string;
@@ -128,6 +142,7 @@ export interface HandlersTaskDTO {
   position?: number;
   scheduled_at?: string;
   status?: string;
+  tags?: string[];
   title?: string;
   updated_at?: string;
   year?: number;
