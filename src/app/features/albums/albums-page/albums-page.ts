@@ -5,12 +5,21 @@ import { Panel, PanelAction } from '../../../ui/panel/panel';
 import { LetterSelector, type LetterOption } from '../../../ui/letter-selector/letter-selector';
 import { AlbumsList } from '../albums-list/albums-list';
 import { AlbumDetail } from '../album-detail/album-detail';
+import { ArtistDetail } from '../../artists/artist-detail/artist-detail';
 import { ArtistsList } from '../../artists/artists-list/artists-list';
 
 type FilterEntity = 'ALBUM' | 'ARTIST';
 @Component({
   selector: 'app-albums-page',
-  imports: [CommonModule, Panel, LetterSelector, AlbumsList, AlbumDetail, ArtistsList],
+  imports: [
+    CommonModule,
+    Panel,
+    LetterSelector,
+    AlbumsList,
+    AlbumDetail,
+    ArtistsList,
+    ArtistDetail,
+  ],
   templateUrl: './albums-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

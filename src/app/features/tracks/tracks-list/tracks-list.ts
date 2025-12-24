@@ -10,20 +10,17 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { distinctUntilChanged, map, of, switchMap } from 'rxjs';
+import { combineLatest, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
-
 import { CdkVirtualScrollViewport, ScrollingModule } from '@angular/cdk/scrolling';
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { AlbumsApi } from '../../../core/api/albums.api';
-
 import type { HandlersTrackDTO } from '../../../core/api/generated/api-types';
-
 import { trackImageUrl } from '../../../core/api/track-image';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TrackButton } from '../track-button/track-button';
 import type { PlayerServiceTrack } from '../../../core/services/player-service';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { TracksApi } from '../../../core/api/tracks.api';
 
 @Component({
   selector: 'app-tracks-list',
@@ -38,18 +35,30 @@ import type { PlayerServiceTrack } from '../../../core/services/player-service';
   },
 })
 export class TracksList {
-  private readonly albumsApi = inject(AlbumsApi);
+  private readonly tracksApi = inject(TracksApi);
   private readonly host = inject(ElementRef<HTMLElement>);
 
   readonly albumId = input<string | null>(null);
+  readonly artistId = input<string | null>(null);
   readonly albumId$ = toObservable(this.albumId).pipe(distinctUntilChanged());
+  readonly artistId$ = toObservable(this.artistId).pipe(distinctUntilChanged());
+  readonly filter$ = combineLatest([this.albumId$, this.artistId$]).pipe(
+    map(([albumId, artistId]) => ({
+      albumId: albumId || undefined,
+      artistId: artistId || undefined,
+    })),
+  );
   readonly previous = input<(() => void) | null>(null);
 
-  readonly tracksVm$: Observable<PlayerServiceTrack[]> = this.albumId$.pipe(
-    switchMap((id) =>
-      id
-        ? this.albumsApi
-            .getAlbumTracks(id, { expand: 'artist' })
+  readonly tracksVm$: Observable<PlayerServiceTrack[]> = this.filter$.pipe(
+    switchMap(({ artistId, albumId }) =>
+      artistId || albumId
+        ? this.tracksApi
+            .getTracks({
+              albumId,
+              artistId,
+              expand: artistId ? 'album' : undefined,
+            })
             .pipe(map((tracks) => this.toTracksVm(tracks)))
         : of([]),
     ),

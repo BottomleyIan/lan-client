@@ -53,7 +53,10 @@
   </app-panel>
   <div class="flex-1">
     @if (showArtistList()) {
-      <div></div>
+      <app-artist-detail
+        [selectedArtistId]="selectedArtistId()"
+        [previous]="focusAlbumListFromTracks"
+      />
     }
     @if (showAlbumList()) {
       <app-album-detail
