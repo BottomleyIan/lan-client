@@ -7,7 +7,6 @@ import {
   signal,
   type Signal,
 } from '@angular/core';
-import { Panel } from '../../ui/panel/panel';
 import { IconButtonPrimary } from '../../ui/icon-button/icon-button-primary';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService, type PlayerServiceTrack } from '../../core/services/player-service';
@@ -29,7 +28,6 @@ import { NgxRetroGridComponent } from '@omnedia/ngx-retro-grid';
 @Component({
   selector: 'app-currently-playing',
   imports: [
-    Panel,
     IconButtonPrimary,
     AsyncPipe,
     H2Directive,

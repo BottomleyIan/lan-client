@@ -4,13 +4,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TasksApi } from '../../../core/api/tasks.api';
 import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
-import { Panel } from '../../../ui/panel/panel';
 import { CalendarTask } from '../calendar-task/calendar-task';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 
 @Component({
   selector: 'app-calendar-page',
-  imports: [CommonModule, RouterLink, Panel, CalendarTask],
+  imports: [CommonModule, RouterLink, CalendarTask],
   templateUrl: './calendar-page.html',
   styleUrl: './calendar-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -92,6 +92,21 @@ export interface HandlersMetalsPricesDTO {
   silver?: HandlersMetalPriceDTO;
 }
 
+export interface HandlersNoteDTO {
+  body?: string;
+  created_at?: string;
+  day?: number;
+  id?: number;
+  month?: number;
+  position?: number;
+  raw_line?: string;
+  tags?: string[];
+  title?: string;
+  type?: string;
+  updated_at?: string;
+  year?: number;
+}
+
 export interface HandlersPlaylistDTO {
   created_at?: string;
   deleted_at?: string;

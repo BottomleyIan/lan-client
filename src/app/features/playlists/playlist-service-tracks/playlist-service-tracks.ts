@@ -13,7 +13,7 @@ import { PlaylistTrack, type PlaylistTrackVm } from '../playlist-track/playlist-
 import { PlaylistService } from '../../../core/services/playlist-service';
 
 @Component({
-  selector: 'app-playlist-tracks',
+  selector: 'app-playlist-service-tracks',
   imports: [CommonModule, NgOptimizedImage, ScrollingModule, CdkDropList, CdkDrag, PlaylistTrack],
   templateUrl: './playlist-service-tracks.html',
   styleUrl: './playlist-service-tracks.css',
