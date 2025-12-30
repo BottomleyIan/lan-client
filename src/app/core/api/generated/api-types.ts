@@ -110,6 +110,7 @@ export interface HandlersNoteDTO {
   body?: string;
   created_at?: string;
   day?: number;
+  hash?: string;
   id?: number;
   month?: number;
   position?: number;
@@ -166,6 +167,7 @@ export interface HandlersTaskDTO {
   created_at?: string;
   day?: number;
   deadline_at?: string;
+  hash?: string;
   id?: number;
   month?: number;
   position?: number;
@@ -231,6 +233,12 @@ export interface HandlersCreateLogseqTaskRequest {
   tags?: string[];
 }
 
+export interface HandlersCreateNoteRequest {
+  body?: string;
+  description?: string;
+  tags?: string[];
+}
+
 export interface HandlersCreatePlaylistRequest {
   name?: string;
 }
@@ -251,6 +259,10 @@ export interface HandlersUpdateAlbumRequest {
 
 export interface HandlersUpdateArtistRequest {
   name?: string;
+}
+
+export interface HandlersUpdateJournalEntryRequest {
+  raw?: string;
 }
 
 export interface HandlersUpdatePlaylistTrackRequest {
