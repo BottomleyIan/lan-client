@@ -4,6 +4,12 @@
     @if (showLabel()) {
       <span class="text-xs text-slate-200">{{ label() }}</span>
     }
+    <app-icon-button-danger
+      icon="trash"
+      [label]="'Delete task ' + label()"
+      [disabled]="false"
+      (pressed)="onDelete()"
+    />
   </div>
   <markdown class="prose prose-invert max-w-none" [data]="body()" lineNumbers></markdown>
 </div>

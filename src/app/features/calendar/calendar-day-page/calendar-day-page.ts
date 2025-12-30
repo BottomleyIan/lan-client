@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ActivatedRoute, ParamMap, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Panel } from '../../../ui/panel/panel';
 import { CalendarTask } from '../calendar-task/calendar-task';
 import { MONTH_NAMES } from '../calendar-constants';
-import { filter, map, switchMap } from 'rxjs';
+import { filter, map, merge, Subject, switchMap } from 'rxjs';
 import { CalendarApi } from '../../../core/api/calendar.api';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { HandlersTaskDTO } from '../../../core/api/generated/api-types';
 
 @Component({
   selector: 'app-calendar-day-page',
@@ -17,21 +20,18 @@ import { CalendarApi } from '../../../core/api/calendar.api';
 export class CalendarDayPage {
   private readonly route = inject(ActivatedRoute);
   private readonly calendarApi = inject(CalendarApi);
+  private readonly refresh$ = new Subject<void>();
 
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
 
-  protected readonly data$ = this.route.paramMap.pipe(
-    map((params) => ({
-      year: toNumber(params.get('year')),
-      month: toNumber(params.get('month')),
-      day: toNumber(params.get('day')),
-    })),
-    filter(
-      (params): params is { year: number; month: number; day: number } =>
-        params.year !== null && params.month !== null && params.day !== null,
-    ),
+  private readonly dayParams$ = merge(
+    this.route.paramMap.pipe(map(readDayParams)),
+    this.refresh$.pipe(map(() => readDayParams(this.route.snapshot.paramMap))),
+  ).pipe(filter((params): params is DayParams => params !== null));
+
+  protected readonly data$ = this.dayParams$.pipe(
     switchMap(({ year, month, day }) => this.calendarApi.getDayView(year, month, day)),
   );
 
@@ -66,6 +66,10 @@ export class CalendarDayPage {
     }
     return `${MONTH_NAMES[month - 1] ?? 'Month'} ${day}, ${year}`;
   });
+
+  protected handleTaskDeleted(_task: HandlersTaskDTO): void {
+    this.refresh$.next();
+  }
 }
 
 function toNumber(raw: string | null): number | null {
@@ -77,6 +81,17 @@ function toNumber(raw: string | null): number | null {
 }
 
 type DateParts = { year: number; month: number; day: number };
+type DayParams = { year: number; month: number; day: number };
+
+function readDayParams(params: ParamMap): DayParams | null {
+  const year = toNumber(params.get('year'));
+  const month = toNumber(params.get('month'));
+  const day = toNumber(params.get('day'));
+  if (!year || !month || !day) {
+    return null;
+  }
+  return { year, month, day };
+}
 
 function shiftDay(current: DateParts, delta: number): DateParts {
   const date = new Date(current.year, current.month - 1, current.day);
