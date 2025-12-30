@@ -16,6 +16,7 @@ export class TasksApi {
     tags?: string[];
     year?: number | string;
     month?: number | string;
+    day?: number | string;
   }): Observable<HandlersTaskDTO[]> {
     let params = new HttpParams();
     if (request?.statuses?.length) {
@@ -32,6 +33,9 @@ export class TasksApi {
     }
     if (request?.month !== undefined) {
       params = params.set('month', String(request.month));
+    }
+    if (request?.day !== undefined) {
+      params = params.set('day', String(request.day));
     }
     return this.http.get<HandlersTaskDTO[]>(apiUrl('api/tasks'), { params });
   }

@@ -6,12 +6,12 @@ import { TasksApi } from '../../../core/api/tasks.api';
 import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
 import { CalendarTask } from '../calendar-task/calendar-task';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
+import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
 
 @Component({
   selector: 'app-calendar-page',
   imports: [CommonModule, RouterLink, CalendarTask],
   templateUrl: './calendar-page.html',
-  styleUrl: './calendar-page.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarPage {
@@ -101,22 +101,6 @@ export class CalendarPage {
     return this.tasksByDay().get(day) ?? [];
   }
 }
-
-const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
-const MONTH_NAMES = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-] as const;
 
 type DateParts = { year: number; month: number; day: number };
 

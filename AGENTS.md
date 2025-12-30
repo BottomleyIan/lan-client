@@ -92,3 +92,7 @@ You are an expert in TypeScript, Angular, and scalable web application developme
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
+
+## Git Workflow Exception
+
+- Do not create commits or push changes. Leave git operations to the user.

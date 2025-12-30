@@ -41,6 +41,14 @@ export interface HandlersArtistSummaryDTO {
   name?: string;
 }
 
+export interface HandlersDayViewDTO {
+  day?: number;
+  month?: number;
+  notes?: HandlersNoteDTO[];
+  tasks?: HandlersTaskDTO[];
+  year?: number;
+}
+
 export interface HandlersFolderDTO {
   available?: boolean;
   created_at?: string;
@@ -57,6 +65,12 @@ export interface HandlersFolderDTO {
 export interface HandlersHealth {
   status?: string;
   time?: string;
+}
+
+export interface HandlersJournalAssetDTO {
+  filename?: string;
+  path?: string;
+  size_bytes?: number;
 }
 
 export interface HandlersJournalDTO {
