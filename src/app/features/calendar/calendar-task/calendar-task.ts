@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  Signal,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
 import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
@@ -6,10 +14,11 @@ import { MarkdownComponent } from 'ngx-markdown';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { TasksApi } from '../../../core/api/tasks.api';
 import { apiUrl } from '../../../core/api/api-url';
+import { Tags } from '../../tags/tags';
 
 @Component({
   selector: 'app-calendar-task',
-  imports: [CommonModule, TaskIcon, MarkdownComponent, IconButtonDanger],
+  imports: [CommonModule, TaskIcon, MarkdownComponent, IconButtonDanger, Tags],
   templateUrl: './calendar-task.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -28,6 +37,10 @@ export class CalendarTask {
   protected readonly body = computed(() => {
     const task = this.task();
     return rewriteAssetPaths(task.body?.trim() ?? '');
+  });
+  protected readonly tags: Signal<string[]> = computed(() => {
+    const task = this.task();
+    return task.tags ?? [];
   });
 
   protected onDelete(): void {
