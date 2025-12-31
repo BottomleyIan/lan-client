@@ -44,24 +44,6 @@ export class CalendarPage {
 
   protected readonly dayNames = DAY_NAMES;
 
-  protected readonly prevLink = computed(() => {
-    const month = this.month();
-    const year = this.year();
-    if (month === 1) {
-      return { year: year - 1, month: 12 };
-    }
-    return { year, month: month - 1 };
-  });
-
-  protected readonly nextLink = computed(() => {
-    const month = this.month();
-    const year = this.year();
-    if (month === 12) {
-      return { year: year + 1, month: 1 };
-    }
-    return { year, month: month + 1 };
-  });
-
   protected readonly days = computed(() => {
     const year = this.year();
     const month = this.month();

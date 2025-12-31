@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Panel } from '../../../ui/panel/panel';
 import { DayView } from '../../../shared/day-view/day-view';
@@ -9,7 +9,7 @@ import { MONTH_NAMES } from '../calendar-constants';
 
 @Component({
   selector: 'app-calendar-day-page',
-  imports: [CommonModule, RouterLink, Panel, DayView],
+  imports: [CommonModule, Panel, DayView],
   templateUrl: './calendar-day-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -23,25 +23,7 @@ export class CalendarDayPage {
   protected readonly year = computed(() => toNumber(this.params().get('year')));
   protected readonly month = computed(() => toNumber(this.params().get('month')));
   protected readonly day = computed(() => toNumber(this.params().get('day')));
-  protected readonly prevLink = computed(() => {
-    const year = this.year();
-    const month = this.month();
-    const day = this.day();
-    if (!year || !month || !day) {
-      return null;
-    }
-    return shiftDay({ year, month, day }, -1);
-  });
 
-  protected readonly nextLink = computed(() => {
-    const year = this.year();
-    const month = this.month();
-    const day = this.day();
-    if (!year || !month || !day) {
-      return null;
-    }
-    return shiftDay({ year, month, day }, 1);
-  });
   protected readonly title = computed(() => {
     const year = this.year();
     const month = this.month();
@@ -59,11 +41,4 @@ function toNumber(raw: string | null): number | null {
   }
   const value = Number(raw);
   return Number.isFinite(value) ? value : null;
-}
-
-type DateParts = { year: number; month: number; day: number };
-function shiftDay(current: DateParts, delta: number): DateParts {
-  const date = new Date(current.year, current.month - 1, current.day);
-  date.setDate(date.getDate() + delta);
-  return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 }

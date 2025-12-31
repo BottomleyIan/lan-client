@@ -72,12 +72,22 @@
   </nav>
 
   <div class="flex items-baseline gap-3 text-nowrap">
-    <h1
-      class="font-vt323 font-black tracking-[0.14em] uppercase drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
-    >
-      {{ title() }}
-    </h1>
-    <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
+    @switch (titleMode()) {
+      @case ('calendar-month') {
+        <app-calendar-month-title />
+      }
+      @case ('calendar-day') {
+        <app-calendar-day-title />
+      }
+      @default {
+        <h1
+          class="font-vt323 font-black tracking-[0.14em] uppercase drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
+        >
+          {{ title() }}
+        </h1>
+        <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
+      }
+    }
   </div>
   <div class="flex items-center gap-2">
     <app-journal-entry-add-button />

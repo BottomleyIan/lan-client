@@ -16,7 +16,7 @@
     >
       Skip to main content
     </a>
-    <app-navbar />
+    <app-navbar [title]="navTitle()" [subtitle]="navSubtitle()" [titleMode]="navTitleMode()" />
     <main class="min-h-0 flex-1 overflow-y-auto pb-2">
       <a id="main-content" tabindex="-1" class="sr-only">Main content</a>
       <router-outlet />

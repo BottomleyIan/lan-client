@@ -1,5 +1,5 @@
 <div class="flex h-full flex-col gap-4">
-  <app-panel class="flex-1" label="Notes" [stableGutter]="false" [badge]="tag()">
+  <app-panel class="max-h-full flex-1" label="" [stableGutter]="false" [badge]="tag()">
     @if (tag()) {
       <div class="relative border-b border-white/10">
         @if (relatedSlots$ | async; as slots) {
