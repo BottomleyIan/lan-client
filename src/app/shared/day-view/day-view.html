@@ -1,28 +1,12 @@
 <div class="flex flex-col gap-3 p-4">
-  @if (data$ | async; as data) {
-    @if (data.tasks.length === 0) {
+  @if (entries$ | async; as entries) {
+    @if (entries.length === 0) {
       <p class="text-sm text-slate-400">No tasks for this view.</p>
     } @else {
       <div class="flex flex-col gap-3">
-        @for (task of data.tasks; track trackTaskId($index, task)) {
+        @for (entry of entries; track trackEntryId($index, entry)) {
           <div class="rounded-xl border border-white/10 bg-white/5 p-3">
-            <app-calendar-task [task]="task" (deleted)="handleTaskDeleted()" />
-          </div>
-        }
-      </div>
-    }
-    @if (data.notes.length === 0) {
-      <p class="text-sm text-slate-400">No notes for this view.</p>
-    } @else {
-      <div class="flex flex-col gap-3">
-        @for (note of data.notes; track trackNoteId($index, note)) {
-          <div class="rounded-xl border border-white/10 bg-white/5 p-3">
-            @if (note.tags?.length) {
-              <div class="mb-2">
-                <app-tags [tags]="note.tags ?? []" />
-              </div>
-            }
-            <app-markdown-body [markdown]="note.body ?? ''"></app-markdown-body>
+            <app-calendar-task [task]="entry" (deleted)="handleTaskDeleted()" />
           </div>
         }
       </div>

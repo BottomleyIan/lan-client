@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,7 +9,7 @@ import {
   Signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
+import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
 import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 import { MarkdownBody } from '../../../shared/markdown/markdown-body';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
@@ -24,8 +25,8 @@ import { Tags } from '../../tags/tags';
 export class CalendarTask {
   private readonly taskApi = inject(TasksApi);
 
-  readonly task = input.required<HandlersTaskDTO>();
-  readonly deleted = output<HandlersTaskDTO>();
+  readonly task = input.required<HandlersJournalEntryDTO>();
+  readonly deleted = output<HandlersJournalEntryDTO>();
   readonly showLabel = input(true);
 
   protected readonly label = computed(() => {

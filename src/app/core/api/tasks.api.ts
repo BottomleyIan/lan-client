@@ -3,8 +3,8 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import type { Observable } from 'rxjs';
 import type {
-  HandlersCreateLogseqTaskRequest,
-  HandlersTaskDTO,
+  HandlersCreateJournalEntryRequest,
+  HandlersJournalEntryDTO,
   HandlersUpdateJournalEntryRequest,
 } from './generated/api-types';
 import { apiUrl } from './api-url';
@@ -13,7 +13,7 @@ import { apiUrl } from './api-url';
 export class TasksApi {
   private readonly http = inject(HttpClient);
 
-  /** GET /tasks */
+  /** GET /journals/entries?type=task */
   getTasks(request?: {
     statuses?: string[];
     status?: string[];
@@ -21,8 +21,9 @@ export class TasksApi {
     year?: number | string;
     month?: number | string;
     day?: number | string;
-  }): Observable<HandlersTaskDTO[]> {
+  }): Observable<HandlersJournalEntryDTO[]> {
     let params = new HttpParams();
+    params = params.set('type', 'task');
     if (request?.statuses?.length) {
       params = params.set('statuses', request.statuses.join(','));
     }
@@ -41,15 +42,15 @@ export class TasksApi {
     if (request?.day !== undefined) {
       params = params.set('day', String(request.day));
     }
-    return this.http.get<HandlersTaskDTO[]>(apiUrl('api/tasks'), { params });
+    return this.http.get<HandlersJournalEntryDTO[]>(apiUrl('api/journals/entries'), { params });
   }
 
-  /** POST /tasks */
-  createTask(body: HandlersCreateLogseqTaskRequest): Observable<void> {
-    return this.http.post<void>(apiUrl('api/tasks'), body);
+  /** POST /journals/entries */
+  createTask(body: HandlersCreateJournalEntryRequest): Observable<void> {
+    return this.http.post<void>(apiUrl('api/journals/entries'), body);
   }
 
-  /** PUT /tasks/:year/:month/:day/:hash */
+  /** PUT /journals/entries/:year/:month/:day/:hash */
   updateTask(
     year: number | string,
     month: number | string,
@@ -57,22 +58,22 @@ export class TasksApi {
     hash: string,
     body: HandlersUpdateJournalEntryRequest,
     options: { ifMatch: string },
-  ): Observable<HandlersTaskDTO> {
+  ): Observable<HandlersJournalEntryDTO> {
     const headers = new HttpHeaders().set('If-Match', options.ifMatch);
-    return this.http.put<HandlersTaskDTO>(
-      apiUrl(`api/tasks/${year}/${month}/${day}/${hash}`),
+    return this.http.put<HandlersJournalEntryDTO>(
+      apiUrl(`api/journals/entries/${year}/${month}/${day}/${hash}`),
       body,
       { headers },
     );
   }
 
-  /** DELETE /tasks/:year/:month/:day/:hash */
+  /** DELETE /journals/entries/:year/:month/:day/:hash */
   deleteTask(
     year: number | string,
     month: number | string,
     day: number | string,
     hash: string,
   ): Observable<void> {
-    return this.http.delete<void>(apiUrl(`api/tasks/${year}/${month}/${day}/${hash}`));
+    return this.http.delete<void>(apiUrl(`api/journals/entries/${year}/${month}/${day}/${hash}`));
   }
 }

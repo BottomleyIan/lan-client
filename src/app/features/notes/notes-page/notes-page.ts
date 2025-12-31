@@ -8,6 +8,7 @@ import {
   viewChild,
   viewChildren,
 } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { map, of, switchMap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';

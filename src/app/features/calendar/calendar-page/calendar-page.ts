@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TasksApi } from '../../../core/api/tasks.api';
-import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
+import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
 import { CalendarTask } from '../calendar-task/calendar-task';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
@@ -79,7 +79,7 @@ export class CalendarPage {
   protected readonly tasksByDay = computed(() => {
     const year = this.year();
     const month = this.month();
-    const byDay = new Map<number, HandlersTaskDTO[]>();
+    const byDay = new Map<number, HandlersJournalEntryDTO[]>();
 
     for (const task of this.tasks()) {
       if (!isAllowedTaskStatus(task.status)) {
@@ -97,14 +97,14 @@ export class CalendarPage {
     return byDay;
   });
 
-  protected tasksForDay(day: number): HandlersTaskDTO[] {
+  protected tasksForDay(day: number): HandlersJournalEntryDTO[] {
     return this.tasksByDay().get(day) ?? [];
   }
 }
 
 type DateParts = { year: number; month: number; day: number };
 
-function resolveTaskDate(task: HandlersTaskDTO): DateParts | null {
+function resolveTaskDate(task: HandlersJournalEntryDTO): DateParts | null {
   return (
     parseDateParts(task.deadline_at) ??
     parseDateParts(task.scheduled_at) ??
@@ -123,7 +123,7 @@ function parseDateParts(raw?: string): DateParts | null {
   return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 }
 
-function parseDatePartsFromFields(task: HandlersTaskDTO): DateParts | null {
+function parseDatePartsFromFields(task: HandlersJournalEntryDTO): DateParts | null {
   if (!task.year || !task.month || !task.day) {
     return null;
   }

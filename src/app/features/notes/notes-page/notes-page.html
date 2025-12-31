@@ -1,8 +1,7 @@
 <div class="flex h-full flex-col gap-4">
-
-  <app-panel class="flex-1" label="Notes" [stableGutter]="false" [badge]="tag()" >
+  <app-panel class="flex-1" label="Notes" [stableGutter]="false" [badge]="tag()">
     @if (tag()) {
-      <div class="border-white/10 relative border-b">
+      <div class="relative border-b border-white/10">
         @if (relatedSlots$ | async; as slots) {
           @if (slots.length > 0) {
             <div class="relative min-h-40 p-4">

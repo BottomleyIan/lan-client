@@ -1,27 +1,22 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { combineLatest, map, of, startWith, Subject, switchMap } from 'rxjs';
-import { CalendarApi } from '../../core/api/calendar.api';
-import { NotesApi } from '../../core/api/notes.api';
-import { TasksApi } from '../../core/api/tasks.api';
-import type { HandlersNoteDTO, HandlersTaskDTO } from '../../core/api/generated/api-types';
+import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
+import type { HandlersJournalEntryDTO } from '../../core/api/generated/api-types';
 import { CalendarTask } from '../../features/calendar/calendar-task/calendar-task';
 import { MarkdownBody } from '../markdown/markdown-body';
-import { Tags } from '../../features/tags/tags';
+import { JournalsApi } from '../../core/api/journals.api';
 
 type DayParams = { year: number; month: number; day: number };
 
 @Component({
   selector: 'app-day-view',
-  imports: [CommonModule, CalendarTask, MarkdownBody, Tags],
+  imports: [CommonModule, CalendarTask, MarkdownBody],
   templateUrl: './day-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DayView {
-  private readonly calendarApi = inject(CalendarApi);
-  private readonly notesApi = inject(NotesApi);
-  private readonly tasksApi = inject(TasksApi);
+  private readonly journalsApi = inject(JournalsApi);
 
   readonly year = input<number | null>(null);
   readonly month = input<number | null>(null);
@@ -31,36 +26,20 @@ export class DayView {
   private readonly refresh$ = new Subject<void>();
   private readonly dayParams = computed(() => toDayParams(this.year(), this.month(), this.day()));
 
-  protected readonly data$ = combineLatest({
+  protected readonly entries$ = combineLatest({
     dayParams: toObservable(this.dayParams),
     tag: toObservable(this.tag),
     refresh: this.refresh$.pipe(startWith(undefined)),
   }).pipe(
-    switchMap(({ dayParams, tag }) => {
-      if (dayParams) {
-        return this.calendarApi
-          .getDayView(dayParams.year, dayParams.month, dayParams.day)
-          .pipe(map((view) => ({ notes: view.notes ?? [], tasks: view.tasks ?? [] })));
-      }
-      if (tag) {
-        return combineLatest({
-          notes: this.notesApi.getNotes({ tag }),
-          tasks: this.tasksApi.getTasks({ tags: [tag] }),
-        });
-      }
-      return combineLatest({
-        notes: this.notesApi.getNotes(),
-        tasks: this.tasksApi.getTasks(),
-      });
-    }),
+    switchMap(({ dayParams, tag }) =>
+      this.journalsApi.listEntries({ ...dayParams, tags: tag ? [tag] : undefined }),
+    ),
   );
 
-  protected trackTaskId(_: number, task: HandlersTaskDTO): number | string {
-    return task.id ?? task.hash ?? `${task.year}-${task.month}-${task.day}-${task.position}`;
-  }
+  readonly hasEntries$ = this.entries$.pipe(map((entries) => entries.length > 0));
 
-  protected trackNoteId(_: number, note: HandlersNoteDTO): number | string {
-    return note.id ?? note.hash ?? `${note.year}-${note.month}-${note.day}-${note.position}`;
+  protected trackEntryId(_: number, task: HandlersJournalEntryDTO): number | string {
+    return task.id ?? task.hash ?? `${task.year}-${task.month}-${task.day}-${task.position}`;
   }
 
   protected handleTaskDeleted(): void {

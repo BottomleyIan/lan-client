@@ -43,9 +43,8 @@ export interface HandlersArtistSummaryDTO {
 
 export interface HandlersDayViewDTO {
   day?: number;
+  entries?: HandlersJournalEntryDTO[];
   month?: number;
-  notes?: HandlersNoteDTO[];
-  tasks?: HandlersTaskDTO[];
   year?: number;
 }
 
@@ -92,6 +91,25 @@ export interface HandlersJournalDayDTO {
   year?: number;
 }
 
+export interface HandlersJournalEntryDTO {
+  body?: string;
+  created_at?: string;
+  day?: number;
+  deadline_at?: string;
+  hash?: string;
+  id?: number;
+  month?: number;
+  position?: number;
+  raw_line?: string;
+  scheduled_at?: string;
+  status?: string;
+  tags?: string[];
+  title?: string;
+  type?: string;
+  updated_at?: string;
+  year?: number;
+}
+
 export interface HandlersMetalPriceDTO {
   gbp?: number;
   name?: string;
@@ -104,22 +122,6 @@ export interface HandlersMetalPriceDTO {
 export interface HandlersMetalsPricesDTO {
   gold?: HandlersMetalPriceDTO;
   silver?: HandlersMetalPriceDTO;
-}
-
-export interface HandlersNoteDTO {
-  body?: string;
-  created_at?: string;
-  day?: number;
-  hash?: string;
-  id?: number;
-  month?: number;
-  position?: number;
-  raw_line?: string;
-  tags?: string[];
-  title?: string;
-  type?: string;
-  updated_at?: string;
-  year?: number;
 }
 
 export interface HandlersPlaylistDTO {
@@ -172,23 +174,6 @@ export interface HandlersTagGraphDTO {
   tag?: string;
 }
 
-export interface HandlersTaskDTO {
-  body?: string;
-  created_at?: string;
-  day?: number;
-  deadline_at?: string;
-  hash?: string;
-  id?: number;
-  month?: number;
-  position?: number;
-  scheduled_at?: string;
-  status?: string;
-  tags?: string[];
-  title?: string;
-  updated_at?: string;
-  year?: number;
-}
-
 export interface HandlersTrackDTO {
   album?: HandlersAlbumSummaryDTO;
   album_id?: number;
@@ -224,28 +209,10 @@ export interface HandlersCreateFolderRequest {
 
 export interface HandlersCreateJournalEntryRequest {
   body?: string;
-  description?: string;
-  tags?: string[];
-}
-
-export interface HandlersCreateLogseqTaskRequest {
-  /** @example "Include the new journals endpoints." */
-  body?: string;
-  /** @example "2025-12-23" */
   deadline?: string;
-  /** @example "Write release notes" */
   description?: string;
-  /** @example "2025-12-23T11:00:00Z" */
   scheduled?: string;
-  /** @example "TODO" */
   status?: string;
-  /** @example ["tag1","tag2"] */
-  tags?: string[];
-}
-
-export interface HandlersCreateNoteRequest {
-  body?: string;
-  description?: string;
   tags?: string[];
 }
 

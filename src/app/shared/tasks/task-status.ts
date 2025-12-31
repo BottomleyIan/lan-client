@@ -1,4 +1,4 @@
-import type { HandlersTaskDTO } from '../../core/api/generated/api-types';
+import type { HandlersJournalEntryDTO } from '../../core/api/generated/api-types';
 import type { IconName } from '../../ui/icon/icon';
 
 const UPCOMING_WINDOW_DAYS = 7;
@@ -24,7 +24,7 @@ export function getTaskStatusConfig(
   return status && status in TASK_STATUS_CONFIG ? TASK_STATUS_CONFIG[status as TaskStatus] : null;
 }
 
-export function getTaskAccentClass(task: HandlersTaskDTO): string {
+export function getTaskAccentClass(task: HandlersJournalEntryDTO): string {
   const status = task.status;
   const config = getTaskStatusConfig(status);
   if (!config) {

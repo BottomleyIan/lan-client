@@ -2,9 +2,9 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-areas:
-    "tag1 root tag2"
-    "tag3 root tag4"
-    "tag5 root tag6";
+    'tag1 root tag2'
+    'tag3 root tag4'
+    'tag5 root tag6';
   gap: 1rem;
   align-items: center;
   justify-items: center;
