@@ -1,26 +1,50 @@
 <div class="flex h-full flex-col gap-4">
-  <div class="flex items-center justify-between">
-    <div>
-      <div class="text-xs tracking-[0.14em] text-slate-400 uppercase">Notes</div>
-      <div class="text-2xl font-semibold text-white">{{ title() }}</div>
-    </div>
-  </div>
 
-  <app-panel class="flex-1" [label]="title()" [stableGutter]="false">
-    <div class="flex flex-col gap-3 p-4">
-      @if (notes$ | async; as notes) {
-        @if (notes.length === 0) {
-          <p class="text-sm text-slate-400">No notes found.</p>
-        } @else {
-          <div class="flex flex-col gap-3">
-            @for (note of notes; track trackNoteId($index, note)) {
-              <div class="rounded-xl border border-white/10 bg-white/5 p-3">
-                <app-markdown-body [markdown]="note.body ?? ''"></app-markdown-body>
+  <app-panel class="flex-1" label="Notes" [stableGutter]="false" [badge]="tag()" >
+    @if (tag()) {
+      <div class="border-white/10 relative border-b">
+        @if (relatedSlots$ | async; as slots) {
+          @if (slots.length > 0) {
+            <div class="relative min-h-40 p-4">
+              <div class="tag-graph-grid relative z-10">
+                <div
+                  #centerTag
+                  class="tag-root bg-tokyo-surface-2 text-tokyo-accent-orange rounded-full border border-white/10 px-3 py-1 text-sm font-semibold"
+                >
+                  {{ tag() }}
+                </div>
+                @for (slot of slots; track slot.index) {
+                  <app-notes-tag
+                    #tagRef="notesTag"
+                    [tag]="slot.tag"
+                    [positionClass]="'tag-pos-' + slot.index"
+                  ></app-notes-tag>
+                }
+                @if (beamsReady()) {
+                  @for (slot of slots; track slot.index) {
+                    <om-connection-beam
+                      class="pointer-events-none absolute inset-0"
+                      [fromRef]="tagElements()[slot.index]"
+                      [toRef]="centerElement()"
+                      [curvature]="curvatureFor(slot.index)"
+                      [pathColor]="'var(--color-tokyo-accent-orange)'"
+                      [gradientStartColor]="'var(--color-tokyo-accent-orange)'"
+                      [gradientStopColor]="'var(--color-tokyo-accent-cyan)'"
+                      [pathOpacity]="slot.tag ? 0.45 : 0.15"
+                      [pathWidth]="slot.tag ? 2 : 1"
+                      [duration]="5"
+                    >
+                    </om-connection-beam>
+                  }
+                }
               </div>
-            }
-          </div>
+            </div>
+          } @else {
+            <div class="p-4 text-sm text-slate-400">No related tags found.</div>
+          }
         }
-      }
-    </div>
+      </div>
+    }
+    <app-day-view [tag]="tag()"></app-day-view>
   </app-panel>
 </div>

@@ -1,0 +1,10 @@
+@if (tag()) {
+  <a
+    [routerLink]="['/notes', tag()]"
+    class="focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tokyo-accent-cyan/70"
+  >
+    {{ tag() }}
+  </a>
+} @else {
+  <span aria-hidden="true">—</span>
+}

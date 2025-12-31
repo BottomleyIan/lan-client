@@ -162,6 +162,16 @@ export interface HandlersSettingKeyDTO {
   key?: string;
 }
 
+export interface HandlersTagEdgeDTO {
+  count?: number;
+  tag?: string;
+}
+
+export interface HandlersTagGraphDTO {
+  related?: HandlersTagEdgeDTO[];
+  tag?: string;
+}
+
 export interface HandlersTaskDTO {
   body?: string;
   created_at?: string;

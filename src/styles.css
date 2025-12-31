@@ -121,6 +121,34 @@
   .tokyo-glow-orange-hover:focus-visible {
     text-shadow: 0 0 12px var(--color-tokyo-accent-orange);
   }
+
+  .tag-link::before,
+  .tag-link::after {
+    color: var(--color-tokyo-accent-orange);
+    opacity: 0.4;
+  }
+
+  .tag-link::before {
+    content: '[[';
+    margin-right: 0.125rem;
+  }
+
+  .tag-link::after {
+    content: ']]';
+    margin-left: 0.125rem;
+  }
+
+  .tag-link:hover,
+  .tag-link:focus-visible {
+    color: var(--color-tokyo-accent-cyan);
+  }
+
+  .tag-link:hover::before,
+  .tag-link:hover::after,
+  .tag-link:focus-visible::before,
+  .tag-link:focus-visible::after {
+    color: var(--color-tokyo-accent-cyan);
+  }
 }
 
 .word-morph-text {

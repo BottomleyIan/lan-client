@@ -34,7 +34,7 @@ function formatMarkdownBody(markdown: string): string {
       return match;
     }
     const href = `/notes/${encodeURIComponent(tag)}`;
-    return `<a class="tag text-tokyo-accent-orange" href="${href}">${escapeHtml(tag)}</a>`;
+    return `<a class="tag-link text-tokyo-accent-orange" href="${href}">${escapeHtml(tag)}</a>`;
   });
 }
 

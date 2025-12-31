@@ -6,6 +6,7 @@ import type {
   HandlersJournalAssetDTO,
   HandlersJournalDTO,
   HandlersJournalDayDTO,
+  HandlersTagGraphDTO,
 } from './generated/api-types';
 import { apiUrl } from './api-url';
 
@@ -56,6 +57,11 @@ export class JournalsApi {
   getAsset(path: string): Observable<Blob> {
     const params = new HttpParams().set('path', path);
     return this.http.get(apiUrl('api/journals/assets'), { params, responseType: 'blob' });
+  }
+
+  /** GET /journals/tags/graph/:tag */
+  getTagGraph(tag: string): Observable<HandlersTagGraphDTO> {
+    return this.http.get<HandlersTagGraphDTO>(apiUrl(`api/journals/tags/graph/${tag}`));
   }
 
   /** POST /journals */

@@ -1,0 +1,39 @@
+.tag-graph-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas:
+    "tag1 root tag2"
+    "tag3 root tag4"
+    "tag5 root tag6";
+  gap: 1rem;
+  align-items: center;
+  justify-items: center;
+}
+
+.tag-graph-grid > .tag-root {
+  grid-area: root;
+}
+
+.tag-graph-grid > .tag-pos-0 {
+  grid-area: tag1;
+}
+
+.tag-graph-grid > .tag-pos-1 {
+  grid-area: tag2;
+}
+
+.tag-graph-grid > .tag-pos-2 {
+  grid-area: tag3;
+}
+
+.tag-graph-grid > .tag-pos-3 {
+  grid-area: tag4;
+}
+
+.tag-graph-grid > .tag-pos-4 {
+  grid-area: tag5;
+}
+
+.tag-graph-grid > .tag-pos-5 {
+  grid-area: tag6;
+}
