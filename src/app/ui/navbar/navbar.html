@@ -33,7 +33,7 @@
       />
       <app-nav-link
         routerLink="/tasks"
-        label="Tasks"
+        label="Entries"
         iconName="tasklist"
         [srOnly]="true"
         [showSkipLink]="true"
@@ -73,7 +73,7 @@
     <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
   </div>
   <div class="flex items-center gap-2">
-    <app-notes-add-button />
+    <app-journal-entry-add-button />
     <app-nav-link
       routerLink="/settings"
       [exact]="true"

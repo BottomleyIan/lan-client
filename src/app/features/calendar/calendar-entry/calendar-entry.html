@@ -1,13 +1,13 @@
 <div class="flex flex-col gap-4">
   <div class="flex items-start gap-2" [attr.title]="label()">
-    <app-task-icon [task]="task()" />
+    <app-task-icon [task]="entry()" />
     @if (showLabel()) {
       <span class="text-xs text-slate-200">{{ label() }}</span>
     }
     <app-tags [tags]="tags()" />
     <app-icon-button-danger
       icon="trash"
-      [label]="'Delete task ' + label()"
+      [label]="'Delete entry ' + label()"
       [disabled]="false"
       (pressed)="onDelete()"
     />

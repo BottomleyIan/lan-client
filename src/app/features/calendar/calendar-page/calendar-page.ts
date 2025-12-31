@@ -2,21 +2,21 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TasksApi } from '../../../core/api/tasks.api';
+import { JournalsApi } from '../../../core/api/journals.api';
 import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
-import { CalendarTask } from '../calendar-task/calendar-task';
+import { CalendarEntry } from '../calendar-entry/calendar-entry';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
 
 @Component({
   selector: 'app-calendar-page',
-  imports: [CommonModule, RouterLink, CalendarTask],
+  imports: [CommonModule, RouterLink, CalendarEntry],
   templateUrl: './calendar-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarPage {
   private readonly route = inject(ActivatedRoute);
-  private readonly tasksApi = inject(TasksApi);
+  private readonly journalsApi = inject(JournalsApi);
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
@@ -74,41 +74,43 @@ export class CalendarPage {
     });
   });
 
-  private readonly tasks = toSignal(this.tasksApi.getTasks(), { initialValue: [] });
+  private readonly entries = toSignal(this.journalsApi.listEntries({ type: 'task' }), {
+    initialValue: [],
+  });
 
-  protected readonly tasksByDay = computed(() => {
+  protected readonly entriesByDay = computed(() => {
     const year = this.year();
     const month = this.month();
     const byDay = new Map<number, HandlersJournalEntryDTO[]>();
 
-    for (const task of this.tasks()) {
-      if (!isAllowedTaskStatus(task.status)) {
+    for (const entry of this.entries()) {
+      if (!isAllowedTaskStatus(entry.status)) {
         continue;
       }
-      const date = resolveTaskDate(task);
+      const date = resolveEntryDate(entry);
       if (!date || date.year !== year || date.month !== month) {
         continue;
       }
-      const dayTasks = byDay.get(date.day) ?? [];
-      dayTasks.push(task);
-      byDay.set(date.day, dayTasks);
+      const dayEntries = byDay.get(date.day) ?? [];
+      dayEntries.push(entry);
+      byDay.set(date.day, dayEntries);
     }
 
     return byDay;
   });
 
-  protected tasksForDay(day: number): HandlersJournalEntryDTO[] {
-    return this.tasksByDay().get(day) ?? [];
+  protected entriesForDay(day: number): HandlersJournalEntryDTO[] {
+    return this.entriesByDay().get(day) ?? [];
   }
 }
 
 type DateParts = { year: number; month: number; day: number };
 
-function resolveTaskDate(task: HandlersJournalEntryDTO): DateParts | null {
+function resolveEntryDate(entry: HandlersJournalEntryDTO): DateParts | null {
   return (
-    parseDateParts(task.deadline_at) ??
-    parseDateParts(task.scheduled_at) ??
-    parseDatePartsFromFields(task)
+    parseDateParts(entry.deadline_at) ??
+    parseDateParts(entry.scheduled_at) ??
+    parseDatePartsFromFields(entry)
   );
 }
 
@@ -123,9 +125,9 @@ function parseDateParts(raw?: string): DateParts | null {
   return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 }
 
-function parseDatePartsFromFields(task: HandlersJournalEntryDTO): DateParts | null {
-  if (!task.year || !task.month || !task.day) {
+function parseDatePartsFromFields(entry: HandlersJournalEntryDTO): DateParts | null {
+  if (!entry.year || !entry.month || !entry.day) {
     return null;
   }
-  return { year: task.year, month: task.month, day: task.day };
+  return { year: entry.year, month: entry.month, day: entry.day };
 }

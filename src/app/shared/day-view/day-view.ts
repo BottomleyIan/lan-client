@@ -3,15 +3,14 @@ import { ChangeDetectionStrategy, Component, computed, input, inject } from '@an
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
 import type { HandlersJournalEntryDTO } from '../../core/api/generated/api-types';
-import { CalendarTask } from '../../features/calendar/calendar-task/calendar-task';
-import { MarkdownBody } from '../markdown/markdown-body';
+import { CalendarEntry } from '../../features/calendar/calendar-entry/calendar-entry';
 import { JournalsApi } from '../../core/api/journals.api';
 
 type DayParams = { year: number; month: number; day: number };
 
 @Component({
   selector: 'app-day-view',
-  imports: [CommonModule, CalendarTask, MarkdownBody],
+  imports: [CommonModule, CalendarEntry],
   templateUrl: './day-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -38,11 +37,11 @@ export class DayView {
 
   readonly hasEntries$ = this.entries$.pipe(map((entries) => entries.length > 0));
 
-  protected trackEntryId(_: number, task: HandlersJournalEntryDTO): number | string {
-    return task.id ?? task.hash ?? `${task.year}-${task.month}-${task.day}-${task.position}`;
+  protected trackEntryId(_: number, entry: HandlersJournalEntryDTO): number | string {
+    return entry.id ?? entry.hash ?? `${entry.year}-${entry.month}-${entry.day}-${entry.position}`;
   }
 
-  protected handleTaskDeleted(): void {
+  protected handleEntryDeleted(): void {
     this.refresh$.next();
   }
 }

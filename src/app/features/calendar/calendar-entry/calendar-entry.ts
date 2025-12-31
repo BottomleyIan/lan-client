@@ -13,45 +13,47 @@ import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-ty
 import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 import { MarkdownBody } from '../../../shared/markdown/markdown-body';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
-import { TasksApi } from '../../../core/api/tasks.api';
+import { JournalsApi } from '../../../core/api/journals.api';
 import { Tags } from '../../tags/tags';
 
 @Component({
-  selector: 'app-calendar-task',
+  selector: 'app-calendar-entry',
   imports: [CommonModule, TaskIcon, MarkdownBody, IconButtonDanger, Tags],
-  templateUrl: './calendar-task.html',
+  templateUrl: './calendar-entry.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CalendarTask {
-  private readonly taskApi = inject(TasksApi);
+export class CalendarEntry {
+  private readonly journalsApi = inject(JournalsApi);
 
-  readonly task = input.required<HandlersJournalEntryDTO>();
+  readonly entry = input.required<HandlersJournalEntryDTO>();
   readonly deleted = output<HandlersJournalEntryDTO>();
   readonly showLabel = input(true);
 
   protected readonly label = computed(() => {
-    const task = this.task();
-    return task.title?.trim() || task.body?.trim() || 'Task';
+    const entry = this.entry();
+    return entry.title?.trim() || entry.body?.trim() || 'Entry';
   });
 
   protected readonly body = computed(() => {
-    const task = this.task();
-    return task.body?.trim() ?? '';
+    const entry = this.entry();
+    return entry.body?.trim() ?? '';
   });
   protected readonly tags: Signal<string[]> = computed(() => {
-    const task = this.task();
-    return task.tags ?? [];
+    const entry = this.entry();
+    return entry.tags ?? [];
   });
 
   protected onDelete(): void {
-    const task = this.task();
-    if (!task.year || !task.month || !task.day || !task.hash) {
+    const entry = this.entry();
+    if (!entry.year || !entry.month || !entry.day || !entry.hash) {
       return;
     }
 
-    this.taskApi.deleteTask(task.year, task.month, task.day, task.hash).subscribe({
-      next: () => this.deleted.emit(task),
-      error: (err) => console.error(err),
-    });
+    this.journalsApi
+      .deleteJournalEntry(entry.year, entry.month, entry.day, entry.hash)
+      .subscribe({
+        next: () => this.deleted.emit(entry),
+        error: (err) => console.error(err),
+      });
   }
 }

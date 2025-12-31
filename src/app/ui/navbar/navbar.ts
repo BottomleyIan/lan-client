@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { NavLink } from '../nav-link/nav-link';
-import { NotesAddButton } from '../../features/notes/notes-add-button/notes-add-button';
+import { JournalEntryAddButton } from '../../features/notes/journal-entry-add-button/journal-entry-add-button';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
-  imports: [NavLink, NotesAddButton],
+  imports: [NavLink, JournalEntryAddButton],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Navbar {

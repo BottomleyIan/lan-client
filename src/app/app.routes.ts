@@ -18,7 +18,10 @@ export const routes: Routes = [
   { path: 'albums/:id', component: AlbumDetailPage },
   {
     path: 'tasks',
-    loadComponent: () => import('./features/tasks/tasks-page/tasks-page').then((c) => c.TasksPage),
+    loadComponent: () =>
+      import('./features/journal-entries/journal-entries-page/journal-entries-page').then(
+        (c) => c.JournalEntriesPage,
+      ),
   },
   {
     path: 'notes',
