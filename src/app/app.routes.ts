@@ -6,6 +6,8 @@ import { AlbumDetailPage } from './features/albums/album-detail-page/album-detai
 import { CalendarPage } from './features/calendar/calendar-page/calendar-page';
 import { CalendarDayPage } from './features/calendar/calendar-day-page/calendar-day-page';
 import { MusicFilterPage } from './features/music-filter/music-filter-page/music-filter-page';
+import { PropertyKeyValuesPage } from './features/property-keys/property-key-values-page/property-key-values-page';
+import { PropertyKeysPage } from './features/property-keys/property-keys-page/property-keys-page';
 
 export const routes: Routes = [
   { path: 'calendar/:year/:month/:day', component: CalendarDayPage },
@@ -16,6 +18,8 @@ export const routes: Routes = [
   { path: 'artists', component: ArtistsPage },
   { path: 'albums', component: AlbumsPage },
   { path: 'albums/:id', component: AlbumDetailPage },
+  { path: 'property-keys', component: PropertyKeysPage },
+  { path: 'property-keys/:key', component: PropertyKeyValuesPage },
   {
     path: 'tasks',
     loadComponent: () =>

@@ -49,11 +49,9 @@ export class CalendarEntry {
       return;
     }
 
-    this.journalsApi
-      .deleteJournalEntry(entry.year, entry.month, entry.day, entry.hash)
-      .subscribe({
-        next: () => this.deleted.emit(entry),
-        error: (err) => console.error(err),
-      });
+    this.journalsApi.deleteJournalEntry(entry.year, entry.month, entry.day, entry.hash).subscribe({
+      next: () => this.deleted.emit(entry),
+      error: (err) => console.error(err),
+    });
   }
 }

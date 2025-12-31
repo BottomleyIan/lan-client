@@ -100,6 +100,7 @@ export interface HandlersJournalEntryDTO {
   id?: number;
   month?: number;
   position?: number;
+  property_keys?: string[];
   raw_line?: string;
   scheduled_at?: string;
   status?: string;

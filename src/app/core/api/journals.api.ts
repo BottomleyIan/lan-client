@@ -89,6 +89,16 @@ export class JournalsApi {
     return this.http.get<HandlersTagGraphDTO>(apiUrl(`api/journals/tags/graph/${tag}`));
   }
 
+  /** GET /journals/property-keys */
+  listPropertyKeys(): Observable<string[]> {
+    return this.http.get<string[]>(apiUrl('api/journals/property-keys'));
+  }
+
+  /** GET /journals/property-keys/:key/values */
+  listPropertyKeyValues(key: string): Observable<string[]> {
+    return this.http.get<string[]>(apiUrl(`api/journals/property-keys/${key}/values`));
+  }
+
   /** POST /journals/entries */
   createJournalEntry(body: HandlersCreateJournalEntryRequest): Observable<void> {
     return this.http.post<void>(apiUrl('api/journals/entries'), body);
