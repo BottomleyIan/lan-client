@@ -21,6 +21,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/tasks/tasks-page/tasks-page').then((c) => c.TasksPage),
   },
   {
+    path: 'notes',
+    loadComponent: () => import('./features/notes/notes-page/notes-page').then((c) => c.NotesPage),
+  },
+  {
+    path: 'notes/:tag',
+    loadComponent: () => import('./features/notes/notes-page/notes-page').then((c) => c.NotesPage),
+  },
+  {
     path: 'files',
     loadComponent: () => import('./features/files/files-page/files-page').then((c) => c.FilesPage),
   },

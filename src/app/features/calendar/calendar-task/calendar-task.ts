@@ -10,15 +10,14 @@ import {
 import { CommonModule } from '@angular/common';
 import type { HandlersTaskDTO } from '../../../core/api/generated/api-types';
 import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
-import { MarkdownComponent } from 'ngx-markdown';
+import { MarkdownBody } from '../../../shared/markdown/markdown-body';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { TasksApi } from '../../../core/api/tasks.api';
-import { apiUrl } from '../../../core/api/api-url';
 import { Tags } from '../../tags/tags';
 
 @Component({
   selector: 'app-calendar-task',
-  imports: [CommonModule, TaskIcon, MarkdownComponent, IconButtonDanger, Tags],
+  imports: [CommonModule, TaskIcon, MarkdownBody, IconButtonDanger, Tags],
   templateUrl: './calendar-task.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -36,7 +35,7 @@ export class CalendarTask {
 
   protected readonly body = computed(() => {
     const task = this.task();
-    return rewriteAssetPaths(task.body?.trim() ?? '');
+    return task.body?.trim() ?? '';
   });
   protected readonly tags: Signal<string[]> = computed(() => {
     const task = this.task();
@@ -55,15 +54,3 @@ export class CalendarTask {
     });
   }
 }
-
-function rewriteAssetPaths(markdown: string): string {
-  if (!markdown) {
-    return '';
-  }
-  return markdown.replace(ASSET_LINK_PATTERN, (_match, altText, assetPath) => {
-    const url = `${apiUrl('api/journals/assets')}?path=${encodeURIComponent(assetPath)}`;
-    return `![${altText}](${url})`;
-  });
-}
-
-const ASSET_LINK_PATTERN = /!\[([^\]]*)\]\(\.\.\/assets\/([^)]+)\)/g;

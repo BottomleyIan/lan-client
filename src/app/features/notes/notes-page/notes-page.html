@@ -1,0 +1,26 @@
+<div class="flex h-full flex-col gap-4">
+  <div class="flex items-center justify-between">
+    <div>
+      <div class="text-xs tracking-[0.14em] text-slate-400 uppercase">Notes</div>
+      <div class="text-2xl font-semibold text-white">{{ title() }}</div>
+    </div>
+  </div>
+
+  <app-panel class="flex-1" [label]="title()" [stableGutter]="false">
+    <div class="flex flex-col gap-3 p-4">
+      @if (notes$ | async; as notes) {
+        @if (notes.length === 0) {
+          <p class="text-sm text-slate-400">No notes found.</p>
+        } @else {
+          <div class="flex flex-col gap-3">
+            @for (note of notes; track trackNoteId($index, note)) {
+              <div class="rounded-xl border border-white/10 bg-white/5 p-3">
+                <app-markdown-body [markdown]="note.body ?? ''"></app-markdown-body>
+              </div>
+            }
+          </div>
+        }
+      }
+    </div>
+  </app-panel>
+</div>
