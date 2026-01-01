@@ -14,11 +14,10 @@ import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 import { MarkdownBody } from '../../../shared/markdown/markdown-body';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { JournalsApi } from '../../../core/api/journals.api';
-import { Tags } from '../../tags/tags';
 
 @Component({
   selector: 'app-journal-entry',
-  imports: [CommonModule, TaskIcon, MarkdownBody, IconButtonDanger, Tags],
+  imports: [CommonModule, TaskIcon, MarkdownBody, IconButtonDanger],
   templateUrl: './journal-entry.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
