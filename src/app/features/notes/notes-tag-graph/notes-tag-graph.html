@@ -1,0 +1,42 @@
+    @if (tag()) {
+      <div class="relative border-b border-white/10 isolate">
+        @if (relatedSlots$ | async; as slots) {
+          @if (slots.length > 0) {
+            <div class="relative min-h-40 p-4">
+              <div class="tag-graph-grid relative z-10">
+                <div
+                  #centerTag
+                  class="tag-root bg-tokyo-surface-2 z-1 text-tokyo-accent-orange rounded-full border border-white/10 px-3 py-1 text-sm font-semibold"
+                >
+                  {{ tag() }}
+                </div>
+                @for (slot of slots; track slot.index) {
+                  <app-notes-tag
+                    #tagRef="notesTag"
+                    [tag]="slot.tag"
+                    [positionClass]="'tag-pos-' + slot.index"
+                  ></app-notes-tag>
+                }
+                @if (beamsReady()) {
+                  @for (slot of slots; track slot.index) {
+                    <om-connection-beam
+                      class="pointer-events-none absolute inset-0"
+                      [fromRef]="tagElements()[slot.index]"
+                      [toRef]="centerElement()"
+                      [curvature]="curvatureFor(slot.index)"
+                      [pathColor]="'var(--color-tokyo-accent-orange)'"
+                      [gradientStartColor]="'var(--color-tokyo-accent-orange)'"
+                      [gradientStopColor]="'var(--color-tokyo-accent-cyan)'"
+                      [pathOpacity]="slot.tag ? 0.45 : 0.15"
+                      [pathWidth]="slot.tag ? 2 : 1"
+                      [duration]="5"
+                    >
+                    </om-connection-beam>
+                  }
+                }
+              </div>
+            </div>
+          }         }
+      </div>
+    }
+    <app-day-view [tag]="tag()"></app-day-view>

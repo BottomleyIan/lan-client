@@ -31,6 +31,7 @@ const icons = {
   sortDesc: { glyph: '\uf15e', label: 'Sort Desc' }, //
   stop: { glyph: '\udb81\udcdb', label: 'Stop' }, //nf-md-stop 󰓛
   star: { glyph: '\udb81\udcce', label: 'Star' }, //󰓎
+  taskNull: { glyph: '\udb80\udf74', label: 'Task Null' }, //nf-md-minus 󰍴
   taskMinus: { glyph: '\udb84\udf6a', label: 'Task Minus' }, //󱍪
   taskPlus: { glyph: '\udb84\udf6d', label: 'Task Plus' }, //󱍭
   taskRemove: { glyph: '\udb84\udf6f', label: 'Task' }, //󱍯

@@ -29,11 +29,11 @@ export class NotesTag {
 
   protected readonly hostClass = computed(() => {
     const base =
-      'bg-tokyo-surface-1 rounded-full border px-3 py-1 text-sm font-semibold transition ' +
-      'hover:text-tokyo-accent-cyan';
+      'bg-tokyo-surface-1 z-1 rounded-full border px-3 py-1 text-sm font-semibold transition ' +
+      'hover:text-tokyo-accent-orange';
     const position = this.positionClass();
     if (this.tag()) {
-      return `${position} ${base} border-white/10 text-tokyo-accent-orange`;
+      return `${position} ${base} border-white/10 text-tokyo-accent-cyan`;
     }
     return `${position} ${base} border-white/5 text-tokyo-text-muted opacity-60`;
   });
