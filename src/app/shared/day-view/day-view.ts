@@ -4,7 +4,7 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
 import type { HandlersJournalEntryDTO } from '../../core/api/generated/api-types';
 import { JournalsApi } from '../../core/api/journals.api';
-import { JournalEntry } from "../../features/journal-entries/journal-entry/journal-entry";
+import { JournalEntry } from '../../features/journal-entries/journal-entry/journal-entry';
 
 type DayParams = { year: number; month: number; day: number };
 

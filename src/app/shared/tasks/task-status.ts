@@ -21,7 +21,9 @@ export function isAllowedTaskStatus(status?: string): status is TaskStatus {
 export function getTaskStatusConfig(
   status?: string,
 ): { icon: IconName; colorClass: string } | null {
-  return status && status in TASK_STATUS_CONFIG ? TASK_STATUS_CONFIG[status as TaskStatus] : { icon: 'taskNull', colorClass: 'text-tokyo-text-muted' };
+  return status && status in TASK_STATUS_CONFIG
+    ? TASK_STATUS_CONFIG[status as TaskStatus]
+    : { icon: 'taskNull', colorClass: 'text-tokyo-text-muted' };
 }
 
 export function getTaskAccentClass(task: HandlersJournalEntryDTO): string {

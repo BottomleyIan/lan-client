@@ -1,7 +1,7 @@
 <div class="flex h-full flex-col gap-4 overflow-hidden">
   <app-panel class="max-h-full flex-1 overflow-hidden" label="" [stableGutter]="false">
-        @if (tag()) {
-    <app-notes-tag-graph [tag]="tag()"/>
+    @if (tag()) {
+      <app-notes-tag-graph [tag]="tag()" />
     }
     <app-day-view [tag]="tag()"></app-day-view>
   </app-panel>

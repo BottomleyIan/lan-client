@@ -25,15 +25,13 @@ import { NotesTag } from '../notes-tag/notes-tag';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NotesTagGraph {
-
   private readonly centerTagRef = viewChild.required('centerTag', { read: ElementRef });
   private readonly tagRefs = viewChildren(NotesTag);
-
 
   private readonly journalsApi = inject(JournalsApi);
 
   readonly tag = input.required<string>();
-  protected readonly tag$ = toObservable(this.tag)
+  protected readonly tag$ = toObservable(this.tag);
 
   protected readonly relatedTags$ = this.tag$.pipe(
     map((tag) => normalizeTag(tag)),

@@ -1,12 +1,12 @@
 <div class="flex flex-row gap-4">
-    <app-task-icon [task]="entry()" />
+  <app-task-icon [task]="entry()" />
   <div class="flex-1">
-  <app-markdown-body [markdown]="body()"></app-markdown-body>
-    </div>
-    <app-icon-button-danger
-      icon="trash"
-      [label]="'Delete entry ' + label()"
-      [disabled]="false"
-      (pressed)="onDelete()"
-    />
+    <app-markdown-body [markdown]="body()"></app-markdown-body>
+  </div>
+  <app-icon-button-danger
+    icon="trash"
+    [label]="'Delete entry ' + label()"
+    [disabled]="false"
+    (pressed)="onDelete()"
+  />
 </div>
