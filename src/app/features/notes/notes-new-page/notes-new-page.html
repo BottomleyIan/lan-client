@@ -51,15 +51,10 @@
           @if (fieldKeys().length > 0) {
             <div class="grid grid-cols-[auto_1fr] items-center gap-3">
               @for (field of fieldKeys(); track field; let index = $index) {
-                <label class="text-sm font-semibold text-slate-100" [for]="fieldId(field)">
-                  {{ fieldLabel(field) }}
-                </label>
-                <input
-                  uiInput
-                  [id]="fieldId(field)"
-                  type="text"
-                  [placeholder]="fieldPlaceholder(field)"
-                  [formControl]="fieldControl(index)"
+                <app-notes-new-page-field
+                  [field]="field"
+                  [config]="fieldConfig(field)"
+                  [control]="fieldControl(index)"
                   [disabled]="isSaving()"
                 />
               }

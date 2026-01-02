@@ -6,8 +6,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import type { FormArray, FormControl } from '@angular/forms';
+import type { FormControl } from '@angular/forms';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { finalize, map } from 'rxjs';
@@ -17,7 +18,12 @@ import { InputDirective } from '../../../ui/directives/input';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { Panel } from '../../../ui/panel/panel';
-import { NOTES_NEW_CONFIG, type NotesNewTypeConfig } from './notes-new-config';
+import {
+  NOTES_NEW_CONFIG,
+  type NotesNewFieldConfig,
+  type NotesNewTypeConfig,
+} from './notes-new-config';
+import { NotesNewPageField } from './notes-new-page-field';
 
 @Component({
   selector: 'app-notes-new-page',
@@ -28,6 +34,7 @@ import { NOTES_NEW_CONFIG, type NotesNewTypeConfig } from './notes-new-config';
     InputDirective,
     IconButtonPrimary,
     IconButtonDanger,
+    NotesNewPageField,
   ],
   templateUrl: './notes-new-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -161,18 +168,8 @@ export class NotesNewPage {
     return this.fields.at(index) as FormControl<string>;
   }
 
-  protected fieldId(field: string): string {
-    return `note-field-${field}`;
-  }
-
-  protected fieldLabel(field: string): string {
-    const config = this.activeConfig();
-    return config?.fields?.[field]?.label ?? field;
-  }
-
-  protected fieldPlaceholder(field: string): string {
-    const config = this.activeConfig();
-    return config?.fields?.[field]?.placeholder ?? '';
+  protected fieldConfig(field: string): NotesNewFieldConfig | null {
+    return this.activeConfig()?.fields?.[field] ?? null;
   }
 
   private parseTags(rawTags: string): string[] {
@@ -189,7 +186,9 @@ export class NotesNewPage {
     this.fieldKeys.set(fieldKeys);
     this.fields.clear();
     fieldKeys.forEach((field) => {
-      const defaultValue = config?.fields?.[field]?.default ?? '';
+      const fieldConfig = config?.fields?.[field];
+      const defaultValue =
+        fieldConfig?.default ?? (fieldConfig?.type === 'calendar' ? todayDateValue() : '');
       this.fields.push(this.formBuilder.nonNullable.control(defaultValue));
     });
     this.form.controls.tags.setValue(tags.join(', '));
@@ -204,7 +203,8 @@ export class NotesNewPage {
         if (!value) {
           return '';
         }
-        return `${field}:: ${value}`;
+        const formattedValue = formatFieldValue(this.fieldConfig(field), value);
+        return `${field}:: ${formattedValue}`;
       })
       .filter((line) => line.length > 0);
 
@@ -251,4 +251,23 @@ function toCalendarDate(dateValue: string): Date {
 function normalizeType(params: ParamMap): string {
   const type = params.get('type');
   return type ? type.trim() : '';
+}
+
+function formatFieldValue(config: NotesNewFieldConfig | null, value: string): string {
+  if (!config?.type) {
+    return value;
+  }
+  if (config.type === 'multiple-tag') {
+    return value
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter((entry) => entry.length > 0)
+      .map((entry) => `[[${entry}]]`)
+      .join(' ');
+  }
+  return `[[${value}]]`;
+}
+
+function todayDateValue(): string {
+  return new Date().toISOString().slice(0, 10);
 }
