@@ -1,0 +1,22 @@
+<label class="text-sm font-semibold text-slate-100" [for]="fieldId()">
+  {{ label() }}
+</label>
+<input
+  [attr.list]="datalistId()"
+  uiInput
+  [id]="fieldId()"
+  [type]="inputType()"
+  [placeholder]="placeholder()"
+  [formControl]="control()"
+  [disabled]="disabled()"
+/>
+
+@if (dataList$ | async; as dl) {
+  @if (dl.length > 0) {
+    <datalist [id]="datalistId()">
+      @for (value of dl; track value) {
+        <option [value]="value"></option>
+      }
+    </datalist>
+  }
+}
