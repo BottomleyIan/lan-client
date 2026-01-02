@@ -40,14 +40,20 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'notes',
-    loadComponent: () => import('./features/notes/notes-page/notes-page').then((c) => c.NotesPage),
-    data: { navTitle: 'Notes' },
+    path: 'notes/new',
+    loadComponent: () =>
+      import('./features/notes/notes-new-page/notes-new-page').then((c) => c.NotesNewPage),
+    data: { navTitle: 'New note' },
   },
   {
     path: 'notes/:tag',
     loadComponent: () => import('./features/notes/notes-page/notes-page').then((c) => c.NotesPage),
     data: { navTitle: 'Notes', navSubtitleParam: 'tag' },
+  },
+  {
+    path: 'notes',
+    loadComponent: () => import('./features/notes/notes-page/notes-page').then((c) => c.NotesPage),
+    data: { navTitle: 'Notes' },
   },
   {
     path: 'files',

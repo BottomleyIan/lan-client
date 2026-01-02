@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JournalsApi } from '../../../core/api/journals.api';
-import { Panel } from "../../../ui/panel/panel";
-import { JournalEntry } from "../journal-entry/journal-entry";
+import { Panel } from '../../../ui/panel/panel';
+import { JournalEntry } from '../journal-entry/journal-entry';
 
 @Component({
   selector: 'app-journal-entries-page',

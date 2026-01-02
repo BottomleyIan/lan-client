@@ -1,6 +1,6 @@
 <div class="flex h-full flex-col gap-4">
   <app-panel class="flex-1" label="" class="h-full" [stableGutter]="false">
-<div class="p-4">
+    <div class="p-4">
       @if (entries$ | async; as entries) {
         @if (entries.length === 0) {
           <p class="text-sm text-slate-400">No entries yet.</p>
@@ -14,6 +14,6 @@
       } @else {
         <p class="text-sm text-slate-400" aria-live="polite">Loading entries…</p>
       }
-      </div>
+    </div>
   </app-panel>
 </div>
