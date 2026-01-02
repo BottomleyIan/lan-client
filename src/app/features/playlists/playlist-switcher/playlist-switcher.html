@@ -1,4 +1,4 @@
-<app-panel label="">
+<section uiContainerDiv class="bg-black">
   <div
     tabIndex="0"
     (keydown)="onKeydown($event)"
@@ -26,7 +26,7 @@
       <app-icon-button-primary icon="volumeUp" label="Create playlist" (pressed)="openDialog()" />
     }
   </div>
-</app-panel>
+</section>
 <app-dialog
   #dialog
   [labelledById]="'create-playlist-title'"

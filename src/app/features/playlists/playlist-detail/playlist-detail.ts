@@ -5,7 +5,6 @@ import type { Observable } from 'rxjs';
 
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 
-import { Panel } from '../../../ui/panel/panel';
 import { PlaylistServiceTracks } from '../playlist-service-tracks/playlist-service-tracks';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlaylistsApi } from '../../../core/api/playlists.api';
@@ -13,6 +12,7 @@ import { PlaylistsApi } from '../../../core/api/playlists.api';
 import { PlaylistService } from '../../../core/services/playlist-service';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerFacade } from '../../../core/services/player-facade';
+import { ContainerDivDirective } from '../../../ui/directives/container-div';
 
 type PlaylistVm = {
   id: string;
@@ -21,7 +21,7 @@ type PlaylistVm = {
 
 @Component({
   selector: 'app-playlist-detail',
-  imports: [CommonModule, Panel, PlaylistServiceTracks],
+  imports: [CommonModule, ContainerDivDirective, PlaylistServiceTracks],
   templateUrl: './playlist-detail.html',
 })
 export class PlaylistDetail {
