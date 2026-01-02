@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import type { FormControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { InputDirective } from '../../../ui/directives/input';
-import type { NotesNewFieldConfig } from './notes-new-config';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, of, switchMap } from 'rxjs';
 import { JournalsApi } from '../../../core/api/journals.api';
-import { CommonModule } from '@angular/common';
+import { InputDirective } from '../../../ui/directives/input';
+import type { NotesNewFieldConfig } from './notes-new-config';
 
 @Component({
   selector: 'app-notes-new-page-field',
@@ -20,21 +20,24 @@ import { CommonModule } from '@angular/common';
 export class NotesNewPageField {
   readonly field = input.required<string>();
   readonly config = input<NotesNewFieldConfig | null>(null);
+  readonly control = input.required<FormControl<string>>();
+  readonly disabled = input(false);
+
   private readonly journalsApi = inject(JournalsApi);
+
+  protected readonly usesDatalist = computed(() => isTagType(this.config()?.type));
 
   protected readonly dataList$ = combineLatest({
     field: toObservable(this.field),
     config: toObservable(this.config),
   }).pipe(
-    switchMap(({ field, config }) =>
-      config?.type && ['single-tag'].includes(config.type!)
-        ? this.journalsApi.listPropertyKeyValues(field)
-        : of([]),
-    ),
+    switchMap(({ field, config }) => {
+      if (!isTagType(config?.type)) {
+        return of([]);
+      }
+      return this.journalsApi.listPropertyKeyValues(field);
+    }),
   );
-
-  readonly control = input.required<FormControl<string>>();
-  readonly disabled = input(false);
 
   protected readonly fieldId = computed(() => `note-field-${this.field()}`);
   protected readonly datalistId = computed(() => `note-field-${this.field()}-dl`);
@@ -51,4 +54,8 @@ export class NotesNewPageField {
     }
     return 'text';
   });
+}
+
+function isTagType(type: NotesNewFieldConfig['type']): boolean {
+  return type === 'single-tag' || type === 'multiple-tag';
 }

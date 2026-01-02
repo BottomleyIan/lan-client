@@ -2,7 +2,7 @@
   {{ label() }}
 </label>
 <input
-  [attr.list]="datalistId()"
+  [attr.list]="usesDatalist() ? datalistId() : null"
   uiInput
   [id]="fieldId()"
   [type]="inputType()"
@@ -11,12 +11,14 @@
   [disabled]="disabled()"
 />
 
-@if (dataList$ | async; as dl) {
-  @if (dl.length > 0) {
-    <datalist [id]="datalistId()">
-      @for (value of dl; track value) {
-        <option [value]="value"></option>
-      }
-    </datalist>
+@if (usesDatalist()) {
+  @if (dataList$ | async; as dl) {
+    @if (dl.length > 0) {
+      <datalist [id]="datalistId()">
+        @for (value of dl; track value) {
+          <option [value]="value"></option>
+        }
+      </datalist>
+    }
   }
 }

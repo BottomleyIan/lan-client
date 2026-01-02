@@ -44,12 +44,13 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
   film: {
     tags: ['film'],
     fields: {
+      title: {},
       director: { type: 'single-tag' },
       type: { default: 'film' },
       rating: { type: 'single-tag' },
       genre: { type: 'single-tag' },
       'watched-on': { type: 'calendar' },
-      cast: { type: 'single-tag' },
+      cast: { type: 'multiple-tag' },
       series: { type: 'single-tag' },
       year: { type: 'single-tag' },
     },

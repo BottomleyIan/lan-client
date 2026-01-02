@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import { map, of, switchMap } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { DayView } from '../../../shared/day-view/day-view';
 import { JournalsApi } from '../../../core/api/journals.api';
 import { NgxConnectionBeamComponent } from '@omnedia/ngx-connection-beam';
 import type { HandlersTagEdgeDTO } from '../../../core/api/generated/api-types';
@@ -19,7 +18,7 @@ import { NotesTag } from '../notes-tag/notes-tag';
 
 @Component({
   selector: 'app-notes-tag-graph',
-  imports: [CommonModule, DayView, NotesTag, NgxConnectionBeamComponent],
+  imports: [CommonModule, NotesTag, NgxConnectionBeamComponent],
   templateUrl: './notes-tag-graph.html',
   styleUrl: './notes-tag-graph.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
