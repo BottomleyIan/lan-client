@@ -1,14 +1,23 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import type { FormControl } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import type { FormArray, FormControl } from '@angular/forms';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { finalize, map } from 'rxjs';
 import { JournalsApi } from '../../../core/api/journals.api';
 import { FormDirective } from '../../../ui/directives/form';
 import { InputDirective } from '../../../ui/directives/input';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { Panel } from '../../../ui/panel/panel';
+import { NOTES_NEW_CONFIG, type NotesNewTypeConfig } from './notes-new-config';
 
 @Component({
   selector: 'app-notes-new-page',
@@ -27,9 +36,26 @@ export class NotesNewPage {
   private readonly journalsApi = inject(JournalsApi);
   private readonly formBuilder = inject(FormBuilder);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly isSaving = signal(false);
   protected readonly entryStatuses = TASK_STATUSES;
+
+  protected readonly entryType = toSignal(
+    this.route.queryParamMap.pipe(map((params) => normalizeType(params))),
+    { initialValue: normalizeType(this.route.snapshot.queryParamMap) },
+  );
+
+  protected readonly activeConfig = computed<NotesNewTypeConfig | null>(() => {
+    const entryType = this.entryType();
+    if (!entryType) {
+      return null;
+    }
+    return NOTES_NEW_CONFIG[entryType] ?? null;
+  });
+
+  protected readonly fieldKeys = signal<string[]>([]);
+  protected readonly fields = this.formBuilder.array<FormControl<string>>([]);
 
   protected readonly form = this.formBuilder.nonNullable.group({
     body: ['', [Validators.required]],
@@ -40,10 +66,17 @@ export class NotesNewPage {
     scheduledTime: [''],
     deadlineDate: [''],
     deadlineTime: [''],
+    fields: this.fields,
   });
 
   protected get body(): FormControl<string> {
     return this.form.controls.body;
+  }
+
+  constructor() {
+    effect(() => {
+      this.applyConfig(this.activeConfig());
+    });
   }
 
   protected submit(): void {
@@ -69,12 +102,13 @@ export class NotesNewPage {
     const scheduled = toIsoOrDate(scheduledDate, scheduledTime);
     const deadline = toIsoOrDate(deadlineDate, deadlineTime);
     const targetDate = toCalendarDate(scheduledDate);
+    const finalBody = this.composeBody(trimmedBody);
 
     this.isSaving.set(true);
 
     this.journalsApi
       .createJournalEntry({
-        body: trimmedBody,
+        body: finalBody,
         description: description || undefined,
         tags: tags.length ? tags : undefined,
         status: status || undefined,
@@ -94,6 +128,7 @@ export class NotesNewPage {
             deadlineDate: '',
             deadlineTime: '',
           });
+          this.applyConfig(this.activeConfig());
           void this.router.navigate([
             '/calendar',
             targetDate.getFullYear(),
@@ -122,11 +157,62 @@ export class NotesNewPage {
     }
   }
 
+  protected fieldControl(index: number): FormControl<string> {
+    return this.fields.at(index) as FormControl<string>;
+  }
+
+  protected fieldId(field: string): string {
+    return `note-field-${field}`;
+  }
+
+  protected fieldLabel(field: string): string {
+    const config = this.activeConfig();
+    return config?.fields?.[field]?.label ?? field;
+  }
+
+  protected fieldPlaceholder(field: string): string {
+    const config = this.activeConfig();
+    return config?.fields?.[field]?.placeholder ?? '';
+  }
+
   private parseTags(rawTags: string): string[] {
     return rawTags
       .split(',')
       .map((tag) => tag.trim())
       .filter((tag) => tag.length > 0);
+  }
+
+  private applyConfig(config: NotesNewTypeConfig | null): void {
+    const tags = config?.tags ?? [];
+    const fieldKeys = Object.keys(config?.fields ?? {});
+
+    this.fieldKeys.set(fieldKeys);
+    this.fields.clear();
+    fieldKeys.forEach((field) => {
+      const defaultValue = config?.fields?.[field]?.default ?? '';
+      this.fields.push(this.formBuilder.nonNullable.control(defaultValue));
+    });
+    this.form.controls.tags.setValue(tags.join(', '));
+  }
+
+  private composeBody(body: string): string {
+    const fieldKeys = this.fieldKeys();
+    const fieldValues = this.fields.getRawValue();
+    const fieldLines = fieldKeys
+      .map((field, index) => {
+        const value = fieldValues[index]?.trim() ?? '';
+        if (!value) {
+          return '';
+        }
+        return `${field}:: ${value}`;
+      })
+      .filter((line) => line.length > 0);
+
+    if (fieldLines.length === 0) {
+      return body;
+    }
+
+    return `${fieldLines.join('\n')}\n\n${body}`;
   }
 }
 
@@ -160,4 +246,9 @@ function toCalendarDate(dateValue: string): Date {
     }
   }
   return new Date();
+}
+
+function normalizeType(params: ParamMap): string {
+  const type = params.get('type');
+  return type ? type.trim() : '';
 }
