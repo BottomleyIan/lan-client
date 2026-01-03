@@ -1,18 +1,48 @@
 <div class="flex h-full flex-col gap-4">
-  <app-panel class="flex-1" label="" class="h-full" [stableGutter]="false">
-    <div class="p-4">
-      @if (entries$ | async; as entries) {
-        @if (entries.length === 0) {
-          <p class="text-sm text-slate-400">No entries yet.</p>
-        } @else {
-          <div class="flex flex-col gap-3">
-            @for (entry of entries; track entry.id) {
-              <app-journal-entry [entry]="entry" />
-            }
-          </div>
-        }
-      } @else {
+  <app-panel class="flex-1" label="" [stableGutter]="false">
+    <div class="flex h-full flex-col gap-4 p-4">
+      @if (isLoading()) {
         <p class="text-sm text-slate-400" aria-live="polite">Loading entries…</p>
+      } @else if (!hasVisibleEntries()) {
+        <p class="text-sm text-slate-400">No entries yet.</p>
+      } @else {
+        <div
+          class="grid h-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+          cdkDropListGroup
+        >
+          @for (column of columns(); track trackColumn($index, column)) {
+            <section class="flex h-full min-h-0 flex-col gap-3" [attr.aria-label]="column.label">
+              <header class="flex items-center justify-between">
+                <h2 class="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
+                  {{ column.label }}
+                </h2>
+                <span
+                  class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold tracking-[0.12em] text-slate-300 uppercase"
+                >
+                  {{ column.entries.length }}
+                </span>
+              </header>
+              <div
+                cdkDropList
+                [id]="column.id"
+                [cdkDropListData]="column.entries"
+                [cdkDropListConnectedTo]="dropListIds()"
+                class="flex min-h-24 flex-1 flex-col gap-2 rounded-lg border border-white/10 bg-black/40 p-2"
+                (cdkDropListDropped)="drop($event, column.key)"
+              >
+                @if (column.entries.length === 0) {
+                  <p class="text-xs text-slate-500">No tasks.</p>
+                } @else {
+                  @for (entry of column.entries; track trackEntry($index, entry)) {
+                    <div cdkDrag [cdkDragData]="entry">
+                      <app-task-card [entry]="entry" />
+                    </div>
+                  }
+                }
+              </div>
+            </section>
+          }
+        </div>
       }
     </div>
   </app-panel>

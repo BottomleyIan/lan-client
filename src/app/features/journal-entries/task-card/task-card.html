@@ -1,0 +1,25 @@
+<article class="rounded-lg border border-white/10 bg-black/40 p-3 shadow-sm">
+  <div class="flex items-start justify-between gap-3">
+    <div class="flex min-w-0 items-center gap-2">
+      <app-task-icon [task]="entry()" />
+      <h3 class="truncate text-sm font-semibold text-slate-100">{{ title() }}</h3>
+    </div>
+    <span class="text-[10px] font-semibold tracking-[0.12em] text-slate-400 uppercase">
+      {{ statusLabel() }}
+    </span>
+  </div>
+  @if (summary()) {
+    <p class="mt-2 text-xs text-slate-400">{{ summary() }}</p>
+  }
+  @if (tags().length > 0) {
+    <div class="mt-2 flex flex-wrap gap-2">
+      @for (tag of tags(); track tag) {
+        <span
+          class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-slate-300 uppercase"
+        >
+          {{ tag }}
+        </span>
+      }
+    </div>
+  }
+</article>

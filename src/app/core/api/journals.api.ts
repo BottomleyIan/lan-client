@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import type { Observable } from 'rxjs';
 import type {
   HandlersCreateJournalEntryRequest,
@@ -104,20 +104,31 @@ export class JournalsApi {
     return this.http.post<void>(apiUrl('api/journals/entries'), body);
   }
 
-  /** PUT /journals/entries/:year/:month/:day/:hash */
+  /** PUT /journals/entries/:year/:month/:day/:position */
   updateJournalEntry(
     year: number | string,
     month: number | string,
     day: number | string,
-    hash: string,
+    position: number | string,
     body: HandlersUpdateJournalEntryRequest,
-    options: { ifMatch: string },
   ): Observable<HandlersJournalEntryDTO> {
-    const headers = new HttpHeaders().set('If-Match', options.ifMatch);
     return this.http.put<HandlersJournalEntryDTO>(
-      apiUrl(`api/journals/entries/${year}/${month}/${day}/${hash}`),
+      apiUrl(`api/journals/entries/${year}/${month}/${day}/${position}`),
       body,
-      { headers },
+    );
+  }
+
+  /** PUT /journals/entries/:year/:month/:day/:position/:status */
+  updateJournalEntryStatus(
+    year: number | string,
+    month: number | string,
+    day: number | string,
+    position: number | string,
+    status: string,
+  ): Observable<HandlersJournalEntryDTO> {
+    return this.http.put<HandlersJournalEntryDTO>(
+      apiUrl(`api/journals/entries/${year}/${month}/${day}/${position}/${status}`),
+      null,
     );
   }
 

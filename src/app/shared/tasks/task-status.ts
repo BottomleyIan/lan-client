@@ -5,9 +5,10 @@ const UPCOMING_WINDOW_DAYS = 7;
 
 export const TASK_STATUS_CONFIG = {
   TODO: { icon: 'taskTodo', colorClass: 'text-tokyo-text' },
+  DOING: { icon: 'taskTodo', colorClass: 'text-tokyo-text' },
+  LATER: { icon: 'taskMinus', colorClass: 'text-tokyo-text-muted' },
   DONE: { icon: 'taskDone', colorClass: 'text-tokyo-accent-green' },
   CANCELLED: { icon: 'taskRemove', colorClass: 'text-tokyo-text-muted' },
-  'IN-PROGRESS': { icon: 'taskTodo', colorClass: 'text-tokyo-text' },
 } as const satisfies Record<string, { icon: IconName; colorClass: string }>;
 
 export type TaskStatus = keyof typeof TASK_STATUS_CONFIG;

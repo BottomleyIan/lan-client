@@ -216,16 +216,7 @@ export class NotesNewPage {
   }
 }
 
-const TASK_STATUSES = [
-  'LATER',
-  'NOW',
-  'DONE',
-  'TODO',
-  'DOING',
-  'CANCELLED',
-  'IN-PROGRESS',
-  'WAITING',
-] as const;
+const TASK_STATUSES = ['LATER', 'TODO', 'DOING', 'CANCELLED'] as const;
 
 function toIsoOrDate(dateValue: string, timeValue: string): string {
   if (!dateValue) {
