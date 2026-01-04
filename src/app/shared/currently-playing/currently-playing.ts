@@ -45,6 +45,7 @@ import { NgxRetroGridComponent } from '@omnedia/ngx-retro-grid';
 })
 export class CurrentlyPlaying {
   readonly imageFailed = signal(false);
+  readonly expanded = signal(true);
 
   onImageError(): void {
     this.imageFailed.set(true);
@@ -77,6 +78,8 @@ export class CurrentlyPlaying {
   readonly shuffleLabel = computed(() => (this.isShuffle() ? 'Disable shuffle' : 'Enable shuffle'));
 
   readonly statusLabel = computed(() => (this.isPlaying() ? 'Playing' : 'Paused'));
+  readonly expandIcon = computed(() => (this.expanded() ? 'chevronDown' : 'chevronUp'));
+  readonly expandLabel = computed(() => (this.expanded() ? 'Collapse player' : 'Expand player'));
 
   togglePlayback(): void {
     if (this.isPlaying()) {
@@ -88,6 +91,10 @@ export class CurrentlyPlaying {
 
   toggleShuffle(): void {
     this.player.toggleShuffle();
+  }
+
+  toggleExpanded(): void {
+    this.expanded.update((value) => !value);
   }
 
   makeHandleRatingChange(trackId: string | number): (r: number) => void {

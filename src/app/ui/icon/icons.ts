@@ -9,6 +9,7 @@ const icons = {
   check: { glyph: '\udb80\udd2c', label: 'Check' }, // 󰄬
   chevronDown: { glyph: '\udb80\udd40', label: 'Chevron Down' }, // 󰅀
   chevron: { glyph: '\udb80\udd43', label: 'Chevron Up' }, // 󰅃
+  chevronUp: { glyph: '\udb80\udd43', label: 'Chevron Up' }, // 󰅃
   chevronLeft: { glyph: '\udb80\udd41', label: 'Chevron Left' }, // 󰅁
   chevronRight: { glyph: '\udb80\udd42', label: 'Chevron ' }, // 󰅂
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖

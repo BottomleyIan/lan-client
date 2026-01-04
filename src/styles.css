@@ -220,3 +220,31 @@
       'img vol sek equ';
   }
 }
+
+.grid-currently-playing--collapsed {
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'tit ply vol';
+  gap: 2rem;
+  height: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  .grid-area-image,
+  .grid-area-rating,
+  .grid-area-equalizer,
+  .grid-area-seek {
+    display: none;
+  }
+
+  .grid-area-title {
+    justify-self: start;
+    text-align: start;
+    width: 100%;
+  }
+
+  .grid-area-play,
+  .grid-area-volume {
+    justify-self: center;
+    width: 100%;
+  }
+}
