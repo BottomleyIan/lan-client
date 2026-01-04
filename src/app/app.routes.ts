@@ -1,43 +1,73 @@
 import type { Routes } from '@angular/router';
-import { PlaylistsPage } from './features/playlists/playlists-page/playlists-page';
-import { ArtistsPage } from './features/artists/artists-page/artists-page';
-import { AlbumsPage } from './features/albums/albums-page/albums-page';
-import { AlbumDetailPage } from './features/albums/album-detail-page/album-detail-page';
-import { CalendarPage } from './features/calendar/calendar-page/calendar-page';
-import { CalendarDayPage } from './features/calendar/calendar-day-page/calendar-day-page';
-import { MusicFilterPage } from './features/music-filter/music-filter-page/music-filter-page';
-import { PropertyKeyValuesPage } from './features/property-keys/property-key-values-page/property-key-values-page';
-import { PropertyKeysPage } from './features/property-keys/property-keys-page/property-keys-page';
 
 export const routes: Routes = [
   {
     path: 'calendar/:year/:month/:day',
-    component: CalendarDayPage,
+    loadComponent: () =>
+      import('./features/calendar/calendar-day-page/calendar-day-page').then(
+        (c) => c.CalendarDayPage,
+      ),
     data: { navTitleMode: 'calendar-day' },
   },
   {
     path: 'calendar/:year/:month',
-    component: CalendarPage,
+    loadComponent: () =>
+      import('./features/calendar/calendar-page/calendar-page').then((c) => c.CalendarPage),
     data: { navTitleMode: 'calendar-month' },
   },
   { path: '', pathMatch: 'full', redirectTo: 'playlists' },
-  { path: 'playlists', component: PlaylistsPage, data: { navTitle: 'Playlists' } },
-  { path: 'music-filter', component: MusicFilterPage, data: { navTitle: 'Music Filter' } },
-  { path: 'artists', component: ArtistsPage },
-  { path: 'albums', component: AlbumsPage },
-  { path: 'albums/:id', component: AlbumDetailPage },
-  { path: 'property-keys', component: PropertyKeysPage, data: { navTitle: 'Property keys' } },
+  {
+    path: 'playlists',
+    loadComponent: () =>
+      import('./features/playlists/playlists-page/playlists-page').then((c) => c.PlaylistsPage),
+    data: { navTitle: 'Playlists' },
+  },
+  {
+    path: 'music-filter',
+    loadComponent: () =>
+      import('./features/music-filter/music-filter-page/music-filter-page').then(
+        (c) => c.MusicFilterPage,
+      ),
+    data: { navTitle: 'Music Filter' },
+  },
+  {
+    path: 'artists',
+    loadComponent: () =>
+      import('./features/artists/artists-page/artists-page').then((c) => c.ArtistsPage),
+  },
+  {
+    path: 'albums',
+    loadComponent: () =>
+      import('./features/albums/albums-page/albums-page').then((c) => c.AlbumsPage),
+  },
+  {
+    path: 'albums/:id',
+    loadComponent: () =>
+      import('./features/albums/album-detail-page/album-detail-page').then(
+        (c) => c.AlbumDetailPage,
+      ),
+  },
+  {
+    path: 'property-keys',
+    loadComponent: () =>
+      import('./features/property-keys/property-keys-page/property-keys-page').then(
+        (c) => c.PropertyKeysPage,
+      ),
+    data: { navTitle: 'Property keys' },
+  },
   {
     path: 'property-keys/:key',
-    component: PropertyKeyValuesPage,
+    loadComponent: () =>
+      import('./features/property-keys/property-key-values-page/property-key-values-page').then(
+        (c) => c.PropertyKeyValuesPage,
+      ),
     data: { navTitle: 'Property keys', navSubtitleParam: 'key' },
   },
   {
     path: 'tasks',
     loadComponent: () =>
-      import('./features/journal-entries/journal-entries-page/journal-entries-page').then(
-        (c) => c.JournalEntriesPage,
-      ),
+      import('./features/journal-entries/kanban/kanban').then((c) => c.JournalEntriesKanban),
+    data: { navTitle: 'Tasks' },
   },
   {
     path: 'notes/new',

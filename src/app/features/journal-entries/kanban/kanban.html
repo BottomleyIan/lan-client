@@ -1,6 +1,26 @@
 <div class="flex h-full flex-col gap-4">
-  <app-panel class="flex-1" label="" [stableGutter]="false">
+  <section uiContainerDiv class="flex-1 overflow-y-hidden" label="">
     <div class="flex h-full flex-col gap-4 p-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-sm font-semibold text-slate-100" for="task-tag-filter">
+          Filter by tag
+        </label>
+        <input
+          uiInput
+          id="task-tag-filter"
+          type="text"
+          placeholder="Type a tag to filter"
+          [formControl]="tagControl"
+          [attr.list]="tagOptions().length > 0 ? 'task-tag-options' : null"
+        />
+        @if (tagOptions().length > 0) {
+          <datalist id="task-tag-options">
+            @for (tag of tagOptions(); track tag) {
+              <option [value]="tag"></option>
+            }
+          </datalist>
+        }
+      </div>
       @if (isLoading()) {
         <p class="text-sm text-slate-400" aria-live="polite">Loading entries…</p>
       } @else if (!hasVisibleEntries()) {
@@ -11,7 +31,10 @@
           cdkDropListGroup
         >
           @for (column of columns(); track trackColumn($index, column)) {
-            <section class="flex h-full min-h-0 flex-col gap-3" [attr.aria-label]="column.label">
+            <section
+              class="flex h-full min-h-0 flex-col gap-3 overflow-y-auto"
+              [attr.aria-label]="column.label"
+            >
               <header class="flex items-center justify-between">
                 <h2 class="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
                   {{ column.label }}
@@ -45,5 +68,5 @@
         </div>
       }
     </div>
-  </app-panel>
+  </section>
 </div>

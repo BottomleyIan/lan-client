@@ -7,39 +7,77 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { JournalsApi } from '../../../core/api/journals.api';
-import { Panel } from '../../../ui/panel/panel';
 import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
 import { TaskCard } from '../task-card/task-card';
+import { ContainerDivDirective } from '../../../ui/directives/container-div';
+import { InputDirective } from '../../../ui/directives/input';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 
 @Component({
-  selector: 'app-journal-entries-page',
-  imports: [CommonModule, Panel, TaskCard, CdkDropListGroup, CdkDropList, CdkDrag],
-  templateUrl: './journal-entries-page.html',
+  selector: 'app-journal-entries-kanban',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    InputDirective,
+    TaskCard,
+    CdkDropListGroup,
+    CdkDropList,
+    CdkDrag,
+    ContainerDivDirective,
+  ],
+  templateUrl: './kanban.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class JournalEntriesPage {
+export class JournalEntriesKanban {
   private readonly journalsApi = inject(JournalsApi);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
 
   protected readonly isLoading = signal(true);
   protected readonly entries = signal<HandlersJournalEntryDTO[]>([]);
+  protected readonly tag = toSignal(
+    this.route.queryParamMap.pipe(map((params) => normalizeTag(params))),
+    { initialValue: normalizeTag(this.route.snapshot.queryParamMap) },
+  );
+  protected readonly tagControl = this.formBuilder.nonNullable.control('');
   protected readonly columns = computed(() => buildColumns(this.entries()));
   protected readonly hasVisibleEntries = computed(() =>
     this.columns().some((column) => column.entries.length > 0),
   );
   protected readonly dropListIds = computed(() => this.columns().map((column) => column.id));
+  protected readonly tagOptions = computed(() => collectTags(this.entries()));
 
   constructor() {
-    this.journalsApi
-      .listEntries({ type: 'task' })
+    toObservable(this.tag)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((entries) => {
-        this.entries.set(entries);
-        this.isLoading.set(false);
+      .subscribe(() => {
+        const currentTag = this.tag();
+        if (this.tagControl.value !== currentTag) {
+          this.tagControl.setValue(currentTag, { emitEvent: false });
+        }
+        this.fetchEntries();
+      });
+    this.tagControl.valueChanges
+      .pipe(
+        map((value) => value.trim()),
+        debounceTime(300),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((value) => {
+        void this.router.navigate([], {
+          queryParams: { tag: value || null },
+          queryParamsHandling: 'merge',
+        });
       });
   }
 
@@ -94,6 +132,18 @@ export class JournalEntriesPage {
     this.entries.update((entries) =>
       entries.map((entry) => (getEntryKey(entry) === entryKey ? updatedEntry : entry)),
     );
+  }
+
+  private fetchEntries(): void {
+    this.isLoading.set(true);
+    const tag = this.tag();
+    this.journalsApi
+      .listEntries({ type: 'task', tag: tag ? [tag] : undefined })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((entries) => {
+        this.entries.set(entries);
+        this.isLoading.set(false);
+      });
   }
 }
 
@@ -170,4 +220,21 @@ function isRecent(entry: HandlersJournalEntryDTO): boolean {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - RECENT_WINDOW_DAYS);
   return parsed >= cutoff;
+}
+
+function normalizeTag(params: ParamMap): string {
+  const tag = params.get('tag');
+  return tag ? tag.trim() : '';
+}
+
+function collectTags(entries: HandlersJournalEntryDTO[]): string[] {
+  const tags = new Set<string>();
+  entries.forEach((entry) => {
+    entry.tags?.forEach((tag) => {
+      if (tag.trim().length > 0) {
+        tags.add(tag);
+      }
+    });
+  });
+  return Array.from(tags).sort((a, b) => a.localeCompare(b));
 }
