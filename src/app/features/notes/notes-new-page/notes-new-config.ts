@@ -41,6 +41,17 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
       on: { type: 'calendar' },
     },
   },
+  balance: {
+    fields: {
+      date: { type: 'calendar' },
+      mortgage: { type: 'number' },
+      metal: { type: 'number' },
+      isa: { type: 'number' },
+      shares: { type: 'number' },
+      balance: { type: 'number' },
+      notes: {},
+    },
+  },
   film: {
     tags: ['film'],
     fields: {

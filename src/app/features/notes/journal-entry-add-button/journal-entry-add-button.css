@@ -1,0 +1,10 @@
+#nav-add-notes-anchor {
+  anchor-name: --nav-notes-anchor;
+}
+
+#nav-panel-add-notes {
+  position-anchor: --nav-notes-anchor;
+  top: anchor(--nav-notes-anchor bottom);
+  left: auto;
+  right: anchor(--nav-notes-anchor right);
+}

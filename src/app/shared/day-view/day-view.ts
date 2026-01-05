@@ -44,6 +44,10 @@ export class DayView {
   protected handleEntryDeleted(): void {
     this.refresh$.next();
   }
+
+  refresh(): void {
+    this.refresh$.next();
+  }
 }
 
 function toDayParams(

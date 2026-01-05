@@ -1,8 +1,26 @@
 <header
   class="relative z-10 my-2 flex shrink-0 items-center justify-between gap-12 text-2xl text-slate-100"
 >
+  <div class="flex items-baseline gap-3 text-nowrap">
+    @switch (titleMode()) {
+      @case ('calendar-month') {
+        <app-calendar-month-title />
+      }
+      @case ('calendar-day') {
+        <app-calendar-day-title />
+      }
+      @default {
+        <h1
+          class="font-vt323 font-black tracking-[0.14em] uppercase drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
+        >
+          {{ title() }}
+        </h1>
+        <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
+      }
+    }
+  </div>
   <nav class="flex items-center gap-3" aria-label="Primary">
-    <div class="flex items-center gap-3">
+    <ul class="flex items-center gap-3">
       <app-nav-link
         routerLink="/playlists"
         label="Playlist"
@@ -68,36 +86,15 @@
         [srOnly]="true"
         [showSkipLink]="true"
       />
-    </div>
+      <app-journal-entry-add-button />
+      <app-nav-link
+        routerLink="/settings"
+        [exact]="true"
+        label="Settings"
+        iconName="settings"
+        [srOnly]="true"
+        [showSkipLink]="true"
+      />
+    </ul>
   </nav>
-
-  <div class="flex items-baseline gap-3 text-nowrap">
-    @switch (titleMode()) {
-      @case ('calendar-month') {
-        <app-calendar-month-title />
-      }
-      @case ('calendar-day') {
-        <app-calendar-day-title />
-      }
-      @default {
-        <h1
-          class="font-vt323 font-black tracking-[0.14em] uppercase drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
-        >
-          {{ title() }}
-        </h1>
-        <span class="text-xs tracking-[0.14em] text-slate-400 uppercase">{{ subtitle() }}</span>
-      }
-    }
-  </div>
-  <div class="flex items-center gap-2">
-    <app-journal-entry-add-button />
-    <app-nav-link
-      routerLink="/settings"
-      [exact]="true"
-      label="Settings"
-      iconName="settings"
-      [srOnly]="true"
-      [showSkipLink]="true"
-    />
-  </div>
 </header>

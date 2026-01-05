@@ -1,6 +1,17 @@
 <app-icon-button-primary
   icon="notesAdd"
+  id="nav-add-notes-anchor"
   label="Add journal entry"
   buttonClass="text-slate-100/80 hover:text-slate-100 tokyo-glow-cyan-hover"
-  (pressed)="openNewEntry()"
+  popovertarget="nav-panel-add-notes"
 />
+<ul class="text-tokyo-text-muted m-0 bg-black p-2 text-lg" id="nav-panel-add-notes" popover>
+  <li>
+    <a class="hover:text-tokyo-accent-orange" href="notes/new">Note</a>
+  </li>
+  @for (type of noteTypes(); track $index) {
+    <li>
+      <a class="hover:text-tokyo-accent-orange" [href]="noteLink(type)">{{ type | titlecase }}</a>
+    </li>
+  }
+</ul>

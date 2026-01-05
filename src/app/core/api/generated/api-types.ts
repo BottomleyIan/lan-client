@@ -208,6 +208,10 @@ export interface HandlersCreateFolderRequest {
   path?: string;
 }
 
+export interface HandlersCreateJournalEntryRawRequest {
+  raw?: string;
+}
+
 export interface HandlersCreateJournalEntryRequest {
   body?: string;
   deadline?: string;

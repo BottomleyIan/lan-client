@@ -13,6 +13,7 @@ import { Icon, type IconName } from '../icon/icon';
       [attr.aria-label]="label()"
       [attr.title]="label()"
       [attr.type]="type()"
+      [attr.popovertarget]="popovertarget()"
       [attr.aria-disabled]="disabled()"
       [attr.aria-pressed]="active() === null ? null : active()"
       [disabled]="disabled()"
@@ -44,6 +45,7 @@ export class IconButton {
   readonly active = input<boolean | null>(null);
   readonly activeClass = input<string | null>(null);
   readonly pressed = output<void>();
+  readonly popovertarget = input<string | null>(null);
 
   private readonly buttonEl = viewChild.required<ElementRef<HTMLButtonElement>>('buttonEl');
 

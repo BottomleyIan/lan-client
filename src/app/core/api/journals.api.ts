@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import type { Observable } from 'rxjs';
 import type {
   HandlersCreateJournalEntryRequest,
+  HandlersCreateJournalEntryRawRequest,
   HandlersJournalAssetDTO,
   HandlersJournalDTO,
   HandlersJournalDayDTO,
@@ -102,6 +103,16 @@ export class JournalsApi {
   /** POST /journals/entries */
   createJournalEntry(body: HandlersCreateJournalEntryRequest): Observable<void> {
     return this.http.post<void>(apiUrl('api/journals/entries'), body);
+  }
+
+  /** POST /journals/entries/:year/:month/:day */
+  createJournalEntryRaw(
+    year: number | string,
+    month: number | string,
+    day: number | string,
+    body: HandlersCreateJournalEntryRawRequest,
+  ): Observable<void> {
+    return this.http.post<void>(apiUrl(`api/journals/entries/${year}/${month}/${day}`), body);
   }
 
   /** PUT /journals/entries/:year/:month/:day/:position */

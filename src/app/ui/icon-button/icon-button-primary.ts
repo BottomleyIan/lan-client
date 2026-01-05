@@ -17,6 +17,7 @@ import type { IconName } from '../icon/icon';
       [type]="type()"
       [active]="active()"
       [activeClass]="activeClass()"
+      [popovertarget]="popovertarget()"
       (pressed)="pressed.emit()"
     />
   `,
@@ -34,6 +35,7 @@ export class IconButtonPrimary {
   readonly active = input<boolean | null>(null);
   readonly activeClass = input<string | null>(null);
   readonly pressed = output<void>();
+  readonly popovertarget = input<string | null>(null);
 
   private readonly button = viewChild.required<IconButton>(IconButton);
 
