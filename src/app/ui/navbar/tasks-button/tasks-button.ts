@@ -15,7 +15,7 @@ import { NavLink } from '../../nav-link/nav-link';
 export class AppTasksButton {
   private readonly settingsApi = inject(SettingsApi);
 
-  protected setting = this.settingsApi.getSetting('notes-menu-tags');
+  protected setting = this.settingsApi.getSetting('tasks-menu-tags');
   protected navItems$ = this.setting.pipe(map((s) => this.navItems(s.value ?? '')));
 
   protected navItems(setting: string): NavDropdownMenuNavItems[] {

@@ -12,6 +12,7 @@ import { NavDropdownMenu, NavDropdownMenuNavItems } from '../nav-dropdown-menu/n
 export class JournalEntryAddButton {
   protected navItems(): NavDropdownMenuNavItems[] {
     return [
+      { name: 'Notes', url: 'notes' },
       { name: 'New Note', url: 'notes/new' },
       ...this.noteTypes().map((t) => ({ name: t, url: this.noteLink(t) })),
     ];
