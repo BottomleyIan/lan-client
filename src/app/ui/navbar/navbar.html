@@ -49,24 +49,11 @@
         [srOnly]="true"
         [showSkipLink]="true"
       />
-      <app-nav-link
-        routerLink="/tasks"
-        label="Entries"
-        iconName="tasklist"
-        [srOnly]="true"
-        [showSkipLink]="true"
-      />
+      <app-tasks-button />
       <app-nav-link
         routerLink="/calendar/{{ currentYear() }}/{{ currentMonth() }}"
         label="Calendar"
         iconName="calendar"
-        [srOnly]="true"
-        [showSkipLink]="true"
-      />
-      <app-nav-link
-        routerLink="/property-keys"
-        label="Property keys"
-        iconName="notes"
         [srOnly]="true"
         [showSkipLink]="true"
       />

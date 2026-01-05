@@ -1,0 +1,11 @@
+@if (navItems$ | async; as items) {
+  <app-nav-dropdown-menu icon="tasklist" uid="nav-tasks" label="tasks" [navItems]="items" />
+} @else {
+  <app-nav-link
+    routerLink="/tasks"
+    label="Tasks"
+    iconName="tasklist"
+    [srOnly]="true"
+    [showSkipLink]="true"
+  />
+}

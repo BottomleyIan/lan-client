@@ -1,0 +1,23 @@
+<app-icon-button-primary
+  [icon]="icon()"
+  [id]="buttonId()"
+  [label]="label()"
+  [attr.anchor_name]="anchorName()"
+  buttonClass="text-slate-100/80 hover:text-slate-100 tokyo-glow-cyan-hover"
+  [popovertarget]="popoverId()"
+/>
+<ul
+  class="text-tokyo-text-muted m-0 bg-black p-2 text-lg"
+  [id]="popoverId()"
+  popover
+  [style.position-anchor]="anchorName()"
+  [style.top]="top()"
+  [style.left]="left()"
+  [style.right]="right()"
+>
+  @for (item of navItems(); track item.url) {
+    <li>
+      <a class="hover:text-tokyo-accent-orange" [href]="item.url">{{ item.name | titlecase }}</a>
+    </li>
+  }
+</ul>
