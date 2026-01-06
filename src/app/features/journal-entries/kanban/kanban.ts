@@ -16,6 +16,9 @@ import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-i
 import { JournalsApi } from '../../../core/api/journals.api';
 import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
 import { TaskCard } from '../task-card/task-card';
+import { JournalEntry } from '../journal-entry/journal-entry';
+import { AppDialog } from '../../../ui/dialog/dialog';
+import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
 import { InputDirective } from '../../../ui/directives/input';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
@@ -27,6 +30,9 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs';
     ReactiveFormsModule,
     InputDirective,
     TaskCard,
+    JournalEntry,
+    AppDialog,
+    IconButtonDanger,
     CdkDropListGroup,
     CdkDropList,
     CdkDrag,
@@ -55,6 +61,7 @@ export class JournalEntriesKanban {
   );
   protected readonly dropListIds = computed(() => this.columns().map((column) => column.id));
   protected readonly tagOptions = computed(() => collectTags(this.entries()));
+  protected readonly selectedEntry = signal<HandlersJournalEntryDTO | null>(null);
 
   constructor() {
     toObservable(this.tag)
@@ -115,6 +122,20 @@ export class JournalEntriesKanban {
 
   protected trackEntry(_: number, entry: HandlersJournalEntryDTO): string {
     return getEntryKey(entry) ?? '';
+  }
+
+  protected openEntry(entry: HandlersJournalEntryDTO): void {
+    this.selectedEntry.set(entry);
+  }
+
+  protected closeEntry(): void {
+    this.selectedEntry.set(null);
+  }
+
+  protected handleEntryDeleted(entry: HandlersJournalEntryDTO): void {
+    this.entries.update((entries) =>
+      entries.filter((entryItem) => getEntryKey(entryItem) !== getEntryKey(entry)),
+    );
   }
 
   private updateEntryStatus(entryKey: string, status?: string): void {

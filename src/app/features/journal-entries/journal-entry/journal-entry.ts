@@ -95,7 +95,7 @@ export class JournalEntry {
 
   protected startEdit(): void {
     const entry = this.entryState() ?? this.entry();
-    const raw = entry.raw_line ?? entry.body ?? entry.title ?? '';
+    const raw = entry.body?.trim() ?? '';
     this.editForm.controls.raw.setValue(raw);
     this.editForm.controls.raw.markAsUntouched();
     this.isEditing.set(true);
