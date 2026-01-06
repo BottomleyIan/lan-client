@@ -11,10 +11,11 @@ import { SettingsApi } from '../../../core/api/settings.api';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { NavDropdownMenuNavItems } from '../../../ui/navbar/nav-dropdown-menu/nav-dropdown-menu';
 import { NotesPageSavedTags } from '../notes-page-saved-tags/notes-page-saved-tags';
+import { NotesCreateRaw } from '../notes-create-raw/notes-create-raw';
 
 @Component({
   selector: 'app-notes-page',
-  imports: [CommonModule, Panel, DayView, NotesTagGraph, NotesPageSavedTags],
+  imports: [CommonModule, Panel, DayView, NotesTagGraph, NotesPageSavedTags, NotesCreateRaw],
   templateUrl: './notes-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -34,6 +35,16 @@ export class NotesPage {
   protected navItems(setting: string): NavDropdownMenuNavItems[] {
     return setting.split(',').map((x) => ({ name: x, url: `notes/${x}` }));
   }
+  protected year(): number {
+    return new Date().getFullYear();
+  }
+  protected month(): number {
+    return new Date().getMonth() + 1;
+  }
+  protected day(): number {
+    return new Date().getDate();
+  }
+  protected onCreated(): void {}
 }
 
 function normalizeTag(params: ParamMap): string {

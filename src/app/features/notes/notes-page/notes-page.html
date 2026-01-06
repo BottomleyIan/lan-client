@@ -14,5 +14,11 @@
         >Property Keys</a
       >
     </div>
+    <app-notes-create-raw
+      (noteCreated)="onCreated()"
+      [year]="year()"
+      [month]="month()"
+      [day]="day()"
+    />
   </app-panel>
 </div>
