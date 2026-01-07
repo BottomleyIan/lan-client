@@ -6,22 +6,16 @@
 }
 
 .tasks-column {
-  position: relative;
   --tasks-column-image: none;
-  --tasks-column-opacity: 1;
-  --tasks-column-header-height: 64px;
-}
-
-.tasks-column::before {
-  content: '';
-  position: absolute;
-  inset: 0;
   background-image: var(--tasks-column-image);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: var(--tasks-column-opacity);
-  pointer-events: none;
+}
+
+.tasks-column>* {
+  position: relative;
+  z-index: 1;
 }
 
 .tasks-column-todo {
@@ -44,28 +38,17 @@
   --tasks-column-image: url('/tasks-cancelled.png');
 }
 
-.tasks-drop-list {
-  overflow-y: scroll;
-  scrollbar-gutter: stable;
-  position: relative;
-}
-
-.tasks-drop-list {
-  scrollbar-color: var(--color-tokyo-surface-1)
-    color-mix(in srgb, var(--color-tokyo-accent-cyan) 35%, var(--color-tokyo-surface-0));
-}
-
-.tasks-drop-list {
+.no-scrollbar {
   scrollbar-width: none;
 }
 
-.tasks-drop-list::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
 
-.tasks-drop-list::before,
-.tasks-drop-list::after {
+.tasks-column-scroll-container::before,
+.tasks-column-scroll-container::after {
   content: '';
   position: absolute;
   left: 0;
@@ -76,30 +59,27 @@
   z-index: 2;
 }
 
-.tasks-drop-list::before {
+.tasks-column-scroll-container::before {
   top: 0;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
-    transparent
-  );
+  background: linear-gradient(to bottom,
+      color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
+      transparent);
   box-shadow: 0 14px 22px -18px var(--color-tokyo-accent-cyan);
 }
 
-.tasks-drop-list::after {
-  bottom: 0;
-  background: linear-gradient(
-    to top,
-    color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
-    transparent
-  );
+.tasks-column-scroll-container::after {
+  bottom: 0px;
+  background: linear-gradient(to top,
+      color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
+      transparent);
   box-shadow: 0 -14px 22px -18px var(--color-tokyo-accent-cyan);
 }
 
-.tasks-drop-list-can-scroll-up::before {
+
+.tasks-column-can-scroll-up::before {
   opacity: 0.9;
 }
 
-.tasks-drop-list-can-scroll-down::after {
+.tasks-column-can-scroll-down::after {
   opacity: 0.9;
 }

@@ -2,9 +2,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   computed,
   effect,
-  ElementRef,
   inject,
   signal,
 } from '@angular/core';
@@ -126,6 +126,7 @@ export class JournalEntriesKanban {
     });
   }
 
+
   protected drop(event: CdkDragDrop<JournalEntryWithPriority[]>, status: BoardStatusKey): void {
     const entry = event.item.data;
     const nextStatus = status;
@@ -176,8 +177,7 @@ export class JournalEntriesKanban {
     );
   }
 
-  protected updateScrollState(element: HTMLElement): void {
-    const id = element.id;
+  protected updateScrollState(id: string, element: HTMLElement): void {
     if (!id) {
       return;
     }
@@ -226,8 +226,14 @@ export class JournalEntriesKanban {
 
   private refreshScrollStates(): void {
     const hostElement = this.host.nativeElement;
-    const dropLists = hostElement.querySelectorAll<HTMLElement>('.tasks-drop-list');
-    dropLists.forEach((element) => this.updateScrollState(element));
+    const scrollColumns = hostElement.querySelectorAll<HTMLElement>('.tasks-column-scroll-container');
+    scrollColumns.forEach((element) => {
+      const id = element.dataset['scrollId'] ?? '';
+      if (!id) {
+        return;
+      }
+      this.updateScrollState(id, element);
+    });
   }
 
   private setScrollState(id: string, state: ScrollState): void {

@@ -5,7 +5,7 @@
     label=""
     [class.no-tasks-background]="!isLoading() && !hasVisibleEntries()"
   >
-    <div class="flex h-full flex-col gap-4 p-4">
+    <div class="flex h-full min-h-0 flex-col gap-4 p-4">
       <div class="flex items-center gap-3 text-sm font-semibold text-slate-100">
         <label class="flex items-center gap-2" for="task-tag-filter">
           <span class="whitespace-nowrap">Tag:</span>
@@ -47,51 +47,58 @@
         <p class="text-sm text-slate-400">No entries yet.</p>
       } @else {
         <div
-          class="grid h-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+          class="grid min-h-0 flex-1 gap-4 grid-cols-5"
           cdkDropListGroup
         >
           @for (column of columns(); track trackColumn($index, column)) {
-            <section
-              class="tasks-column relative flex h-full min-h-0 flex-col"
-              [attr.aria-label]="column.label"
-              [class.tasks-column-todo]="column.key === 'TODO'"
-              [class.tasks-column-doing]="column.key === 'DOING'"
-              [class.tasks-column-later]="column.key === 'LATER'"
-              [class.tasks-column-done]="column.key === 'DONE'"
-              [class.tasks-column-cancelled]="column.key === 'CANCELLED'"
+            <div
+              class="tasks-column-scroll-container relative min-h-0 overflow-hidden"
+              [attr.data-scroll-id]="column.id"
+              [class.tasks-column-can-scroll-up]="scrollState(column.id).canScrollUp"
+              [class.tasks-column-can-scroll-down]="scrollState(column.id).canScrollDown"
             >
-              <img
-                role="heading"
-                aria-level="2"
+              <section
+                #columnScroll
+                class="tasks-column no-scrollbar overflow-hidden flex h-full min-h-0 flex-col gap-3 overflow-y-scroll rounded-lg border border-white/10 px-1 pb-2 pt-2 rounded-xl"
+                [attr.aria-label]="column.label"
+                [class.tasks-column-todo]="column.key === 'TODO'"
+                [class.tasks-column-doing]="column.key === 'DOING'"
+                [class.tasks-column-later]="column.key === 'LATER'"
+                [class.tasks-column-done]="column.key === 'DONE'"
+                [class.tasks-column-cancelled]="column.key === 'CANCELLED'"
+                (scroll)="updateScrollState(column.id, columnScroll)"
+              >
+                <img
+                  role="heading"
+                  aria-level="2"
                 ngSrc="{{ column.imageSrc }}"
                 width="700"
                 height="200"
                 [attr.alt]="column.label"
-                class="absolute top-3 left-1/2 z-2 h-15 max-h-15 w-auto -translate-x-1/2 transform"
+                class="mx-auto h-12 w-auto"
               />
-              <div
-                #dropList
-                cdkDropList
-                [id]="column.id"
-                [cdkDropListData]="column.entries"
-                [cdkDropListConnectedTo]="dropListIds()"
-                class="tasks-drop-list flex min-h-24 flex-1 flex-col gap-2 px-1 pt-19"
-                (cdkDropListDropped)="drop($event, column.key)"
-                (scroll)="updateScrollState(dropList)"
-              >
-                @for (entry of column.entries; track trackEntry($index, entry)) {
-                  <div cdkDrag [cdkDragData]="entry">
-                    <button
-                      type="button"
-                      class="w-full text-left"
-                      (click)="openEntry(entry); entryDialog.open()"
-                    >
-                      <app-task-card [entry]="entry" />
-                    </button>
-                  </div>
-                }
-              </div>
-            </section>
+                <div
+                  cdkDropList
+                  [id]="column.id"
+                  [cdkDropListData]="column.entries"
+                  [cdkDropListConnectedTo]="dropListIds()"
+                  class="flex min-h-24 flex-1 flex-col gap-2 pb-5"
+                  (cdkDropListDropped)="drop($event, column.key)"
+                >
+                  @for (entry of column.entries; track trackEntry($index, entry)) {
+                    <div cdkDrag [cdkDragData]="entry">
+                      <button
+                        type="button"
+                        class="w-full text-left"
+                        (click)="openEntry(entry); entryDialog.open()"
+                      >
+                        <app-task-card [entry]="entry" />
+                      </button>
+                    </div>
+                  }
+                </div>
+              </section>
+            </div>
           }
         </div>
       }
