@@ -2,8 +2,9 @@
   <div class="flex items-start justify-between gap-3">
     <div class="flex min-w-0 items-center gap-1">
       <app-task-icon [task]="entry()" />
-      <div class="text-2xl">
+      <div class="text-2xl" [attr.title]="priority().label">
         <app-icon [name]="priority().icon" [colorVar]="priority().color" />
+        <span class="sr-only">Priority: {{ priority().label }}</span>
       </div>
       <h3 class="truncate text-sm font-semibold text-slate-100">{{ title() }}</h3>
     </div>

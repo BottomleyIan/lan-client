@@ -3,6 +3,8 @@ import {
   Component,
   DestroyRef,
   computed,
+  effect,
+  ElementRef,
   inject,
   signal,
 } from '@angular/core';
@@ -15,7 +17,8 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { JournalsApi } from '../../../core/api/journals.api';
-import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
+import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-priority';
+import { withEntryPriority } from '../../../core/api/journal-entry-priority';
 import { TaskCard } from '../task-card/task-card';
 import { JournalEntry } from '../journal-entry/journal-entry';
 import { AppDialog } from '../../../ui/dialog/dialog';
@@ -41,59 +44,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs';
     ContainerDivDirective,
   ],
   templateUrl: './kanban.html',
-  styles: [
-    `
-      .no-tasks-background {
-        background-image: url('/no-tasks.png');
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-      }
-
-      .tasks-column {
-        position: relative;
-        --tasks-column-image: none;
-        --tasks-column-opacity: 1;
-      }
-
-      .tasks-column::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-image: var(--tasks-column-image);
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-        opacity: var(--tasks-column-opacity);
-        pointer-events: none;
-      }
-
-      .tasks-column > * {
-        position: relative;
-        z-index: 1;
-      }
-
-      .tasks-column-todo {
-        --tasks-column-image: url('/tasks-todo.png');
-      }
-
-      .tasks-column-doing {
-        --tasks-column-image: url('/tasks-doing.png');
-      }
-
-      .tasks-column-later {
-        --tasks-column-image: url('/tasks-later.png');
-      }
-
-      .tasks-column-done {
-        --tasks-column-image: url('/tasks-done.png');
-      }
-
-      .tasks-column-cancelled {
-        --tasks-column-image: url('/tasks-cancelled.png');
-      }
-    `,
-  ],
+  styleUrl: './kanban.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JournalEntriesKanban {
@@ -102,21 +53,32 @@ export class JournalEntriesKanban {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly formBuilder = inject(FormBuilder);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   protected readonly isLoading = signal(true);
-  protected readonly entries = signal<HandlersJournalEntryDTO[]>([]);
+  protected readonly entries = signal<JournalEntryWithPriority[]>([]);
   protected readonly tag = toSignal(
     this.route.queryParamMap.pipe(map((params) => normalizeTag(params))),
     { initialValue: normalizeTag(this.route.snapshot.queryParamMap) },
   );
   protected readonly tagControl = this.formBuilder.nonNullable.control('');
-  protected readonly columns = computed(() => buildColumns(this.entries()));
+  protected readonly filteredEntries = computed(() =>
+    filterEntriesByPriority(this.entries(), this.priority()),
+  );
+  protected readonly columns = computed(() => buildColumns(this.filteredEntries()));
   protected readonly hasVisibleEntries = computed(() =>
     this.columns().some((column) => column.entries.length > 0),
   );
   protected readonly dropListIds = computed(() => this.columns().map((column) => column.id));
   protected readonly tagOptions = computed(() => collectTags(this.entries()));
-  protected readonly selectedEntry = signal<HandlersJournalEntryDTO | null>(null);
+  protected readonly selectedEntry = signal<JournalEntryWithPriority | null>(null);
+  protected readonly priority = toSignal(
+    this.route.queryParamMap.pipe(map((params) => normalizePriority(params))),
+    { initialValue: normalizePriority(this.route.snapshot.queryParamMap) },
+  );
+  protected readonly priorityControl = this.formBuilder.nonNullable.control<PriorityFilter>('all');
+  protected readonly priorityOptions = PRIORITY_FILTER_OPTIONS;
+  protected readonly scrollStates = signal<Record<string, ScrollState>>({});
 
   constructor() {
     toObservable(this.tag)
@@ -141,9 +103,30 @@ export class JournalEntriesKanban {
           queryParamsHandling: 'merge',
         });
       });
+    toObservable(this.priority)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const currentPriority = this.priority();
+        if (this.priorityControl.value !== currentPriority) {
+          this.priorityControl.setValue(currentPriority, { emitEvent: false });
+        }
+      });
+    this.priorityControl.valueChanges
+      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        void this.router.navigate([], {
+          queryParams: { priority: value === 'all' ? null : value },
+          queryParamsHandling: 'merge',
+        });
+      });
+
+    effect(() => {
+      this.filteredEntries();
+      this.scheduleScrollStateRefresh();
+    });
   }
 
-  protected drop(event: CdkDragDrop<HandlersJournalEntryDTO[]>, status: BoardStatusKey): void {
+  protected drop(event: CdkDragDrop<JournalEntryWithPriority[]>, status: BoardStatusKey): void {
     const entry = event.item.data;
     const nextStatus = status;
     if (!entry || entry.status === nextStatus) {
@@ -163,7 +146,7 @@ export class JournalEntriesKanban {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (updatedEntry) => {
-          this.replaceEntry(entryKey, updatedEntry);
+          this.replaceEntry(entryKey, withEntryPriority(updatedEntry));
         },
         error: () => {
           this.updateEntryStatus(entryKey, previousStatus);
@@ -175,11 +158,11 @@ export class JournalEntriesKanban {
     return column.id;
   }
 
-  protected trackEntry(_: number, entry: HandlersJournalEntryDTO): string {
+  protected trackEntry(_: number, entry: JournalEntryWithPriority): string {
     return getEntryKey(entry) ?? '';
   }
 
-  protected openEntry(entry: HandlersJournalEntryDTO): void {
+  protected openEntry(entry: JournalEntryWithPriority): void {
     this.selectedEntry.set(entry);
   }
 
@@ -187,10 +170,22 @@ export class JournalEntriesKanban {
     this.selectedEntry.set(null);
   }
 
-  protected handleEntryDeleted(entry: HandlersJournalEntryDTO): void {
+  protected handleEntryDeleted(entry: JournalEntryWithPriority): void {
     this.entries.update((entries) =>
       entries.filter((entryItem) => getEntryKey(entryItem) !== getEntryKey(entry)),
     );
+  }
+
+  protected updateScrollState(element: HTMLElement): void {
+    const id = element.id;
+    if (!id) {
+      return;
+    }
+    this.setScrollState(id, computeScrollState(element));
+  }
+
+  protected scrollState(id: string): ScrollState {
+    return this.scrollStates()[id] ?? { canScrollUp: false, canScrollDown: false };
   }
 
   private updateEntryStatus(entryKey: string, status?: string): void {
@@ -204,7 +199,7 @@ export class JournalEntriesKanban {
     );
   }
 
-  private replaceEntry(entryKey: string, updatedEntry: HandlersJournalEntryDTO): void {
+  private replaceEntry(entryKey: string, updatedEntry: JournalEntryWithPriority): void {
     this.entries.update((entries) =>
       entries.map((entry) => (getEntryKey(entry) === entryKey ? updatedEntry : entry)),
     );
@@ -219,7 +214,24 @@ export class JournalEntriesKanban {
       .subscribe((entries) => {
         this.entries.set(entries);
         this.isLoading.set(false);
+        this.scheduleScrollStateRefresh();
       });
+  }
+
+  private scheduleScrollStateRefresh(): void {
+    queueMicrotask(() => {
+      requestAnimationFrame(() => this.refreshScrollStates());
+    });
+  }
+
+  private refreshScrollStates(): void {
+    const hostElement = this.host.nativeElement;
+    const dropLists = hostElement.querySelectorAll<HTMLElement>('.tasks-drop-list');
+    dropLists.forEach((element) => this.updateScrollState(element));
+  }
+
+  private setScrollState(id: string, state: ScrollState): void {
+    this.scrollStates.update((states) => ({ ...states, [id]: state }));
   }
 }
 
@@ -230,7 +242,12 @@ type KanbanColumn = {
   key: BoardStatusKey;
   label: string;
   imageSrc: string;
-  entries: HandlersJournalEntryDTO[];
+  entries: JournalEntryWithPriority[];
+};
+
+type ScrollState = {
+  canScrollUp: boolean;
+  canScrollDown: boolean;
 };
 
 const BOARD_COLUMNS: Array<{ key: BoardStatusKey; label: string; imageSrc: string }> = [
@@ -244,8 +261,8 @@ const BOARD_COLUMNS: Array<{ key: BoardStatusKey; label: string; imageSrc: strin
 const RECENT_STATUS_KEYS = new Set<BoardStatusKey>(['DONE', 'CANCELLED']);
 const RECENT_WINDOW_DAYS = 7;
 
-function buildColumns(entries: HandlersJournalEntryDTO[]): KanbanColumn[] {
-  const buckets = new Map<BoardStatusKey, HandlersJournalEntryDTO[]>();
+function buildColumns(entries: JournalEntryWithPriority[]): KanbanColumn[] {
+  const buckets = new Map<BoardStatusKey, JournalEntryWithPriority[]>();
   BOARD_COLUMNS.forEach((column) => buckets.set(column.key, []));
 
   entries.forEach((entry) => {
@@ -276,7 +293,7 @@ function normalizeStatus(status?: string): BoardStatusKey {
   return BOARD_COLUMNS.some((column) => column.key === key) ? (key as BoardStatusKey) : 'TODO';
 }
 
-function getEntryKey(entry: HandlersJournalEntryDTO): string | null {
+function getEntryKey(entry: JournalEntryWithPriority): string | null {
   if (entry.hash) {
     return entry.hash;
   }
@@ -286,7 +303,7 @@ function getEntryKey(entry: HandlersJournalEntryDTO): string | null {
   return null;
 }
 
-function isRecent(entry: HandlersJournalEntryDTO): boolean {
+function isRecent(entry: JournalEntryWithPriority): boolean {
   const updatedAt = entry.updated_at ?? entry.created_at;
   if (!updatedAt) {
     return true;
@@ -305,7 +322,7 @@ function normalizeTag(params: ParamMap): string {
   return tag ? tag.trim() : '';
 }
 
-function collectTags(entries: HandlersJournalEntryDTO[]): string[] {
+function collectTags(entries: JournalEntryWithPriority[]): string[] {
   const tags = new Set<string>();
   entries.forEach((entry) => {
     entry.tags?.forEach((tag) => {
@@ -315,4 +332,38 @@ function collectTags(entries: HandlersJournalEntryDTO[]): string[] {
     });
   });
   return Array.from(tags).sort((a, b) => a.localeCompare(b));
+}
+
+type PriorityFilter = 'all' | 'high' | 'medium' | 'low';
+
+const PRIORITY_FILTER_OPTIONS: Array<{ value: PriorityFilter; label: string }> = [
+  { value: 'all', label: 'All' },
+  { value: 'high', label: 'High' },
+  { value: 'medium', label: 'Medium' },
+  { value: 'low', label: 'Low' },
+];
+
+function normalizePriority(params: ParamMap): PriorityFilter {
+  const raw = params.get('priority')?.trim().toLowerCase();
+  if (raw === 'high' || raw === 'medium' || raw === 'low') {
+    return raw;
+  }
+  return 'all';
+}
+
+function filterEntriesByPriority(
+  entries: JournalEntryWithPriority[],
+  priority: PriorityFilter,
+): JournalEntryWithPriority[] {
+  if (priority === 'all') {
+    return entries;
+  }
+  return entries.filter((entry) => entry.priority === priority);
+}
+
+function computeScrollState(element: HTMLElement): ScrollState {
+  const { scrollTop, scrollHeight, clientHeight } = element;
+  const canScrollUp = scrollTop > 0;
+  const canScrollDown = scrollTop + clientHeight < scrollHeight - 1;
+  return { canScrollUp, canScrollDown };
 }

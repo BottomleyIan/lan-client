@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { JournalsApi } from '../../../core/api/journals.api';
-import type { HandlersJournalEntryDTO } from '../../../core/api/generated/api-types';
+import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-priority';
 import { CalendarEntry } from '../calendar-entry/calendar-entry';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
@@ -63,7 +63,7 @@ export class CalendarPage {
   protected readonly entriesByDay = computed(() => {
     const year = this.year();
     const month = this.month();
-    const byDay = new Map<number, HandlersJournalEntryDTO[]>();
+    const byDay = new Map<number, JournalEntryWithPriority[]>();
 
     for (const entry of this.entries()) {
       if (!isAllowedTaskStatus(entry.status)) {
@@ -81,14 +81,14 @@ export class CalendarPage {
     return byDay;
   });
 
-  protected entriesForDay(day: number): HandlersJournalEntryDTO[] {
+  protected entriesForDay(day: number): JournalEntryWithPriority[] {
     return this.entriesByDay().get(day) ?? [];
   }
 }
 
 type DateParts = { year: number; month: number; day: number };
 
-function resolveEntryDate(entry: HandlersJournalEntryDTO): DateParts | null {
+function resolveEntryDate(entry: JournalEntryWithPriority): DateParts | null {
   return (
     parseDateParts(entry.deadline_at) ??
     parseDateParts(entry.scheduled_at) ??
@@ -107,7 +107,7 @@ function parseDateParts(raw?: string): DateParts | null {
   return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 }
 
-function parseDatePartsFromFields(entry: HandlersJournalEntryDTO): DateParts | null {
+function parseDatePartsFromFields(entry: JournalEntryWithPriority): DateParts | null {
   if (!entry.year || !entry.month || !entry.day) {
     return null;
   }

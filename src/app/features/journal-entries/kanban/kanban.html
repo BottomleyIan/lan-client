@@ -6,26 +6,41 @@
     [class.no-tasks-background]="!isLoading() && !hasVisibleEntries()"
   >
     <div class="flex h-full flex-col gap-4 p-4">
-      <div class="flex flex-col gap-2">
-        <label class="text-sm font-semibold text-slate-100" for="task-tag-filter">
-          Filter by tag
+      <div class="flex items-center gap-3 text-sm font-semibold text-slate-100">
+        <label class="flex items-center gap-2" for="task-tag-filter">
+          <span class="whitespace-nowrap">Tag:</span>
         </label>
         <input
           uiInput
           id="task-tag-filter"
           type="text"
-          placeholder="Type a tag to filter"
+          placeholder="Type a tag"
           [formControl]="tagControl"
           [attr.list]="tagOptions().length > 0 ? 'task-tag-options' : null"
+          style="width: 14rem"
         />
-        @if (tagOptions().length > 0) {
-          <datalist id="task-tag-options">
-            @for (tag of tagOptions(); track tag) {
-              <option [value]="tag"></option>
-            }
-          </datalist>
-        }
+        <span class="text-slate-400" aria-hidden="true">|</span>
+        <label class="flex items-center gap-2" for="task-priority-filter">
+          <span class="whitespace-nowrap">Priority:</span>
+        </label>
+        <select
+          uiInput
+          id="task-priority-filter"
+          [formControl]="priorityControl"
+          style="width: 10rem"
+        >
+          @for (option of priorityOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
       </div>
+      @if (tagOptions().length > 0) {
+        <datalist id="task-tag-options">
+          @for (tag of tagOptions(); track tag) {
+            <option [value]="tag"></option>
+          }
+        </datalist>
+      }
       @if (isLoading()) {
         <p class="text-sm text-slate-400" aria-live="polite">Loading entries…</p>
       } @else if (!hasVisibleEntries()) {
@@ -37,7 +52,7 @@
         >
           @for (column of columns(); track trackColumn($index, column)) {
             <section
-              class="tasks-column flex h-full min-h-0 flex-col overflow-y-auto"
+              class="tasks-column relative flex h-full min-h-0 flex-col"
               [attr.aria-label]="column.label"
               [class.tasks-column-todo]="column.key === 'TODO'"
               [class.tasks-column-doing]="column.key === 'DOING'"
@@ -45,39 +60,35 @@
               [class.tasks-column-done]="column.key === 'DONE'"
               [class.tasks-column-cancelled]="column.key === 'CANCELLED'"
             >
-              <header class="flex items-center justify-between pt-2">
-                <div class="text-slate-400" role="heading" aria-level="2">
-                  <img
-                    ngSrc="{{ column.imageSrc }}"
-                    width="700"
-                    height="200"
-                    [attr.alt]="column.label"
-                    class="h-auto"
-                  />
-                </div>
-              </header>
+              <img
+                role="heading"
+                aria-level="2"
+                ngSrc="{{ column.imageSrc }}"
+                width="700"
+                height="200"
+                [attr.alt]="column.label"
+                class="absolute top-3 left-1/2 z-2 h-15 max-h-15 w-auto -translate-x-1/2 transform"
+              />
               <div
+                #dropList
                 cdkDropList
                 [id]="column.id"
                 [cdkDropListData]="column.entries"
                 [cdkDropListConnectedTo]="dropListIds()"
-                class="flex min-h-24 flex-1 flex-col gap-2 rounded-lg border border-white/10 px-1"
+                class="tasks-drop-list flex min-h-24 flex-1 flex-col gap-2 px-1 pt-19"
                 (cdkDropListDropped)="drop($event, column.key)"
+                (scroll)="updateScrollState(dropList)"
               >
-                @if (column.entries.length === 0) {
-                  <p class="text-xs text-slate-500">No tasks.</p>
-                } @else {
-                  @for (entry of column.entries; track trackEntry($index, entry)) {
-                    <div cdkDrag [cdkDragData]="entry">
-                      <button
-                        type="button"
-                        class="w-full text-left"
-                        (click)="openEntry(entry); entryDialog.open()"
-                      >
-                        <app-task-card [entry]="entry" />
-                      </button>
-                    </div>
-                  }
+                @for (entry of column.entries; track trackEntry($index, entry)) {
+                  <div cdkDrag [cdkDragData]="entry">
+                    <button
+                      type="button"
+                      class="w-full text-left"
+                      (click)="openEntry(entry); entryDialog.open()"
+                    >
+                      <app-task-card [entry]="entry" />
+                    </button>
+                  </div>
                 }
               </div>
             </section>

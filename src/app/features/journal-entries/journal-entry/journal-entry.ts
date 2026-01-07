@@ -11,16 +11,15 @@ import {
   Signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import type {
-  HandlersJournalEntryDTO,
-  HandlersUpdateJournalEntryRequest,
-} from '../../../core/api/generated/api-types';
+import type { HandlersUpdateJournalEntryRequest } from '../../../core/api/generated/api-types';
+import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-priority';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 import { MarkdownBody } from '../../../shared/markdown/markdown-body';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { JournalsApi } from '../../../core/api/journals.api';
+import { withEntryPriority } from '../../../core/api/journal-entry-priority';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { InputDirective } from '../../../ui/directives/input';
 
@@ -42,13 +41,13 @@ export class JournalEntry {
   private readonly journalsApi = inject(JournalsApi);
   private readonly formBuilder = inject(FormBuilder);
 
-  readonly entry = input.required<HandlersJournalEntryDTO>();
-  readonly deleted = output<HandlersJournalEntryDTO>();
+  readonly entry = input.required<JournalEntryWithPriority>();
+  readonly deleted = output<JournalEntryWithPriority>();
   readonly showLabel = input(true);
 
   protected readonly isEditing = signal(false);
   protected readonly isSaving = signal(false);
-  protected readonly entryState = signal<HandlersJournalEntryDTO | null>(null);
+  protected readonly entryState = signal<JournalEntryWithPriority | null>(null);
   protected readonly editForm = this.formBuilder.nonNullable.group({
     raw: ['', [Validators.required]],
   });
@@ -130,7 +129,7 @@ export class JournalEntry {
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
         next: (updatedEntry) => {
-          this.entryState.set(updatedEntry);
+          this.entryState.set(withEntryPriority(updatedEntry));
           this.isEditing.set(false);
         },
         error: (err) => console.error(err),

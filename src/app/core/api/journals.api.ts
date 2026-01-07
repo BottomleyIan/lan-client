@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import type { Observable } from 'rxjs';
+import { map } from 'rxjs';
 import type {
   HandlersCreateJournalEntryRequest,
   HandlersCreateJournalEntryRawRequest,
@@ -12,6 +13,8 @@ import type {
   HandlersUpdateJournalEntryRequest,
 } from './generated/api-types';
 import { apiUrl } from './api-url';
+import type { JournalEntryWithPriority } from './journal-entry-priority';
+import { withEntryPriority } from './journal-entry-priority';
 
 @Injectable({ providedIn: 'root' })
 export class JournalsApi {
@@ -55,7 +58,7 @@ export class JournalsApi {
     status?: string[];
     tags?: string[];
     tag?: string[];
-  }): Observable<HandlersJournalEntryDTO[]> {
+  }): Observable<JournalEntryWithPriority[]> {
     let params = new HttpParams();
     if (request?.year !== undefined) params = params.set('year', String(request.year));
     if (request?.month !== undefined) params = params.set('month', String(request.month));
@@ -65,7 +68,9 @@ export class JournalsApi {
     if (request?.status?.length) params = params.set('status', request.status.join(','));
     if (request?.tags?.length) params = params.set('tags', request.tags.join(','));
     if (request?.tag?.length) params = params.set('tag', request.tag.join(','));
-    return this.http.get<HandlersJournalEntryDTO[]>(apiUrl('api/journals/entries'), { params });
+    return this.http
+      .get<HandlersJournalEntryDTO[]>(apiUrl('api/journals/entries'), { params })
+      .pipe(map((entries) => entries.map((entry) => withEntryPriority(entry))));
   }
 
   /** GET /journals/:year/:month/:day */

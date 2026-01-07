@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
-import type { HandlersJournalEntryDTO } from '../../core/api/generated/api-types';
+import type { JournalEntryWithPriority } from '../../core/api/journal-entry-priority';
 import { JournalsApi } from '../../core/api/journals.api';
 import { JournalEntry } from '../../features/journal-entries/journal-entry/journal-entry';
 
@@ -37,7 +37,7 @@ export class DayView {
 
   readonly hasEntries$ = this.entries$.pipe(map((entries) => entries.length > 0));
 
-  protected trackEntryId(_: number, entry: HandlersJournalEntryDTO): number | string {
+  protected trackEntryId(_: number, entry: JournalEntryWithPriority): number | string {
     return entry.id ?? entry.hash ?? `${entry.year}-${entry.month}-${entry.day}-${entry.position}`;
   }
 
