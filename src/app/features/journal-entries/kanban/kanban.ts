@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgOptimizedImage } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -27,6 +28,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs';
   selector: 'app-journal-entries-kanban',
   imports: [
     CommonModule,
+    NgOptimizedImage,
     ReactiveFormsModule,
     InputDirective,
     TaskCard,
@@ -39,6 +41,59 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs';
     ContainerDivDirective,
   ],
   templateUrl: './kanban.html',
+  styles: [
+    `
+      .no-tasks-background {
+        background-image: url('/no-tasks.png');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+
+      .tasks-column {
+        position: relative;
+        --tasks-column-image: none;
+        --tasks-column-opacity: 1;
+      }
+
+      .tasks-column::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: var(--tasks-column-image);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        opacity: var(--tasks-column-opacity);
+        pointer-events: none;
+      }
+
+      .tasks-column > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .tasks-column-todo {
+        --tasks-column-image: url('/tasks-todo.png');
+      }
+
+      .tasks-column-doing {
+        --tasks-column-image: url('/tasks-doing.png');
+      }
+
+      .tasks-column-later {
+        --tasks-column-image: url('/tasks-later.png');
+      }
+
+      .tasks-column-done {
+        --tasks-column-image: url('/tasks-done.png');
+      }
+
+      .tasks-column-cancelled {
+        --tasks-column-image: url('/tasks-cancelled.png');
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JournalEntriesKanban {
@@ -174,15 +229,16 @@ type KanbanColumn = {
   id: string;
   key: BoardStatusKey;
   label: string;
+  imageSrc: string;
   entries: HandlersJournalEntryDTO[];
 };
 
-const BOARD_COLUMNS: Array<{ key: BoardStatusKey; label: string }> = [
-  { key: 'TODO', label: 'Todo' },
-  { key: 'DOING', label: 'Doing' },
-  { key: 'LATER', label: 'Later' },
-  { key: 'DONE', label: 'Done' },
-  { key: 'CANCELLED', label: 'Cancelled' },
+const BOARD_COLUMNS: Array<{ key: BoardStatusKey; label: string; imageSrc: string }> = [
+  { key: 'TODO', label: 'Todo', imageSrc: '/todo.png' },
+  { key: 'DOING', label: 'Doing', imageSrc: '/doing.png' },
+  { key: 'LATER', label: 'Later', imageSrc: '/later.png' },
+  { key: 'DONE', label: 'Done', imageSrc: '/done.png' },
+  { key: 'CANCELLED', label: 'Cancelled', imageSrc: '/cancelled.png' },
 ];
 
 const RECENT_STATUS_KEYS = new Set<BoardStatusKey>(['DONE', 'CANCELLED']);
@@ -207,6 +263,7 @@ function buildColumns(entries: HandlersJournalEntryDTO[]): KanbanColumn[] {
     id: `task-column-${column.key.toLowerCase()}`,
     key: column.key,
     label: column.label,
+    imageSrc: column.imageSrc,
     entries: buckets.get(column.key) ?? [],
   }));
 }

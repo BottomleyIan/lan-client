@@ -22,6 +22,9 @@ const icons = {
   play: { glyph: '\udb83\udf1b', label: 'Play' }, //nf-md-play_outline 󰼛
   playlist: { glyph: '\udb83\udcb8', label: 'Playlist' }, //󰲸
   previous: { glyph: '\udb83\udf28', label: 'Previous' }, //nf-md-skip_previous_outline 󰼨
+  priorityHigh: { glyph: '\udb82\udf3a', label: 'Priority High' }, //󰬺
+  priorityMedium: { glyph: '\udb82\udf3b', label: 'Priority Medium' }, //󰬻
+  priorityLow: { glyph: '\udb82\udf3c', label: 'Priority Low' }, //󰬼
 
   refresh: { glyph: '\udb81\udc50', label: 'Refresh' }, //nf-md-refresh 󰑐
   settings: { glyph: '\udb81\udc93', label: 'Settings' }, //nf-md-cog 󰒓

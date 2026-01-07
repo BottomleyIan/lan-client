@@ -1,5 +1,10 @@
 <div class="flex h-full flex-col gap-4">
-  <section uiContainerDiv class="flex-1 overflow-y-hidden" label="">
+  <section
+    uiContainerDiv
+    class="flex-1 overflow-y-hidden"
+    label=""
+    [class.no-tasks-background]="!isLoading() && !hasVisibleEntries()"
+  >
     <div class="flex h-full flex-col gap-4 p-4">
       <div class="flex flex-col gap-2">
         <label class="text-sm font-semibold text-slate-100" for="task-tag-filter">
@@ -32,25 +37,31 @@
         >
           @for (column of columns(); track trackColumn($index, column)) {
             <section
-              class="flex h-full min-h-0 flex-col gap-3 overflow-y-auto"
+              class="tasks-column flex h-full min-h-0 flex-col overflow-y-auto"
               [attr.aria-label]="column.label"
+              [class.tasks-column-todo]="column.key === 'TODO'"
+              [class.tasks-column-doing]="column.key === 'DOING'"
+              [class.tasks-column-later]="column.key === 'LATER'"
+              [class.tasks-column-done]="column.key === 'DONE'"
+              [class.tasks-column-cancelled]="column.key === 'CANCELLED'"
             >
-              <header class="flex items-center justify-between">
-                <h2 class="text-xs font-semibold tracking-[0.18em] text-slate-400 uppercase">
-                  {{ column.label }}
-                </h2>
-                <span
-                  class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold tracking-[0.12em] text-slate-300 uppercase"
-                >
-                  {{ column.entries.length }}
-                </span>
+              <header class="flex items-center justify-between pt-2">
+                <div class="text-slate-400" role="heading" aria-level="2">
+                  <img
+                    ngSrc="{{ column.imageSrc }}"
+                    width="700"
+                    height="200"
+                    [attr.alt]="column.label"
+                    class="h-auto"
+                  />
+                </div>
               </header>
               <div
                 cdkDropList
                 [id]="column.id"
                 [cdkDropListData]="column.entries"
                 [cdkDropListConnectedTo]="dropListIds()"
-                class="flex min-h-24 flex-1 flex-col gap-2 rounded-lg border border-white/10 bg-black/40 p-2"
+                class="flex min-h-24 flex-1 flex-col gap-2 rounded-lg border border-white/10 px-1"
                 (cdkDropListDropped)="drop($event, column.key)"
               >
                 @if (column.entries.length === 0) {
@@ -89,9 +100,7 @@
         <h2 class="text-lg font-semibold text-slate-100" id="kanban-entry-title">
           {{ entry.title || 'Task' }}
         </h2>
-        <p class="text-sm text-slate-400" id="kanban-entry-body">
-          View and edit task details.
-        </p>
+        <p class="text-sm text-slate-400" id="kanban-entry-body">View and edit task details.</p>
       </div>
       <app-icon-button-danger icon="x" label="Close dialog" (pressed)="entryDialog.close()" />
     </div>
