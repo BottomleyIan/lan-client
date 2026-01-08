@@ -13,7 +13,7 @@
   background-size: cover;
 }
 
-.tasks-column>* {
+.tasks-column > * {
   position: relative;
   z-index: 1;
 }
@@ -62,20 +62,23 @@
 */
 .tasks-column-scroll-container::before {
   top: 0;
-  background: linear-gradient(to bottom,
-      color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
-      transparent);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
+    transparent
+  );
   box-shadow: 0 14px 22px -18px var(--color-tokyo-accent-cyan);
 }
 
 .tasks-column-scroll-container::after {
   bottom: 0px;
-  background: linear-gradient(to top,
-      color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
-      transparent);
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-tokyo-accent-cyan) 85%, transparent),
+    transparent
+  );
   box-shadow: 0 -14px 22px -18px var(--color-tokyo-accent-cyan);
 }
-
 
 .tasks-column-can-scroll-up::before {
   opacity: 0.9;

@@ -46,25 +46,23 @@
       } @else if (!hasVisibleEntries()) {
         <p class="text-sm text-slate-400">No entries yet.</p>
       } @else {
-        <div
-          class="grid min-h-0 flex-1 gap-4 grid-cols-5"
-          cdkDropListGroup
-        >
+        <div class="grid min-h-0 flex-1 grid-cols-5 gap-4" cdkDropListGroup>
           @for (column of columns(); track trackColumn($index, column)) {
-
             <div
               class="tasks-column-scroll-container relative isolate min-h-0 overflow-hidden"
               [attr.data-scroll-id]="column.id"
               [class.tasks-column-can-scroll-up]="scrollState(column.id).canScrollUp"
               [class.tasks-column-can-scroll-down]="scrollState(column.id).canScrollDown"
             >
-              <div class="inset-1 absolute bottom-2 z-3">
-<om-electric-border style="" className="hidden h-full" [thickness]="0">
-      </om-electric-border>
-                  </div>
+              <div
+                class="pointer-events-none absolute inset-1 bottom-2 z-3"
+                [class.hidden]="activeDropListId() !== column.id"
+              >
+                <om-electric-border className="h-full" [thickness]="0"> </om-electric-border>
+              </div>
               <section
                 #columnScroll
-                class="tasks-column no-scrollbar overflow-hidden flex h-full min-h-0 flex-col gap-3 overflow-y-scroll rounded-lg border border-white/10 px-1 pb-2 pt-2 rounded-xl"
+                class="tasks-column no-scrollbar flex h-full min-h-0 flex-col overflow-hidden overflow-y-scroll rounded-lg rounded-xl border border-white/10 px-1 pt-2 pb-2"
                 [attr.aria-label]="column.label"
                 [class.tasks-column-todo]="column.key === 'TODO'"
                 [class.tasks-column-doing]="column.key === 'DOING'"
@@ -76,12 +74,12 @@
                 <img
                   role="heading"
                   aria-level="2"
-                ngSrc="{{ column.imageSrc }}"
-                width="700"
-                height="200"
-                [attr.alt]="column.label"
-                class="mx-auto h-12 w-auto"
-              />
+                  ngSrc="{{ column.imageSrc }}"
+                  width="700"
+                  height="200"
+                  [attr.alt]="column.label"
+                  class="mx-auto h-12 w-auto"
+                />
                 <div
                   cdkDropList
                   [id]="column.id"
@@ -89,6 +87,8 @@
                   [cdkDropListConnectedTo]="dropListIds()"
                   class="flex min-h-24 flex-1 flex-col gap-2 pb-5"
                   (cdkDropListDropped)="drop($event, column.key)"
+                  (cdkDropListEntered)="handleDropListEntered(column.id)"
+                  (cdkDropListExited)="handleDropListExited(column.id)"
                 >
                   @for (entry of column.entries; track trackEntry($index, entry)) {
                     <div cdkDrag [cdkDragData]="entry">

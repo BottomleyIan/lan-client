@@ -81,6 +81,7 @@ export class JournalEntriesKanban {
   protected readonly priorityControl = this.formBuilder.nonNullable.control<PriorityFilter>('all');
   protected readonly priorityOptions = PRIORITY_FILTER_OPTIONS;
   protected readonly scrollStates = signal<Record<string, ScrollState>>({});
+  protected readonly activeDropListId = signal<string | null>(null);
 
   constructor() {
     toObservable(this.tag)
@@ -128,8 +129,8 @@ export class JournalEntriesKanban {
     });
   }
 
-
   protected drop(event: CdkDragDrop<JournalEntryWithPriority[]>, status: BoardStatusKey): void {
+    this.activeDropListId.set(null);
     const entry = event.item.data;
     const nextStatus = status;
     if (!entry || entry.status === nextStatus) {
@@ -171,6 +172,16 @@ export class JournalEntriesKanban {
 
   protected closeEntry(): void {
     this.selectedEntry.set(null);
+  }
+
+  protected handleDropListEntered(id: string): void {
+    this.activeDropListId.set(id);
+  }
+
+  protected handleDropListExited(id: string): void {
+    if (this.activeDropListId() === id) {
+      this.activeDropListId.set(null);
+    }
   }
 
   protected handleEntryDeleted(entry: JournalEntryWithPriority): void {
@@ -228,7 +239,9 @@ export class JournalEntriesKanban {
 
   private refreshScrollStates(): void {
     const hostElement = this.host.nativeElement;
-    const scrollColumns = hostElement.querySelectorAll<HTMLElement>('.tasks-column-scroll-container');
+    const scrollColumns = hostElement.querySelectorAll<HTMLElement>(
+      '.tasks-column-scroll-container',
+    );
     scrollColumns.forEach((element) => {
       const id = element.dataset['scrollId'] ?? '';
       if (!id) {
