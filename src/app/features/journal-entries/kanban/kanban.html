@@ -6,41 +6,6 @@
     [class.no-tasks-background]="!isLoading() && !hasVisibleEntries()"
   >
     <div class="flex h-full min-h-0 flex-col gap-4 p-4">
-      <div class="flex items-center gap-3 text-sm font-semibold text-slate-100">
-        <label class="flex items-center gap-2" for="task-tag-filter">
-          <span class="whitespace-nowrap">Tag:</span>
-        </label>
-        <input
-          uiInput
-          id="task-tag-filter"
-          type="text"
-          placeholder="Type a tag"
-          [formControl]="tagControl"
-          [attr.list]="tagOptions().length > 0 ? 'task-tag-options' : null"
-          style="width: 14rem"
-        />
-        <span class="text-slate-400" aria-hidden="true">|</span>
-        <label class="flex items-center gap-2" for="task-priority-filter">
-          <span class="whitespace-nowrap">Priority:</span>
-        </label>
-        <select
-          uiInput
-          id="task-priority-filter"
-          [formControl]="priorityControl"
-          style="width: 10rem"
-        >
-          @for (option of priorityOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
-          }
-        </select>
-      </div>
-      @if (tagOptions().length > 0) {
-        <datalist id="task-tag-options">
-          @for (tag of tagOptions(); track tag) {
-            <option [value]="tag"></option>
-          }
-        </datalist>
-      }
       @if (isLoading()) {
         <p class="text-sm text-slate-400" aria-live="polite">Loading entries…</p>
       } @else if (!hasVisibleEntries()) {

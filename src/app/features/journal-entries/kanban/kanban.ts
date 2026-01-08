@@ -10,9 +10,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgOptimizedImage } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,11 +20,11 @@ import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-p
 import { withEntryPriority } from '../../../core/api/journal-entry-priority';
 import { TaskCard } from '../task-card/task-card';
 import { JournalEntry } from '../journal-entry/journal-entry';
+import { normalizePriority, type PriorityFilter } from './kanban-filters';
 import { AppDialog } from '../../../ui/dialog/dialog';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
-import { InputDirective } from '../../../ui/directives/input';
-import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { map } from 'rxjs';
 import { NgxElectricBorderComponent } from '@omnedia/ngx-electric-border';
 
 @Component({
@@ -33,8 +32,6 @@ import { NgxElectricBorderComponent } from '@omnedia/ngx-electric-border';
   imports: [
     CommonModule,
     NgOptimizedImage,
-    ReactiveFormsModule,
-    InputDirective,
     TaskCard,
     JournalEntry,
     AppDialog,
@@ -53,8 +50,6 @@ export class JournalEntriesKanban {
   private readonly journalsApi = inject(JournalsApi);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly formBuilder = inject(FormBuilder);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   protected readonly isLoading = signal(true);
@@ -63,7 +58,6 @@ export class JournalEntriesKanban {
     this.route.queryParamMap.pipe(map((params) => normalizeTag(params))),
     { initialValue: normalizeTag(this.route.snapshot.queryParamMap) },
   );
-  protected readonly tagControl = this.formBuilder.nonNullable.control('');
   protected readonly filteredEntries = computed(() =>
     filterEntriesByPriority(this.entries(), this.priority()),
   );
@@ -72,56 +66,18 @@ export class JournalEntriesKanban {
     this.columns().some((column) => column.entries.length > 0),
   );
   protected readonly dropListIds = computed(() => this.columns().map((column) => column.id));
-  protected readonly tagOptions = computed(() => collectTags(this.entries()));
   protected readonly selectedEntry = signal<JournalEntryWithPriority | null>(null);
   protected readonly priority = toSignal(
     this.route.queryParamMap.pipe(map((params) => normalizePriority(params))),
     { initialValue: normalizePriority(this.route.snapshot.queryParamMap) },
   );
-  protected readonly priorityControl = this.formBuilder.nonNullable.control<PriorityFilter>('all');
-  protected readonly priorityOptions = PRIORITY_FILTER_OPTIONS;
   protected readonly scrollStates = signal<Record<string, ScrollState>>({});
   protected readonly activeDropListId = signal<string | null>(null);
 
   constructor() {
     toObservable(this.tag)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        const currentTag = this.tag();
-        if (this.tagControl.value !== currentTag) {
-          this.tagControl.setValue(currentTag, { emitEvent: false });
-        }
-        this.fetchEntries();
-      });
-    this.tagControl.valueChanges
-      .pipe(
-        map((value) => value.trim()),
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((value) => {
-        void this.router.navigate([], {
-          queryParams: { tag: value || null },
-          queryParamsHandling: 'merge',
-        });
-      });
-    toObservable(this.priority)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        const currentPriority = this.priority();
-        if (this.priorityControl.value !== currentPriority) {
-          this.priorityControl.setValue(currentPriority, { emitEvent: false });
-        }
-      });
-    this.priorityControl.valueChanges
-      .pipe(distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        void this.router.navigate([], {
-          queryParams: { priority: value === 'all' ? null : value },
-          queryParamsHandling: 'merge',
-        });
-      });
+      .subscribe(() => this.fetchEntries());
 
     effect(() => {
       this.filteredEntries();
@@ -341,35 +297,6 @@ function isRecent(entry: JournalEntryWithPriority): boolean {
 function normalizeTag(params: ParamMap): string {
   const tag = params.get('tag');
   return tag ? tag.trim() : '';
-}
-
-function collectTags(entries: JournalEntryWithPriority[]): string[] {
-  const tags = new Set<string>();
-  entries.forEach((entry) => {
-    entry.tags?.forEach((tag) => {
-      if (tag.trim().length > 0) {
-        tags.add(tag);
-      }
-    });
-  });
-  return Array.from(tags).sort((a, b) => a.localeCompare(b));
-}
-
-type PriorityFilter = 'all' | 'high' | 'medium' | 'low';
-
-const PRIORITY_FILTER_OPTIONS: Array<{ value: PriorityFilter; label: string }> = [
-  { value: 'all', label: 'All' },
-  { value: 'high', label: 'High' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'low', label: 'Low' },
-];
-
-function normalizePriority(params: ParamMap): PriorityFilter {
-  const raw = params.get('priority')?.trim().toLowerCase();
-  if (raw === 'high' || raw === 'medium' || raw === 'low') {
-    return raw;
-  }
-  return 'all';
 }
 
 function filterEntriesByPriority(

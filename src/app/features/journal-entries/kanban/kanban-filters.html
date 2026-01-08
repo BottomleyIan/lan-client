@@ -1,0 +1,25 @@
+<div class="flex items-center gap-3 text-sm font-semibold text-slate-100">
+  <label class="sr-only" for="task-tag-filter">Tag</label>
+  <input
+    uiInput
+    id="task-tag-filter"
+    type="text"
+    placeholder="Type a tag"
+    [formControl]="tagControl"
+    [attr.list]="tagOptions().length > 0 ? 'task-tag-options' : null"
+    class="w-56"
+  />
+  <label class="sr-only" for="task-priority-filter">Priority</label>
+  <select uiInput id="task-priority-filter" [formControl]="priorityControl" class="w-40">
+    @for (option of priorityOptions; track option.value) {
+      <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+</div>
+@if (tagOptions().length > 0) {
+  <datalist id="task-tag-options">
+    @for (tag of tagOptions(); track tag) {
+      <option [value]="tag"></option>
+    }
+  </datalist>
+}
