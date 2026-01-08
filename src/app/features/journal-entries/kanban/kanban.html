@@ -51,12 +51,17 @@
           cdkDropListGroup
         >
           @for (column of columns(); track trackColumn($index, column)) {
+
             <div
-              class="tasks-column-scroll-container relative min-h-0 overflow-hidden"
+              class="tasks-column-scroll-container relative isolate min-h-0 overflow-hidden"
               [attr.data-scroll-id]="column.id"
               [class.tasks-column-can-scroll-up]="scrollState(column.id).canScrollUp"
               [class.tasks-column-can-scroll-down]="scrollState(column.id).canScrollDown"
             >
+              <div class="inset-1 absolute bottom-2 z-3">
+<om-electric-border style="" className="hidden h-full" [thickness]="0">
+      </om-electric-border>
+                  </div>
               <section
                 #columnScroll
                 class="tasks-column no-scrollbar overflow-hidden flex h-full min-h-0 flex-col gap-3 overflow-y-scroll rounded-lg border border-white/10 px-1 pb-2 pt-2 rounded-xl"

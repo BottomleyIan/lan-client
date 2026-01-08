@@ -26,6 +26,7 @@ import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
 import { InputDirective } from '../../../ui/directives/input';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
+import { NgxElectricBorderComponent } from '@omnedia/ngx-electric-border';
 
 @Component({
   selector: 'app-journal-entries-kanban',
@@ -42,6 +43,7 @@ import { debounceTime, distinctUntilChanged, map } from 'rxjs';
     CdkDropList,
     CdkDrag,
     ContainerDivDirective,
+    NgxElectricBorderComponent,
   ],
   templateUrl: './kanban.html',
   styleUrl: './kanban.css',

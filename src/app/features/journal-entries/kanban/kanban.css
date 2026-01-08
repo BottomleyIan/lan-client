@@ -47,6 +47,7 @@
   height: 0;
 }
 
+/*
 .tasks-column-scroll-container::before,
 .tasks-column-scroll-container::after {
   content: '';
@@ -58,7 +59,7 @@
   pointer-events: none;
   z-index: 2;
 }
-
+*/
 .tasks-column-scroll-container::before {
   top: 0;
   background: linear-gradient(to bottom,
