@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { Navbar } from './ui/navbar/navbar';
 import { CurrentlyPlaying } from './shared/currently-playing/currently-playing';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -11,7 +18,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, CurrentlyPlaying],
+  imports: [RouterOutlet, Navbar, CurrentlyPlaying, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

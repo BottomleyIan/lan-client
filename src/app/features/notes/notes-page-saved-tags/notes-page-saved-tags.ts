@@ -23,6 +23,10 @@ export class NotesPageSavedTags {
   );
 
   protected navItems(setting: string): NavDropdownMenuNavItems[] {
-    return setting.split(',').map((x) => ({ name: x, url: `notes/${x}` }));
+    return setting
+      .split(',')
+      .map((x) => x.trim())
+      .filter((x) => x.length > 0)
+      .map((x) => ({ name: x, url: `notes?tag=${encodeURIComponent(x)}` }));
   }
 }

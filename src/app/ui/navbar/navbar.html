@@ -24,6 +24,11 @@
       <app-kanban-filters />
     </div>
   }
+  @if (isNotesRoute()) {
+    <div class="flex min-w-0 flex-1 justify-start">
+      <app-notes-tag-filter />
+    </div>
+  }
   <nav class="flex items-center gap-3" aria-label="Primary">
     <ul class="flex items-center gap-3">
       <app-nav-link

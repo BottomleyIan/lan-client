@@ -1,6 +1,7 @@
 @if (tag()) {
   <a
-    [routerLink]="['/notes', tag()]"
+    [routerLink]="['/notes']"
+    [queryParams]="{ tag: tag() }"
     class="focus-visible:ring-tokyo-accent-cyan/70 focus-visible:ring-2 focus-visible:outline-none"
   >
     {{ tag() }}
