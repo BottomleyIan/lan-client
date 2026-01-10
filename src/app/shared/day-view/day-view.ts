@@ -5,15 +5,13 @@ import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
 import type { JournalEntryWithPriority } from '../../core/api/journal-entry-priority';
 import { JournalsApi } from '../../core/api/journals.api';
 import { JournalEntry } from '../../features/journal-entries/journal-entry/journal-entry';
-import { TableDirective } from '../../ui/directives/table';
-import { TableHeadDirective } from '../../ui/directives/thead';
-import { MarkdownBody } from '../markdown/markdown-body';
+import { DayViewTable } from './day-view-table';
 
 type DayParams = { year: number; month: number; day: number };
 
 @Component({
   selector: 'app-day-view',
-  imports: [CommonModule, JournalEntry, TableDirective, TableHeadDirective, MarkdownBody],
+  imports: [CommonModule, JournalEntry, DayViewTable],
   templateUrl: './day-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -61,7 +59,7 @@ export class DayView {
       }
       return {
         rows,
-        columns: Array.from(columnsSet),
+        columnsSet,
       };
     }),
   );
@@ -81,7 +79,12 @@ function entryToRow(entry: JournalEntryWithPriority): Record<string, string> | n
         continue;
       }
       const key = parts[0]?.trim();
-      const value = parts.slice(1).join('::').trim();
+      const value = parts
+        .slice(1)
+        .join('::')
+        .trim()
+        .replaceAll(']] [[', ']]<br />[[')
+        .replaceAll(']][[', ']]<br />[[');
       if (key) {
         resp[key] = value;
       }

@@ -15,7 +15,6 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
     tags: ['book', 'audio-book'],
     fields: {
       author: { type: 'single-tag' },
-      type: { default: 'book' },
       series: { type: 'single-tag' },
       genre: { type: 'single-tag' },
       rating: { type: 'single-tag' },
@@ -27,7 +26,6 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
     tags: ['book'],
     fields: {
       author: { type: 'single-tag' },
-      type: { default: 'book' },
       series: { type: 'single-tag' },
       genre: { type: 'single-tag' },
       rating: { type: 'single-tag' },
@@ -59,7 +57,6 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
     fields: {
       title: {},
       director: { type: 'single-tag' },
-      type: { default: 'film' },
       rating: { type: 'single-tag' },
       genre: { type: 'single-tag' },
       'watched-on': { type: 'calendar' },

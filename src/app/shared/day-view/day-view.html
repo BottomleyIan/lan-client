@@ -1,4 +1,9 @@
 <div class="flex flex-col gap-3 p-4">
+  @if (table$ | async; as table) {
+    @if (table.rows.length > 0) {
+      <app-day-view-table [table]="table" />
+    }
+  }
   @if (entries$ | async; as entries) {
     @if (entries.length === 0) {
       <p class="text-sm text-slate-400">No entries for this view.</p>
@@ -10,37 +15,6 @@
           </div>
         }
       </div>
-    }
-  }
-  @if (table$ | async; as table) {
-    @if (table.rows.length > 0) {
-      <section class="mt-4">
-        <div class="mt-2 overflow-x-auto">
-          <table uiTable class="min-w-full">
-            <caption class="sr-only">
-              Structured entry data
-            </caption>
-            <thead uiTHead>
-              <tr>
-                @for (col of table.columns; track col) {
-                  <th class="px-3 py-2 font-semibold">{{ col | titlecase }}</th>
-                }
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of table.rows; track $index) {
-                <tr class="border-t border-white/10">
-                  @for (col of table.columns; track col) {
-                    <td class="px-3 py-2 text-slate-200">
-                      <app-markdown-body [markdown]="row[col] || ''"></app-markdown-body>
-                    </td>
-                  }
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </section>
     }
   }
 </div>
