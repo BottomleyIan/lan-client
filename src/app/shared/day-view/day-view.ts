@@ -5,12 +5,15 @@ import { combineLatest, map, startWith, Subject, switchMap } from 'rxjs';
 import type { JournalEntryWithPriority } from '../../core/api/journal-entry-priority';
 import { JournalsApi } from '../../core/api/journals.api';
 import { JournalEntry } from '../../features/journal-entries/journal-entry/journal-entry';
+import { TableDirective } from '../../ui/directives/table';
+import { TableHeadDirective } from '../../ui/directives/thead';
+import { MarkdownBody } from '../markdown/markdown-body';
 
 type DayParams = { year: number; month: number; day: number };
 
 @Component({
   selector: 'app-day-view',
-  imports: [CommonModule, JournalEntry],
+  imports: [CommonModule, JournalEntry, TableDirective, TableHeadDirective, MarkdownBody],
   templateUrl: './day-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,24 +49,20 @@ export class DayView {
   }
   readonly table$ = this.entries$.pipe(
     map((entries) => {
-      const table = entries.reduce(
-        (acc, entry) => {
-          const row = entryToRow(entry);
-          if (row == null) return acc;
-          acc.rows.push(row);
-          for (const key of Object.keys(row)) {
-            acc.columns.add(key);
-          }
-          return acc;
-        },
-        { rows: [], columns: new Set() } as {
-          rows: Record<string, string>[];
-          columns: Set<string>;
-        },
-      );
-
-      console.log(table);
-      return table;
+      const rows: Array<Record<string, string>> = [];
+      const columnsSet = new Set<string>();
+      for (const entry of entries) {
+        const row = entryToRow(entry);
+        if (!row) {
+          continue;
+        }
+        rows.push(row);
+        Object.keys(row).forEach((key) => columnsSet.add(key));
+      }
+      return {
+        rows,
+        columns: Array.from(columnsSet),
+      };
     }),
   );
 
@@ -73,14 +72,18 @@ export class DayView {
 }
 
 function entryToRow(entry: JournalEntryWithPriority): Record<string, string> | null {
-  const resp = {} as Record<string, string>;
+  const resp: Record<string, string> = {};
   const separateLines = entry.body?.match(/[^\r\n]+/g);
   if (separateLines?.length) {
     for (const line of separateLines) {
       const parts = line.split('::');
-      console.log(line, parts);
-      if (parts.length == 2) {
-        resp[parts[0]] = parts[1];
+      if (parts.length < 2) {
+        continue;
+      }
+      const key = parts[0]?.trim();
+      const value = parts.slice(1).join('::').trim();
+      if (key) {
+        resp[key] = value;
       }
     }
   }
