@@ -111,6 +111,14 @@ export interface HandlersJournalEntryDTO {
   year?: number;
 }
 
+export interface HandlersJournalGitSyncDTO {
+  commit_output?: string;
+  commit_skipped?: boolean;
+  pull_output?: string;
+  push_output?: string;
+  status?: string;
+}
+
 export interface HandlersMetalPriceDTO {
   gbp?: number;
   name?: string;

@@ -35,6 +35,7 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
     },
   },
   spent: {
+    tags: ['spent'],
     fields: {
       ammount: { type: 'number' },
       category: { type: 'single-tag' },
@@ -42,6 +43,7 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
     },
   },
   balance: {
+    tags: ['balance'],
     fields: {
       date: { type: 'calendar' },
       mortgage: { type: 'number' },

@@ -69,6 +69,7 @@ export class NotesNewPage {
     description: [''],
     tags: [''],
     status: [''],
+    priority: [''],
     scheduledDate: [''],
     scheduledTime: [''],
     deadlineDate: [''],
@@ -102,6 +103,7 @@ export class NotesNewPage {
     const description = this.form.controls.description.value.trim();
     const tags = this.parseTags(this.form.controls.tags.value);
     const status = this.form.controls.status.value.trim();
+    const priority = this.form.controls.priority.value.trim();
     const scheduledDate = this.form.controls.scheduledDate.value.trim();
     const scheduledTime = this.form.controls.scheduledTime.value.trim();
     const deadlineDate = this.form.controls.deadlineDate.value.trim();
@@ -109,7 +111,8 @@ export class NotesNewPage {
     const scheduled = toIsoOrDate(scheduledDate, scheduledTime);
     const deadline = toIsoOrDate(deadlineDate, deadlineTime);
     const targetDate = toCalendarDate(scheduledDate);
-    const finalBody = this.composeBody(trimmedBody);
+    const finalBody = this.composeBody(trimmedBody, priority);
+
 
     this.isSaving.set(true);
 
@@ -194,7 +197,8 @@ export class NotesNewPage {
     this.form.controls.tags.setValue(tags.join(', '));
   }
 
-  private composeBody(body: string): string {
+  private composeBody(body: string, priority: string): string {
+    const bodyWithPriority = ["low", "medium", "high"].includes(priority) ? `priority:: ${priority}\n${body}` : body;
     const fieldKeys = this.fieldKeys();
     const fieldValues = this.fields.getRawValue();
     const fieldLines = fieldKeys
@@ -209,10 +213,10 @@ export class NotesNewPage {
       .filter((line) => line.length > 0);
 
     if (fieldLines.length === 0) {
-      return body;
+      return bodyWithPriority;
     }
 
-    return `${fieldLines.join('\n')}\n\n${body}`;
+    return `${fieldLines.join('\n')}\n\n${bodyWithPriority}`;
   }
 }
 

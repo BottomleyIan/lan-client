@@ -9,6 +9,7 @@ import type {
   HandlersJournalDTO,
   HandlersJournalDayDTO,
   HandlersJournalEntryDTO,
+  HandlersJournalGitSyncDTO,
   HandlersTagGraphDTO,
   HandlersUpdateJournalEntryRequest,
 } from './generated/api-types';
@@ -71,6 +72,11 @@ export class JournalsApi {
     return this.http
       .get<HandlersJournalEntryDTO[]>(apiUrl('api/journals/entries'), { params })
       .pipe(map((entries) => entries.map((entry) => withEntryPriority(entry))));
+  }
+
+  /** POST /journals/sync */
+  syncJournals(): Observable<HandlersJournalGitSyncDTO> {
+    return this.http.post<HandlersJournalGitSyncDTO>(apiUrl('api/journals/sync'), null);
   }
 
   /** GET /journals/:year/:month/:day */
