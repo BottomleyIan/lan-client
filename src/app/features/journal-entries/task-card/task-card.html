@@ -1,24 +1,25 @@
-<article class="bg-tokyo-surface-0/98 rounded-lg border border-white/10 p-3 shadow-sm">
+<article
+  class="bg-tokyo-surface-0/98 flex flex-col gap-1 rounded-lg border border-white/10 p-3 shadow-sm"
+>
   <div class="flex items-start justify-between gap-3">
-      <h3 class="truncate text-sm font-semibold text-tokyo-text">{{ title() }}</h3>
+    <h3 class="text-tokyo-text truncate text-sm font-semibold">{{ title() | titlecase }}</h3>
     <div class="flex min-w-0 items-center gap-1">
       <div class="text-2xl" [attr.title]="priority().label">
         <app-icon [name]="priority().icon" [colorVar]="priority().color" />
         <span class="sr-only">Priority: {{ priority().label }}</span>
       </div>
-    <span class="text-[10px] font-semibold tracking-[0.12em] text-tokyo-text-muted uppercase">
-      {{ statusLabel() }}
-    </span>
+      <span class="text-tokyo-text-muted text-[10px] font-semibold tracking-[0.12em] uppercase">
+        {{ statusLabel() }}
+      </span>
     </div>
   </div>
-  @if (summary()) {
-    <p class="mt-2 text-xs text-tokyo-text-muted">{{ summary() }}</p>
-  }
   @if (tags().length > 0) {
     <div class="mt-2 flex flex-wrap gap-2">
-      @for (tag of tags(); track tag) {
+      @for (tag of tags(); track tag; let isFirst = $first) {
         <span
-          class="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold tracking-[0.08em] text-slate-300 uppercase"
+          class="rounded-md border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-semibold tracking-[0.08em] uppercase"
+          [class.text-tokyo-accent-orange]="isFirst"
+          [class.text-slate-300]="!isFirst"
         >
           {{ tag }}
         </span>

@@ -113,7 +113,6 @@ export class NotesNewPage {
     const targetDate = toCalendarDate(scheduledDate);
     const finalBody = this.composeBody(trimmedBody, priority);
 
-
     this.isSaving.set(true);
 
     this.journalsApi
@@ -198,7 +197,9 @@ export class NotesNewPage {
   }
 
   private composeBody(body: string, priority: string): string {
-    const bodyWithPriority = ["low", "medium", "high"].includes(priority) ? `priority:: ${priority}\n${body}` : body;
+    const bodyWithPriority = ['low', 'medium', 'high'].includes(priority)
+      ? `priority:: ${priority}\n${body}`
+      : body;
     const fieldKeys = this.fieldKeys();
     const fieldValues = this.fields.getRawValue();
     const fieldLines = fieldKeys

@@ -44,10 +44,47 @@ export class DayView {
   protected handleEntryDeleted(): void {
     this.refresh$.next();
   }
+  readonly table$ = this.entries$.pipe(
+    map((entries) => {
+      const table = entries.reduce(
+        (acc, entry) => {
+          const row = entryToRow(entry);
+          if (row == null) return acc;
+          acc.rows.push(row);
+          for (const key of Object.keys(row)) {
+            acc.columns.add(key);
+          }
+          return acc;
+        },
+        { rows: [], columns: new Set() } as {
+          rows: Record<string, string>[];
+          columns: Set<string>;
+        },
+      );
+
+      console.log(table);
+      return table;
+    }),
+  );
 
   refresh(): void {
     this.refresh$.next();
   }
+}
+
+function entryToRow(entry: JournalEntryWithPriority): Record<string, string> | null {
+  const resp = {} as Record<string, string>;
+  const separateLines = entry.body?.match(/[^\r\n]+/g);
+  if (separateLines?.length) {
+    for (const line of separateLines) {
+      const parts = line.split('::');
+      console.log(line, parts);
+      if (parts.length == 2) {
+        resp[parts[0]] = parts[1];
+      }
+    }
+  }
+  return Object.keys(resp).length ? resp : null;
 }
 
 function toDayParams(

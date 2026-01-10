@@ -6,7 +6,7 @@ import { CalendarDayTitle } from '../../features/calendar/calendar-day-title/cal
 import { AppTasksButton } from './tasks-button/tasks-button';
 import { KanbanFilters } from '../../features/journal-entries/kanban/kanban-filters';
 import { NotesTagFilter } from '../../features/notes/notes-tag-filter/notes-tag-filter';
-import { JournalSyncButton } from './journal-sync-button/journal-sync-button';
+import { AppSettingsButton } from './settings-button/settings-button';
 import { Router, NavigationEnd } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
@@ -22,7 +22,7 @@ import { filter, map } from 'rxjs';
     AppTasksButton,
     KanbanFilters,
     NotesTagFilter,
-    JournalSyncButton,
+    AppSettingsButton,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

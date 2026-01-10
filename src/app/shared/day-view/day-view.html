@@ -12,4 +12,23 @@
       </div>
     }
   }
+  @if (table$ | async; as table) {
+    Table
+    <table>
+      <thead>
+        @for (col of table.columns; track col) {
+          <th>{{ col | titlecase }}</th>
+        }
+      </thead>
+      <tbody>
+        @for (row of table.rows; track $index) {
+          <tr>
+            @for (col of table.columns; track col) {
+              <td>{{ row[col] || '' | titlecase }}</td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
 </div>

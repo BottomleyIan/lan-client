@@ -81,10 +81,17 @@
               </div>
 
               <div class="flex flex-col gap-2">
-                <label class="text-sm font-semibold text-slate-100" for="task-priority">Priority</label>
-                <select uiInput id="task-priority" formControlName="priority" [disabled]="isSaving()">
+                <label class="text-sm font-semibold text-slate-100" for="task-priority"
+                  >Priority</label
+                >
+                <select
+                  uiInput
+                  id="task-priority"
+                  formControlName="priority"
+                  [disabled]="isSaving()"
+                >
                   <option value="">No priority</option>
-                  @for (priority of ["low","medium","high"]; track priority) {
+                  @for (priority of ['low', 'medium', 'high']; track priority) {
                     <option [value]="priority">{{ priority }}</option>
                   }
                 </select>
