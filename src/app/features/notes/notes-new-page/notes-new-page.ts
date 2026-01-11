@@ -110,7 +110,7 @@ export class NotesNewPage {
     const deadlineTime = this.form.controls.deadlineTime.value.trim();
     const scheduled = toIsoOrDate(scheduledDate, scheduledTime);
     const deadline = toIsoOrDate(deadlineDate, deadlineTime);
-    const targetDate = toCalendarDate(scheduledDate);
+    const targetDate = toCalendarDate(scheduledDate) ?? new Date();
     const finalBody = this.composeBody(trimmedBody, priority);
 
     this.isSaving.set(true);
@@ -234,14 +234,19 @@ function toIsoOrDate(dateValue: string, timeValue: string): string {
   return iso ?? dateValue;
 }
 
-function toCalendarDate(dateValue: string): Date {
-  if (dateValue) {
-    const [year, month, day] = dateValue.split('-').map((value) => Number(value));
-    if (Number.isFinite(year) && Number.isFinite(month) && Number.isFinite(day)) {
-      return new Date(year, month - 1, day);
-    }
+function toCalendarDate(dateValue: string): Date | null {
+  if (!dateValue) {
+    return null;
   }
-  return new Date();
+  const [year, month, day] = dateValue.split('-').map((value) => Number(value));
+  if (!Number.isFinite(year) || !Number.isFinite(month) || !Number.isFinite(day)) {
+    return null;
+  }
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+  return date;
 }
 
 function normalizeType(params: ParamMap): string {
@@ -253,17 +258,52 @@ function formatFieldValue(config: NotesNewFieldConfig | null, value: string): st
   if (!config?.type) {
     return value;
   }
-  if (config.type === 'multiple-tag') {
-    return value
-      .split(',')
-      .map((entry) => entry.trim())
-      .filter((entry) => entry.length > 0)
-      .map((entry) => `[[${entry}]]`)
-      .join(' ');
+  switch (config.type) {
+    case 'calendar':
+      return formatCalendarValue(value);
+    case 'number':
+      return value;
+    case 'multiple-tag':
+      return value
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter((entry) => entry.length > 0)
+        .map((entry) => `[[${entry}]]`)
+        .join(' ');
+    case 'single-tag':
+      return `[[${value}]]`;
+    default:
+      return value;
   }
-  return `[[${value}]]`;
 }
 
 function todayDateValue(): string {
   return new Date().toISOString().slice(0, 10);
+}
+
+const MONTH_FORMATTER = new Intl.DateTimeFormat('en-US', { month: 'short' });
+
+function formatCalendarValue(dateValue: string): string {
+  const date = toCalendarDate(dateValue);
+  if (!date) {
+    return dateValue;
+  }
+  const month = MONTH_FORMATTER.format(date);
+  const day = date.getDate();
+  return `[[${month} ${day}${ordinalSuffix(day)}, ${date.getFullYear()}]]`;
+}
+
+function ordinalSuffix(day: number): string {
+  const mod10 = day % 10;
+  const mod100 = day % 100;
+  if (mod10 === 1 && mod100 !== 11) {
+    return 'st';
+  }
+  if (mod10 === 2 && mod100 !== 12) {
+    return 'nd';
+  }
+  if (mod10 === 3 && mod100 !== 13) {
+    return 'rd';
+  }
+  return 'th';
 }
