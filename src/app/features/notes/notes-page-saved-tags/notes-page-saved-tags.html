@@ -1,8 +1,9 @@
-<div class="p-2">
-  <h2>{{ title() }}</h2>
-
+<details class="flex flex-col gap-2" open>
+  <summary class="text-xs font-semibold tracking-[0.18em] text-slate-200 uppercase">
+    {{ title() }}
+  </summary>
   @if (navItems$ | async; as items) {
-    <ul>
+    <ul class="flex flex-col gap-1 text-sm">
       @for (item of items; track item.url) {
         <li>
           <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="item.url">{{
@@ -12,4 +13,4 @@
       }
     </ul>
   }
-</div>
+</details>

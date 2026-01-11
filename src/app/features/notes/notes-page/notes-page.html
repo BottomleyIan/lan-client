@@ -1,24 +1,34 @@
-<div class="flex h-full flex-col gap-4 overflow-hidden">
-  <app-panel class="max-h-full flex-1 overflow-hidden" label="" [stableGutter]="false">
-    @if (tag()) {
-      <app-notes-tag-graph [tag]="tag()" />
-      <app-day-view [tag]="tag()"></app-day-view>
-    }
+<div class="relative flex h-full flex-col gap-4 overflow-hidden">
+  <div class="max-h-full flex-1 overflow-hidden" label="">
+    <div class="grid h-full min-h-0 grid-cols-1 gap-2 lg:grid-cols-[220px_minmax(0,1fr)]">
+      <aside uiContainerDiv class="flex flex-col gap-4 overflow-y-auto p-4">
+        <app-recent-tags />
+        <app-notes-page-saved-tags setting="notes-menu-tags" title="Misc Tags" />
+        <app-notes-page-saved-tags setting="tasks-menu-work-projects" title="Work Projects" />
+        <app-notes-page-saved-tags
+          setting="tasks-menu-personal-projects"
+          title="Personal Projects"
+        />
+        <app-notes-page-saved-tags setting="tasks-menu-ideas" title="Project Ideas" />
+      </aside>
+      <section uiContainerDiv class="min-h-0 overflow-y-auto">
+        @if (tag()) {
+          <app-notes-tag-graph [tag]="tag()" />
+          <app-day-view [tag]="tag()"></app-day-view>
+        }
 
-    <app-notes-page-saved-tags setting="notes-menu-tags" title="Misc Tags" />
-    <app-notes-page-saved-tags setting="tasks-menu-work-projects" title="Work Projects" />
-    <app-notes-page-saved-tags setting="tasks-menu-personal-projects" title="Personal Projects" />
-    <app-notes-page-saved-tags setting="tasks-menu-ideas" title="Ideas for projects and shit" />
-    <div class="p-2">
-      <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" href="property-keys"
-        >Property Keys</a
-      >
+        <div class="p-2">
+          <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" href="property-keys">
+            Property Keys
+          </a>
+        </div>
+        <app-notes-create-raw
+          (noteCreated)="onCreated()"
+          [year]="year()"
+          [month]="month()"
+          [day]="day()"
+        />
+      </section>
     </div>
-    <app-notes-create-raw
-      (noteCreated)="onCreated()"
-      [year]="year()"
-      [month]="month()"
-      [day]="day()"
-    />
-  </app-panel>
+  </div>
 </div>

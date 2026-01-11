@@ -12,10 +12,21 @@ import { SettingsApi } from '../../../core/api/settings.api';
 import { NavDropdownMenuNavItems } from '../../../ui/navbar/nav-dropdown-menu/nav-dropdown-menu';
 import { NotesPageSavedTags } from '../notes-page-saved-tags/notes-page-saved-tags';
 import { NotesCreateRaw } from '../notes-create-raw/notes-create-raw';
+import { RecentTags } from '../recent-tags/recent-tags';
+import { ContainerDivDirective } from '../../../ui/directives/container-div';
 
 @Component({
   selector: 'app-notes-page',
-  imports: [CommonModule, Panel, DayView, NotesTagGraph, NotesPageSavedTags, NotesCreateRaw],
+  imports: [
+    CommonModule,
+    Panel,
+    DayView,
+    NotesTagGraph,
+    NotesPageSavedTags,
+    NotesCreateRaw,
+    RecentTags,
+    ContainerDivDirective,
+  ],
   templateUrl: './notes-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

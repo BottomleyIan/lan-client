@@ -90,6 +90,11 @@ export class JournalsApi {
     return this.http.get<string[]>(apiUrl('api/journals/tags'), { params });
   }
 
+  /** GET /journals/tags/recent */
+  listRecentTags(): Observable<string[]> {
+    return this.http.get<string[]>(apiUrl('api/journals/tags/recent'));
+  }
+
   /** GET /journals/assets */
   getAsset(path: string): Observable<Blob> {
     const params = new HttpParams().set('path', path);

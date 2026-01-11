@@ -90,7 +90,7 @@ function entryToRow(entry: JournalEntryWithPriority): Record<string, string> | n
       }
     }
   }
-  return Object.keys(resp).length ? resp : null;
+  return Object.keys(resp).length > 1 ? resp : null;
 }
 
 function toDayParams(

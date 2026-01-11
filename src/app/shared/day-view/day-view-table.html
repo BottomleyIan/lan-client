@@ -16,7 +16,7 @@
           <tr class="border-t border-white/10">
             @for (col of columns(); track col) {
               <td class="px-3 py-2 text-slate-200">
-                <app-markdown-body [markdown]="row[col] ?? ''" />
+                <app-markdown-body [markdown]="row[col]" />
               </td>
             }
           </tr>

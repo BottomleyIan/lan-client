@@ -1,0 +1,18 @@
+<details class="flex flex-col gap-1" open>
+  <summary class="text-xs font-semibold tracking-[0.18em] text-slate-200 uppercase">Recent</summary>
+  @if (recentTags$ | async; as tags) {
+    @if (tags.length === 0) {
+      <p class="text-sm text-slate-500">No recent tags yet.</p>
+    } @else {
+      <ul class="flex flex-col gap-1 text-sm">
+        @for (tag of tags; track tag) {
+          <li>
+            <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="tagHref(tag)">
+              {{ tag }}
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  }
+</details>
