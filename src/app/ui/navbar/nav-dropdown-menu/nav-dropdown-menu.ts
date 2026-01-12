@@ -1,19 +1,22 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { IconButtonPrimary } from '../../icon-button/icon-button-primary';
 import { TitleCasePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { IconName } from '../../icon/icons';
 
 export interface NavDropdownMenuNavItems {
   name: string;
   url?: string;
+  routerLink?: string | unknown[];
+  queryParams?: Record<string, string | number | boolean | null>;
   actionId?: string;
   disabled?: boolean;
 }
 
 @Component({
   selector: 'app-nav-dropdown-menu',
-  imports: [IconButtonPrimary, TitleCasePipe],
+  imports: [IconButtonPrimary, TitleCasePipe, RouterLink],
   templateUrl: './nav-dropdown-menu.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: './nav-dropdown-menu.css',

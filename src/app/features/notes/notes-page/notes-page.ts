@@ -4,7 +4,6 @@ import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/cor
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { map } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Panel } from '../../../ui/panel/panel';
 import { DayView } from '../../../shared/day-view/day-view';
 import { NotesTagGraph } from '../notes-tag-graph/notes-tag-graph';
 import { SettingsApi } from '../../../core/api/settings.api';
@@ -19,7 +18,6 @@ import { ContainerDivDirective } from '../../../ui/directives/container-div';
   selector: 'app-notes-page',
   imports: [
     CommonModule,
-    Panel,
     DayView,
     NotesTagGraph,
     NotesPageSavedTags,
@@ -67,7 +65,11 @@ export class NotesPage {
       .split(',')
       .map((x) => x.trim())
       .filter((x) => x.length > 0)
-      .map((x) => ({ name: x, url: `notes?tag=${encodeURIComponent(x)}` }));
+      .map((tag) => ({
+        name: tag,
+        routerLink: '/notes',
+        queryParams: { tag },
+      }));
   }
   protected year(): number {
     return new Date().getFullYear();

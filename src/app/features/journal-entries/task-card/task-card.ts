@@ -5,14 +5,13 @@ import type {
   TaskPriority,
 } from '../../../core/api/journal-entry-priority';
 import { resolveEntryPriority } from '../../../core/api/journal-entry-priority';
-import { TaskIcon } from '../../../shared/tasks/task-icon/task-icon';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { IconName } from '../../../ui/icon/icons';
 import { Icon } from '../../../ui/icon/icon';
 
 @Component({
   selector: 'app-task-card',
-  imports: [CommonModule, TaskIcon, Icon],
+  imports: [CommonModule, Icon],
   templateUrl: './task-card.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

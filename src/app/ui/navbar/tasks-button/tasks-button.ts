@@ -20,8 +20,16 @@ export class AppTasksButton {
 
   protected navItems(setting: string): NavDropdownMenuNavItems[] {
     return [
-      { name: 'All', url: 'tasks' },
-      ...setting.split(',').map((x) => ({ name: x, url: `tasks?tag=${x}` })),
+      { name: 'All', routerLink: '/tasks' },
+      ...setting
+        .split(',')
+        .map((x) => x.trim())
+        .filter((x) => x.length > 0)
+        .map((tag) => ({
+          name: tag,
+          routerLink: '/tasks',
+          queryParams: { tag },
+        })),
     ];
   }
 }

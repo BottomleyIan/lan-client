@@ -27,6 +27,10 @@ export class NotesPageSavedTags {
       .split(',')
       .map((x) => x.trim())
       .filter((x) => x.length > 0)
-      .map((x) => ({ name: x, url: `notes?tag=${encodeURIComponent(x)}` }));
+      .map((tag) => ({
+        name: tag,
+        routerLink: '/notes',
+        queryParams: { tag },
+      }));
   }
 }

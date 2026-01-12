@@ -26,8 +26,12 @@
         >
           {{ item.name | titlecase }}
         </button>
-      } @else if (item.url) {
-        <a class="hover:text-tokyo-accent-orange" [href]="item.url">
+      } @else if (item.routerLink || item.url) {
+        <a
+          class="hover:text-tokyo-accent-orange"
+          [routerLink]="item.routerLink ?? item.url"
+          [queryParams]="item.queryParams ?? null"
+        >
           {{ item.name | titlecase }}
         </a>
       }

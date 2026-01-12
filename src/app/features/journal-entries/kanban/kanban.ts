@@ -75,7 +75,7 @@ export class JournalEntriesKanban {
   protected readonly activeDropListId = signal<string | null>(null);
 
   constructor() {
-    toObservable(this.tag)
+    this.route.queryParamMap
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.fetchEntries());
 
