@@ -7,6 +7,7 @@
           Edit entry
         </label>
         <textarea
+          #rawInput
           uiInput
           [id]="rawInputId()"
           rows="6"
@@ -51,6 +52,8 @@
       type="file"
       accept="image/png, image/jpeg"
       class="sr-only"
+      tabindex="-1"
+      aria-hidden="true"
       [disabled]="isSaving()"
       (change)="handleAssetSelected($event)"
     />

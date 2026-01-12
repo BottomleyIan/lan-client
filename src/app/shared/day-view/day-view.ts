@@ -38,7 +38,10 @@ export class DayView {
 
   protected readonly sortedDates$ = this.entries$.pipe(
     map((entries) => {
-      const dates = new Map<number, { year: number; month: number; day: number; entries: JournalEntryWithPriority[] }>();
+      const dates = new Map<
+        number,
+        { year: number; month: number; day: number; entries: JournalEntryWithPriority[] }
+      >();
       for (const entry of entries) {
         const { year, month, day } = normalizeEntryDate(entry);
         const key = year * 10000 + month * 100 + day;
@@ -141,7 +144,11 @@ const FALLBACK_YEAR = 1970;
 const FALLBACK_MONTH = 1;
 const FALLBACK_DAY = 1;
 
-function normalizeEntryDate(entry: JournalEntryWithPriority): { year: number; month: number; day: number } {
+function normalizeEntryDate(entry: JournalEntryWithPriority): {
+  year: number;
+  month: number;
+  day: number;
+} {
   const year = normalizeDatePart(entry.year, FALLBACK_YEAR);
   const month = normalizeDatePart(entry.month, FALLBACK_MONTH);
   const day = normalizeDatePart(entry.day, FALLBACK_DAY);
@@ -160,9 +167,5 @@ function isValidDateParts(year: number, month: number, day: number): boolean {
     return false;
   }
   const date = new Date(year, month - 1, day);
-  return (
-    date.getFullYear() === year &&
-    date.getMonth() === month - 1 &&
-    date.getDate() === day
-  );
+  return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
 }

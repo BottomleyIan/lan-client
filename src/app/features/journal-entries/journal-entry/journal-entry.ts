@@ -64,6 +64,7 @@ export class JournalEntry {
     const id = entry.hash ?? entry.id ?? entry.position ?? 'current';
     return `entry-raw-${id}`;
   });
+  private readonly rawInput = viewChild<ElementRef<HTMLTextAreaElement>>('rawInput');
 
   constructor() {
     effect(
@@ -72,6 +73,16 @@ export class JournalEntry {
       },
       { allowSignalWrites: true },
     );
+    effect(() => {
+      if (!this.isEditing()) {
+        return;
+      }
+      queueMicrotask(() => {
+        requestAnimationFrame(() => {
+          this.rawInput()?.nativeElement.focus();
+        });
+      });
+    });
   }
 
   protected readonly label = computed(() => {
