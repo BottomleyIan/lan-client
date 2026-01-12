@@ -4,11 +4,15 @@
   </summary>
   @if (navItems$ | async; as items) {
     <ul class="flex flex-col gap-1 text-sm">
-      @for (item of items; track item.url) {
+      @for (item of items; track item.url ?? item.name) {
         <li>
-          <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="item.url">{{
-            item.name | titlecase
-          }}</a>
+          <a
+            class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange"
+            [routerLink]="item.routerLink ?? item.url"
+            [queryParams]="item.queryParams ?? null"
+          >
+            {{ item.name | titlecase }}
+          </a>
         </li>
       }
     </ul>

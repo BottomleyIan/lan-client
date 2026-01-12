@@ -7,7 +7,11 @@
       <ul class="flex flex-col gap-1 text-sm">
         @for (tag of tags; track tag) {
           <li>
-            <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="tagHref(tag)">
+            <a
+              class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange"
+              [routerLink]="['/notes']"
+              [queryParams]="{ tag: tag }"
+            >
               {{ tag }}
             </a>
           </li>

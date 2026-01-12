@@ -5,10 +5,11 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { SettingsApi } from '../../../core/api/settings.api';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { NavDropdownMenuNavItems } from '../../../ui/navbar/nav-dropdown-menu/nav-dropdown-menu';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-notes-page-saved-tags',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './notes-page-saved-tags.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
