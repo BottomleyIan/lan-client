@@ -45,6 +45,21 @@
       [disabled]="false"
       (pressed)="startEdit()"
     />
+    <input
+      #uploadInput
+      [id]="uploadInputId()"
+      type="file"
+      accept="image/png, image/jpeg"
+      class="sr-only"
+      [disabled]="isSaving()"
+      (change)="handleAssetSelected($event)"
+    />
+    <app-icon-button-primary
+      icon="imageAdd"
+      [label]="'Add image to ' + label()"
+      [disabled]="isSaving()"
+      (pressed)="triggerAssetUpload()"
+    />
     <app-icon-button-danger
       icon="trash"
       [label]="'Delete entry ' + label()"

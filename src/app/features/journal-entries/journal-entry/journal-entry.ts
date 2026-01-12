@@ -9,8 +9,10 @@ import {
   output,
   signal,
   Signal,
+  viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import type { ElementRef } from '@angular/core';
 import type { HandlersUpdateJournalEntryRequest } from '../../../core/api/generated/api-types';
 import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-priority';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -48,6 +50,12 @@ export class JournalEntry {
   protected readonly isEditing = signal(false);
   protected readonly isSaving = signal(false);
   protected readonly entryState = signal<JournalEntryWithPriority | null>(null);
+  protected readonly uploadInputId = computed(() => {
+    const entry = this.entryState() ?? this.entry();
+    const id = entry.hash ?? entry.id ?? entry.position ?? 'current';
+    return `entry-asset-${id}`;
+  });
+  private readonly uploadInput = viewChild.required<ElementRef<HTMLInputElement>>('uploadInput');
   protected readonly editForm = this.formBuilder.nonNullable.group({
     raw: ['', [Validators.required]],
   });
@@ -90,6 +98,63 @@ export class JournalEntry {
       next: () => this.deleted.emit(entry),
       error: (err) => console.error(err),
     });
+  }
+
+  protected handleAssetSelected(event: Event): void {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement)) {
+      return;
+    }
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) {
+      return;
+    }
+    const entry = this.entryState() ?? this.entry();
+    const year = entry.year;
+    const month = entry.month;
+    const day = entry.day;
+    const position = entry.position;
+    if (year === undefined || month === undefined || day === undefined || position === undefined) {
+      return;
+    }
+    if (this.isSaving()) {
+      return;
+    }
+    this.isSaving.set(true);
+    this.journalsApi
+      .uploadAsset(file)
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
+        next: (asset) => {
+          const path = asset.path?.trim();
+          if (!path) {
+            return;
+          }
+          const link = `![${path}](../assets/${path})`;
+          const currentBody = (this.entryState() ?? this.entry()).body?.trim() ?? '';
+          const nextBody = currentBody ? `${currentBody}\n\n${link}` : link;
+          const payload: HandlersUpdateJournalEntryRequest = { raw: nextBody };
+          this.isSaving.set(true);
+          this.journalsApi
+            .updateJournalEntry(year, month, day, position, payload)
+            .pipe(finalize(() => this.isSaving.set(false)))
+            .subscribe({
+              next: (updatedEntry) => {
+                this.entryState.set(withEntryPriority(updatedEntry));
+                if (this.isEditing()) {
+                  this.editForm.controls.raw.setValue(nextBody);
+                }
+              },
+              error: (err) => console.error(err),
+            });
+        },
+        error: (err) => console.error(err),
+      });
+  }
+
+  protected triggerAssetUpload(): void {
+    this.uploadInput().nativeElement.click();
   }
 
   protected startEdit(): void {
