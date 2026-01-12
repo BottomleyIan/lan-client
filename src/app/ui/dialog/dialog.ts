@@ -35,6 +35,14 @@ export class AppDialog {
     this.dialogEl().nativeElement.close();
   }
 
+  protected handleBackdropClick(): void {
+    this.close();
+  }
+
+  protected handleContentClick(event: Event): void {
+    event.stopPropagation();
+  }
+
   protected handleClose(): void {
     this.isOpen.set(false);
     this.closed.emit();

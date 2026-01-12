@@ -122,6 +122,14 @@
     text-shadow: 0 0 12px var(--color-tokyo-accent-orange);
   }
 
+  .markdown-image-grid {
+    @apply mt-4 flex flex-wrap gap-3;
+  }
+
+  .markdown-image {
+    @apply max-w-full rounded-lg border border-white/10 bg-black/30 object-cover;
+  }
+
   .tag-link::before,
   .tag-link::after {
     color: var(--color-tokyo-text-subtle);

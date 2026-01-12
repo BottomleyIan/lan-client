@@ -37,6 +37,8 @@ export class CalendarPage {
     return Number.isFinite(value) && value >= 1 && value <= 12 ? value : this.todayMonth;
   });
 
+  protected readonly todayDay = this.today.getDate();
+
   protected readonly monthLabel = computed(() => {
     const monthIndex = this.month() - 1;
     return MONTH_NAMES[monthIndex] ?? 'Unknown';
@@ -83,6 +85,12 @@ export class CalendarPage {
 
   protected entriesForDay(day: number): JournalEntryWithPriority[] {
     return this.entriesByDay().get(day) ?? [];
+  }
+
+  protected isToday(day: number): boolean {
+    return (
+      this.year() === this.todayYear && this.month() === this.todayMonth && day === this.todayDay
+    );
   }
 }
 
