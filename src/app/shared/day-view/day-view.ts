@@ -36,6 +36,22 @@ export class DayView {
     ),
   );
 
+  protected readonly sortedDates$ = this.entries$.pipe(
+    map((entries) => {
+      const dates = new Map<number, JournalEntryWithPriority[]>();
+      for (const entry of entries) {
+        const { year, month, day } = entry;
+        const key = year && month && day ? year * 10000 + month * 100 + day : 0;
+        if (!dates.has(key)) {
+          dates.set(key, []);
+        }
+        const c = dates.get(key)!;
+        dates.set(key, [...c, entry]);
+      }
+      return Array.from(dates).sort((a, b) => b[0] - a[0]);
+    }),
+  );
+
   readonly hasEntries$ = this.entries$.pipe(map((entries) => entries.length > 0));
 
   protected trackEntryId(_: number, entry: JournalEntryWithPriority): number | string {

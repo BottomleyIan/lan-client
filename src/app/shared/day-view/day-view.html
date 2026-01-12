@@ -1,20 +1,19 @@
-<div class="flex flex-col gap-3 p-4">
+<div class="flex flex-col gap-8 p-4">
   @if (table$ | async; as table) {
-    @if (table.rows.length > 0) {
+    @if (table.rows.length > 1) {
       <app-day-view-table [table]="table" />
     }
   }
-  @if (entries$ | async; as entries) {
-    @if (entries.length === 0) {
-      <p class="text-sm text-slate-400">No entries for this view.</p>
-    } @else {
-      <div class="flex flex-col gap-3">
-        @for (entry of entries; track trackEntryId($index, entry)) {
+  @if (sortedDates$ | async; as dates) {
+    @for (date of dates; track date[0]) {
+      <section>
+        <h3>{{ date[1][0].year }}-{{ date[1][0].month }}-{{ date[1][0].day }}</h3>
+        @for (entry of date[1]; track trackEntryId($index, entry)) {
           <div class="">
             <app-journal-entry [entry]="entry" (deleted)="handleEntryDeleted()" />
           </div>
         }
-      </div>
+      </section>
     }
   }
 </div>
