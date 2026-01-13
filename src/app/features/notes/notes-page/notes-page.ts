@@ -13,6 +13,7 @@ import { NotesPageSavedTags } from '../notes-page-saved-tags/notes-page-saved-ta
 import { NotesCreateRaw } from '../notes-create-raw/notes-create-raw';
 import { RecentTags } from '../recent-tags/recent-tags';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
+import { NotesPageAddNotesLinks } from '../notes-page-add-notes-links/notes-page-add-notes-links';
 
 @Component({
   selector: 'app-notes-page',
@@ -24,6 +25,7 @@ import { ContainerDivDirective } from '../../../ui/directives/container-div';
     NotesCreateRaw,
     RecentTags,
     ContainerDivDirective,
+    NotesPageAddNotesLinks,
   ],
   templateUrl: './notes-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

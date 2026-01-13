@@ -1,0 +1,29 @@
+<a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange text-sm" [routerLink]="todayLink()">
+  Today
+</a>
+<details class="flex flex-col gap-1" open>
+  <summary class="text-xs font-semibold tracking-[0.18em] text-slate-200 uppercase">
+    Add Notes
+  </summary>
+  <ul class="flex flex-col gap-1 text-sm">
+    <li>
+      <a
+        class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange"
+        [routerLink]="['/notes/new']"
+      >
+        New Note
+      </a>
+    </li>
+    @for (type of noteTypes(); track type) {
+      <li>
+        <a
+          class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange"
+          [routerLink]="['/notes/new']"
+          [queryParams]="{ type: type }"
+        >
+          {{ type }}
+        </a>
+      </li>
+    }
+  </ul>
+</details>
