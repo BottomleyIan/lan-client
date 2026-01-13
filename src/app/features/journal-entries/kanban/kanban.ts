@@ -14,7 +14,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
-import { toObservable, toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { JournalsApi } from '../../../core/api/journals.api';
 import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-priority';
 import { withEntryPriority } from '../../../core/api/journal-entry-priority';

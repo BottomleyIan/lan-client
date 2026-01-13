@@ -9,7 +9,16 @@
   (cancel)="handleCancel()"
 >
   <div
-    class="fixed inset-0 bg-gray-900/50 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+    class="fixed inset-0 bg-gray-900/30 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+    (click)="handleBackdropClick()"
+  ></div>
+  <div
+    class="fixed inset-0 bg-cover bg-center opacity-100 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+    [style.backgroundImage]="'url(' + backdropImage() + ')'"
+    (click)="handleBackdropClick()"
+  ></div>
+  <div
+    class="fixed inset-0 bg-gray-900/70 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
     (click)="handleBackdropClick()"
   ></div>
   <div

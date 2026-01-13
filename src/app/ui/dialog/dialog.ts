@@ -23,10 +23,12 @@ export class AppDialog {
   readonly cancelled = output<void>();
 
   protected readonly isOpen = signal(false);
+  protected readonly backdropImage = signal('/bd-1.webp');
 
   open(): void {
     if (this.isOpen()) return;
     this.isOpen.set(true);
+    this.backdropImage.set(pickBackdropImage());
     this.dialogEl().nativeElement.showModal();
   }
 
@@ -51,4 +53,11 @@ export class AppDialog {
   protected handleCancel(): void {
     this.cancelled.emit();
   }
+}
+
+const BACKDROP_IMAGES = ['/bd-1.webp', '/bd-2.webp', '/bd-3.webp'] as const;
+
+function pickBackdropImage(): string {
+  const index = Math.floor(Math.random() * BACKDROP_IMAGES.length);
+  return BACKDROP_IMAGES[index] ?? BACKDROP_IMAGES[0];
 }

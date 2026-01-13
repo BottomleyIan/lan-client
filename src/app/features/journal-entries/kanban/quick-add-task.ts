@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import {
   ChangeDetectionStrategy,
   Component,
