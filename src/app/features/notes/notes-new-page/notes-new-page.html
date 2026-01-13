@@ -153,6 +153,13 @@
               (pressed)="cancel()"
             />
             <app-icon-button-primary
+              icon="taskPlus"
+              label="Add another"
+              [disabled]="form.invalid || isSaving()"
+              type="button"
+              (pressed)="submitAndStay()"
+            />
+            <app-icon-button-primary
               icon="check"
               label="Save journal"
               [disabled]="form.invalid || isSaving()"

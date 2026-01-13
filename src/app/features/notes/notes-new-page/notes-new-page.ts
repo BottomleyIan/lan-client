@@ -88,6 +88,14 @@ export class NotesNewPage {
   }
 
   protected submit(): void {
+    this.handleSubmit({ navigate: true, resetMode: 'full' });
+  }
+
+  protected submitAndStay(): void {
+    this.handleSubmit({ navigate: false, resetMode: 'partial' });
+  }
+
+  private handleSubmit(options: { navigate: boolean; resetMode: 'full' | 'partial' }): void {
     const trimmedBody = this.body.value.trim();
     this.body.setValue(trimmedBody);
 
@@ -127,23 +135,34 @@ export class NotesNewPage {
       .pipe(finalize(() => this.isSaving.set(false)))
       .subscribe({
         next: () => {
-          this.form.reset({
-            body: '',
-            description: '',
-            tags: '',
-            status: '',
-            scheduledDate: '',
-            scheduledTime: '',
-            deadlineDate: '',
-            deadlineTime: '',
-          });
-          this.applyConfig(this.activeConfig());
-          void this.router.navigate([
-            '/notes',
-            targetDate.getFullYear(),
-            targetDate.getMonth() + 1,
-            targetDate.getDate(),
-          ]);
+          if (options.resetMode === 'full') {
+            this.form.reset({
+              body: '',
+              description: '',
+              tags: '',
+              status: '',
+              scheduledDate: '',
+              scheduledTime: '',
+              deadlineDate: '',
+              deadlineTime: '',
+            });
+            this.applyConfig(this.activeConfig());
+          } else {
+            this.form.controls.body.setValue('');
+            this.form.controls.body.markAsPristine();
+            this.form.controls.body.markAsUntouched();
+            this.form.controls.description.setValue('');
+            this.form.controls.description.markAsPristine();
+            this.form.controls.description.markAsUntouched();
+          }
+          if (options.navigate) {
+            void this.router.navigate([
+              '/notes',
+              targetDate.getFullYear(),
+              targetDate.getMonth() + 1,
+              targetDate.getDate(),
+            ]);
+          }
         },
       });
   }
