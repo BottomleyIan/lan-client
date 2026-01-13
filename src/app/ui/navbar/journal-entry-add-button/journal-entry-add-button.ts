@@ -11,16 +11,27 @@ import { NavDropdownMenu, NavDropdownMenuNavItems } from '../nav-dropdown-menu/n
 })
 export class JournalEntryAddButton {
   protected navItems(): NavDropdownMenuNavItems[] {
+    const today = this.todayLink();
     return [
-      { name: 'Notes', url: 'notes' },
-      { name: 'New Note', url: 'notes/new' },
-      ...this.noteTypes().map((t) => ({ name: t, url: this.noteLink(t) })),
+      { name: 'Notes', routerLink: today },
+      { name: 'New Note', routerLink: ['/notes/new'] },
+      ...this.noteTypes().map((t) => ({
+        name: t,
+        routerLink: ['/notes/new'],
+        queryParams: { type: t },
+      })),
     ];
   }
   protected noteTypes(): string[] {
     return Object.keys(NOTES_NEW_CONFIG).sort((a, b) => (a > b ? 1 : -1));
   }
-  protected noteLink(noteType: string): string {
-    return `notes/new?type=${noteType}`;
+  protected todayLink(): string[] {
+    const today = new Date();
+    return [
+      '/notes',
+      String(today.getFullYear()),
+      String(today.getMonth() + 1),
+      String(today.getDate()),
+    ];
   }
 }

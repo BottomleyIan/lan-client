@@ -12,9 +12,16 @@
         <app-notes-page-saved-tags setting="tasks-menu-ideas" title="Project Ideas" />
       </aside>
       <section uiContainerDiv class="min-h-0 overflow-y-auto">
-        @if (tag()) {
-          <app-notes-tag-graph [tag]="tag()" />
-          <app-day-view [tag]="tag()"></app-day-view>
+        @if (activeTag()) {
+          <app-notes-tag-graph [tag]="activeTag()!" />
+        }
+        @if (showDayView()) {
+          <app-day-view
+            [tag]="activeTag()"
+            [year]="calendarYear()"
+            [month]="calendarMonth()"
+            [day]="calendarDay()"
+          />
         }
 
         <div class="p-2">

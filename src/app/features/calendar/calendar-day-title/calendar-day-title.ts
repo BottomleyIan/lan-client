@@ -91,7 +91,7 @@ export class CalendarDayTitle {
       return null;
     }
     const prev = shiftDay(parts, -1);
-    return ['/calendar', prev.year, prev.month, prev.day];
+    return ['/notes', prev.year, prev.month, prev.day];
   });
 
   protected readonly nextLink = computed(() => {
@@ -100,7 +100,7 @@ export class CalendarDayTitle {
       return null;
     }
     const next = shiftDay(parts, 1);
-    return ['/calendar', next.year, next.month, next.day];
+    return ['/notes', next.year, next.month, next.day];
   });
 }
 

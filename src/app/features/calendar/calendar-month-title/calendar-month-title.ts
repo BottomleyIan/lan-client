@@ -87,7 +87,7 @@ export class CalendarMonthTitle {
     if (!year || !month) {
       return null;
     }
-    return month === 1 ? ['/calendar', year - 1, 12] : ['/calendar', year, month - 1];
+    return month === 1 ? ['/notes', year - 1, 12] : ['/notes', year, month - 1];
   });
 
   protected readonly nextLink = computed(() => {
@@ -96,7 +96,7 @@ export class CalendarMonthTitle {
     if (!year || !month) {
       return null;
     }
-    return month === 12 ? ['/calendar', year + 1, 1] : ['/calendar', year, month + 1];
+    return month === 12 ? ['/notes', year + 1, 1] : ['/notes', year, month + 1];
   });
 }
 

@@ -2,15 +2,18 @@ import type { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
-    path: 'calendar/:year/:month/:day',
+    path: 'notes/new',
     loadComponent: () =>
-      import('./features/calendar/calendar-day-page/calendar-day-page').then(
-        (c) => c.CalendarDayPage,
-      ),
+      import('./features/notes/notes-new-page/notes-new-page').then((c) => c.NotesNewPage),
+    data: { navTitle: 'New note' },
+  },
+  {
+    path: 'notes/:year/:month/:day',
+    loadComponent: () => import('./features/notes/notes-page/notes-page').then((c) => c.NotesPage),
     data: { navTitleMode: 'calendar-day' },
   },
   {
-    path: 'calendar/:year/:month',
+    path: 'notes/:year/:month',
     loadComponent: () =>
       import('./features/calendar/calendar-page/calendar-page').then((c) => c.CalendarPage),
     data: { navTitleMode: 'calendar-month' },
@@ -68,12 +71,6 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/journal-entries/kanban/kanban').then((c) => c.JournalEntriesKanban),
     data: { navTitle: 'Tasks' },
-  },
-  {
-    path: 'notes/new',
-    loadComponent: () =>
-      import('./features/notes/notes-new-page/notes-new-page').then((c) => c.NotesNewPage),
-    data: { navTitle: 'New note' },
   },
   {
     path: 'notes/:tag',

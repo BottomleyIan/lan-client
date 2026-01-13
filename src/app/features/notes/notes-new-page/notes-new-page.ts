@@ -139,7 +139,7 @@ export class NotesNewPage {
           });
           this.applyConfig(this.activeConfig());
           void this.router.navigate([
-            '/calendar',
+            '/notes',
             targetDate.getFullYear(),
             targetDate.getMonth() + 1,
             targetDate.getDate(),

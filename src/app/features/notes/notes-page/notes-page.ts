@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { map } from 'rxjs';
@@ -40,6 +40,22 @@ export class NotesPage {
     this.route.queryParamMap.pipe(map((params) => normalizeTag(params))),
     { initialValue: normalizeTag(this.route.snapshot.queryParamMap) },
   );
+  private readonly calendarParams = toSignal(
+    this.route.paramMap.pipe(map((params) => normalizeCalendarParams(params))),
+    { initialValue: normalizeCalendarParams(this.route.snapshot.paramMap) },
+  );
+  protected readonly hasCalendarDate = computed(() => {
+    const params = this.calendarParams();
+    return params !== null;
+  });
+  protected readonly calendarYear = computed(() => this.calendarParams()?.year ?? null);
+  protected readonly calendarMonth = computed(() => this.calendarParams()?.month ?? null);
+  protected readonly calendarDay = computed(() => this.calendarParams()?.day ?? null);
+  protected readonly activeTag = computed(() => {
+    const value = this.tag().trim();
+    return value.length > 0 ? value : null;
+  });
+  protected readonly showDayView = computed(() => this.hasCalendarDate() || !!this.activeTag());
 
   private readonly settingsApi = inject(SettingsApi);
 
@@ -72,13 +88,13 @@ export class NotesPage {
       }));
   }
   protected year(): number {
-    return new Date().getFullYear();
+    return this.calendarYear() ?? new Date().getFullYear();
   }
   protected month(): number {
-    return new Date().getMonth() + 1;
+    return this.calendarMonth() ?? new Date().getMonth() + 1;
   }
   protected day(): number {
-    return new Date().getDate();
+    return this.calendarDay() ?? new Date().getDate();
   }
   protected onCreated(): void {}
 }
@@ -86,4 +102,24 @@ export class NotesPage {
 function normalizeTag(params: ParamMap): string {
   const tag = params.get('tag');
   return tag ? tag.trim() : '';
+}
+
+function normalizeCalendarParams(
+  params: ParamMap,
+): { year: number; month: number; day: number } | null {
+  const year = toNumber(params.get('year'));
+  const month = toNumber(params.get('month'));
+  const day = toNumber(params.get('day'));
+  if (year === null || month === null || day === null) {
+    return null;
+  }
+  return { year, month, day };
+}
+
+function toNumber(raw: string | null): number | null {
+  if (!raw) {
+    return null;
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
 }

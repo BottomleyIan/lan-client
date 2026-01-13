@@ -137,7 +137,7 @@ function pad2(value: number): string {
 }
 
 function buildCalendarLink(year: number, month: number, day: number): string {
-  return `http://localhost:4200/calendar/${year}/${month}/${day}`;
+  return `/notes/${year}/${month}/${day}`;
 }
 
 const FALLBACK_YEAR = 1970;
