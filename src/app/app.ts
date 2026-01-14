@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 import { Navbar } from './ui/navbar/navbar';
 import { CurrentlyPlaying } from './shared/currently-playing/currently-playing';
+import { ControlPalette } from './ui/control-palette/control-palette';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerEngineService } from './core/services/player-engine-service';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -11,7 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Navbar, CurrentlyPlaying],
+  imports: [RouterOutlet, RouterLink, Navbar, CurrentlyPlaying, ControlPalette],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -15,8 +15,8 @@ type DayParams = { year: number; month: number; day: number };
   templateUrl: './day-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: "flex flex-col gap-3"
-  }
+    class: 'flex flex-col gap-3',
+  },
 })
 export class DayView {
   private readonly journalsApi = inject(JournalsApi);

@@ -34,7 +34,8 @@ export class AppSettingsButton {
 
   protected readonly isSyncing = signal(false);
   protected readonly navItems = computed<NavDropdownMenuNavItems[]>(() => [
-    { name: 'Settings', url: 'settings' },
+    { name: 'Settings', routerLink: '/settings' },
+    { name: 'Help', routerLink: '/help' },
     { name: 'Sync journals', actionId: 'sync', disabled: this.isSyncing() },
   ]);
 

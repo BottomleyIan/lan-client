@@ -92,6 +92,11 @@ export const routes: Routes = [
       import('./features/settings/settings-page/settings-page').then((c) => c.SettingsPage),
   },
   {
+    path: 'help',
+    loadComponent: () => import('./features/help/help-page/help-page').then((c) => c.HelpPage),
+    data: { navTitle: 'Help' },
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./features/not-found/not-found-page/not-found-page').then((c) => c.NotFoundPage),

@@ -1,20 +1,19 @@
-
-  @if (table$ | async; as table) {
-    @if (table.rows.length > 1) {
-      <app-day-view-table [table]="table" />
-    }
+@if (table$ | async; as table) {
+  @if (table.rows.length > 1) {
+    <app-day-view-table [table]="table" />
   }
-  @if (sortedDates$ | async; as dates) {
-    @for (group of dates; track group.key) {
-      <section class="flex flex-col gap-4 bg-black/80 p-4 rounded-lg backdrop-blur-md">
-        <h3 class="font-vt323 text-center text-2xl">
-          <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="group.link">
-            {{ group.label }}
-          </a>
-        </h3>
-          @for (entry of group.entries; track trackEntryId($index, entry)) {
-            <app-journal-entry [entry]="entry" (deleted)="handleEntryDeleted()" />
-          }
-      </section>
-    }
+}
+@if (sortedDates$ | async; as dates) {
+  @for (group of dates; track group.key) {
+    <section class="flex flex-col gap-4 rounded-lg bg-black/80 p-4 backdrop-blur-md">
+      <h3 class="font-vt323 text-center text-2xl">
+        <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="group.link">
+          {{ group.label }}
+        </a>
+      </h3>
+      @for (entry of group.entries; track trackEntryId($index, entry)) {
+        <app-journal-entry [entry]="entry" (deleted)="handleEntryDeleted()" />
+      }
+    </section>
   }
+}

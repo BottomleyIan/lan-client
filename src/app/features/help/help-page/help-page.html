@@ -1,0 +1,89 @@
+<section class="relative flex min-h-full flex-col gap-6 p-6">
+  <div
+    class="pointer-events-none absolute inset-0 bg-[url('/help.webp')] bg-cover bg-fixed bg-top bg-no-repeat"
+    aria-hidden="true"
+  ></div>
+  <div class="relative z-10 flex flex-col gap-6">
+    <header class="flex flex-col gap-2">
+      <h1 class="text-2xl font-semibold text-slate-100">Help</h1>
+      <p class="text-sm text-slate-400">
+        Use the command palette to control playback or add a quick note without leaving your current
+        page.
+      </p>
+    </header>
+
+    <section class="flex flex-col gap-3">
+      <h2 class="text-lg font-semibold text-slate-100">Command palette</h2>
+      <ul class="flex flex-col gap-2 text-sm text-slate-200">
+        <li>
+          <span class="font-semibold text-slate-100">Open:</span>
+          Press
+          <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Ctrl</kbd>
+          +
+          <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Shift</kbd>
+          +
+          <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">P</kbd>.
+        </li>
+        <li>
+          <span class="font-semibold text-slate-100">Close:</span>
+          Press
+          <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Esc</kbd>.
+        </li>
+      </ul>
+    </section>
+
+    <section class="flex flex-col gap-3">
+      <h2 class="text-lg font-semibold text-slate-100">Commands</h2>
+      <ul class="grid gap-3 text-sm text-slate-200 sm:grid-cols-2">
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">play</p>
+          <p class="text-slate-300">Start playback.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">pause</p>
+          <p class="text-slate-300">Pause playback.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">next</p>
+          <p class="text-slate-300">Skip to the next track.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">add</p>
+          <p class="text-slate-300">Open the quick note editor.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">today</p>
+          <p class="text-slate-300">Jump to today’s notes page.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">notes &#123;tag&#125;</p>
+          <p class="text-slate-300">Open notes filtered by a tag.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">tasks</p>
+          <p class="text-slate-300">Open the tasks board.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">tasks &#123;tag&#125;</p>
+          <p class="text-slate-300">Open tasks filtered by a tag.</p>
+        </li>
+        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+          <p class="font-semibold text-slate-100">help</p>
+          <p class="text-slate-300">Open this help page.</p>
+        </li>
+      </ul>
+    </section>
+
+    <section class="flex flex-col gap-2 text-sm text-slate-300">
+      <p>
+        In add mode, press
+        <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Enter</kbd>
+        to submit a note. Use
+        <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Shift</kbd>
+        +
+        <kbd class="rounded border border-white/10 bg-white/5 px-1.5 py-0.5">Enter</kbd>
+        for a new line.
+      </p>
+    </section>
+  </div>
+</section>
