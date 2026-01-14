@@ -15,6 +15,7 @@ import { PlayerService } from '../../core/services/player-service';
 import { Router } from '@angular/router';
 import { JournalsApi } from '../../core/api/journals.api';
 import { finalize } from 'rxjs';
+import { NgxFlickeringGridComponent } from '@omnedia/ngx-flickering-grid';
 
 type ControlCommand = {
   id: string;
@@ -25,7 +26,7 @@ type ControlCommand = {
 
 @Component({
   selector: 'app-control-palette',
-  imports: [CommonModule],
+  imports: [CommonModule, NgxFlickeringGridComponent],
   templateUrl: './control-palette.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
