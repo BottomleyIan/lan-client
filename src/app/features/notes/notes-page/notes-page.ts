@@ -58,6 +58,10 @@ export class NotesPage {
     return value.length > 0 ? value : null;
   });
   protected readonly showDayView = computed(() => this.hasCalendarDate() || !!this.activeTag());
+  protected readonly tagBackgroundImage = computed(() => {
+    const tag = this.tag().trim().toLowerCase();
+    return tag ? `/tag/${encodeURIComponent(tag)}.webp` : null;
+  });
 
   private readonly settingsApi = inject(SettingsApi);
 

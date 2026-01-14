@@ -11,11 +11,17 @@
           title="Personal Projects"
         />
         <app-notes-page-saved-tags setting="tasks-menu-ideas" title="Project Ideas" />
+        <div class="p-2">
+          <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" href="property-keys">
+            Property Keys
+          </a>
+        </div>
       </aside>
-      <section uiContainerDiv class="min-h-0 overflow-y-auto">
-        @if (activeTag()) {
-          <app-notes-tag-graph [tag]="activeTag()!" />
-        }
+      <section
+        uiContainerDiv
+        class="min-h-0 overflow-y-auto bg-cover bg-no-repeat bg-top p-3 gap-3 flex flex-col "
+        [style.backgroundImage]="tagBackgroundImage() ? 'url(' + tagBackgroundImage() + ')' : null"
+      >
         @if (showDayView()) {
           <app-day-view
             [tag]="activeTag()"
@@ -25,17 +31,15 @@
           />
         }
 
-        <div class="p-2">
-          <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" href="property-keys">
-            Property Keys
-          </a>
-        </div>
         <app-notes-create-raw
           (noteCreated)="onCreated()"
           [year]="year()"
           [month]="month()"
           [day]="day()"
         />
+        @if (activeTag()) {
+          <app-notes-tag-graph [tag]="activeTag()!" />
+        }
       </section>
     </div>
   </div>
