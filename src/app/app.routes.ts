@@ -91,5 +91,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/settings/settings-page/settings-page').then((c) => c.SettingsPage),
   },
-  { path: '**', redirectTo: 'playlists' },
+  {
+    path: '**',
+    loadComponent: () =>
+      import('./features/not-found/not-found-page/not-found-page').then((c) => c.NotFoundPage),
+    data: { navTitle: 'Not Found' },
+  },
 ];

@@ -6,19 +6,20 @@
   [attr.aria-labelledby]="labelledById()"
   [attr.aria-describedby]="describedById()"
   (close)="handleClose()"
-  (cancel)="handleCancel()"
+  (cancel)="handleCancel($event)"
 >
   <div
-    class="fixed inset-0 bg-gray-900/30 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+    class="fixed inset-0 bg-gray-900/30 transition-opacity data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-100 data-leave:ease-in"
     (click)="handleBackdropClick()"
   ></div>
   <div
-    class="fixed inset-0 bg-cover bg-center opacity-100 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+    class="fixed inset-0 origin-center bg-cover bg-center opacity-100 transition-[transform,opacity] duration-100 ease-out data-[state=closed]:scale-[2] data-[state=closed]:opacity-0 data-[state=closing]:scale-[2] data-[state=closing]:opacity-0 data-[state=open]:scale-100 data-[state=opening]:scale-[2] data-[state=opening]:opacity-0"
     [style.backgroundImage]="'url(' + backdropImage() + ')'"
+    [attr.data-state]="backdropState()"
     (click)="handleBackdropClick()"
   ></div>
   <div
-    class="fixed inset-0 bg-gray-900/70 transition-opacity data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in"
+    class="fixed inset-0 bg-gray-900/70 transition-opacity data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-100 data-leave:ease-in"
     (click)="handleBackdropClick()"
   ></div>
   <div
@@ -27,7 +28,8 @@
     (click)="handleBackdropClick()"
   >
     <div
-      class="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+      class="relative transform overflow-hidden rounded-lg bg-gray-800 text-left shadow-xl outline -outline-offset-1 outline-white/10 transition-all data-closed:translate-y-4 data-closed:opacity-0 data-enter:duration-300 data-enter:ease-out data-leave:duration-200 data-leave:ease-in data-[state=closing]:scale-95 data-[state=closing]:opacity-0 sm:my-8 sm:w-full sm:max-w-lg data-closed:sm:translate-y-0 data-closed:sm:scale-95"
+      [attr.data-state]="backdropState()"
       (click)="handleContentClick($event)"
     >
       <ng-content />
