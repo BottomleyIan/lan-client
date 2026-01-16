@@ -11,20 +11,10 @@ import {
   computed,
 } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
-import { PlayerService } from '../../core/services/player-service';
-import { Router } from '@angular/router';
-import { JournalsApi } from '../../core/api/journals.api';
-import { TracksApi } from '../../core/api/tracks.api';
-import { finalize } from 'rxjs';
-import { take } from 'rxjs/operators';
 import { NgxFlickeringGridComponent } from '@omnedia/ngx-flickering-grid';
-
-type ControlCommand = {
-  id: string;
-  label: string;
-  keywords: string[];
-  run: () => void;
-};
+import { JournalsApi } from '../../core/api/journals.api';
+import { finalize } from 'rxjs';
+import { ControlPaletteCommandsService, type ControlCommand } from './control-palette-commands';
 
 @Component({
   selector: 'app-control-palette',
@@ -35,10 +25,8 @@ type ControlCommand = {
 export class ControlPalette {
   private readonly document = inject(DOCUMENT);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly player = inject(PlayerService);
+  private readonly commandsService = inject(ControlPaletteCommandsService);
   private readonly journalsApi = inject(JournalsApi);
-  private readonly tracksApi = inject(TracksApi);
-  private readonly router = inject(Router);
 
   private readonly inputEl = viewChild<ElementRef<HTMLInputElement>>('inputEl');
   private readonly textareaEl = viewChild<ElementRef<HTMLTextAreaElement>>('textareaEl');
@@ -48,71 +36,14 @@ export class ControlPalette {
   protected readonly mode = signal<'command' | 'add'>('command');
   protected readonly query = signal('');
 
-  private readonly commands: ControlCommand[] = [
-    { id: 'play', label: 'play', keywords: ['play'], run: () => this.player.play() },
-    { id: 'pause', label: 'pause', keywords: ['pause'], run: () => this.player.pause() },
-    { id: 'next', label: 'next', keywords: ['next', 'skip'], run: () => this.player.next() },
-    {
-      id: 'add',
-      label: 'add',
-      keywords: ['add', 'new note', 'note'],
-      run: () => this.enterAddMode(),
-    },
-    {
-      id: 'today',
-      label: 'today',
-      keywords: ['today'],
-      run: () => this.openToday(),
-    },
-    {
-      id: 'tasks',
-      label: 'tasks',
-      keywords: ['tasks'],
-      run: () => this.openTasks(),
-    },
-    {
-      id: 'tasks-tag',
-      label: 'tasks {tag}',
-      keywords: ['tasks ', 'task '],
-      run: () => this.openTasksTag(),
-    },
-    {
-      id: 'notes-tag',
-      label: 'notes {tag}',
-      keywords: ['notes ', 'note '],
-      run: () => this.openNotesTag(),
-    },
-    {
-      id: 'notes',
-      label: 'notes',
-      keywords: ['notes'],
-      run: () => this.openToday(),
-    },
-    {
-      id: 'help',
-      label: 'help',
-      keywords: ['help', 'commands'],
-      run: () => this.openHelp(),
-    },
-    {
-      id: 'settings',
-      label: 'settings',
-      keywords: ['settings', 'prefs', 'preferences'],
-      run: () => this.openSettings(),
-    },
-    {
-      id: 'rate',
-      label: 'rate 1-5',
-      keywords: ['rate ', 'rating'],
-      run: () => this.rateCurrentTrack(),
-    },
-    {
-      id: 'youtube',
-      label: 'youtube tags|url',
-      keywords: ['youtube '],
-      run: () => this.createYoutubeEntry(),
-    },
-  ];
+  private readonly commands: ControlCommand[] = this.commandsService.getCommands({
+    openAdd: () => this.enterAddMode(),
+    closePalette: () => this.close(),
+    getQuery: () => this.query(),
+    setQuery: (value) => this.query.set(value),
+    setSaving: (value) => this.isSaving.set(value),
+    isSaving: () => this.isSaving(),
+  });
 
   protected readonly filteredCommands = computed(() => {
     if (this.mode() !== 'command') {
@@ -127,8 +58,7 @@ export class ControlPalette {
     return this.commands.filter((command) => this.matchesCommand(command, value));
   });
   protected readonly commandOptions = computed(() => {
-    const labels = this.commands.map((command) => command.label);
-    return Array.from(new Set(labels));
+    return this.commandsService.getOptions();
   });
 
   constructor() {
@@ -210,71 +140,14 @@ export class ControlPalette {
     if (!match) {
       return;
     }
-    if (match.id === 'rate') {
-      this.rateCurrentTrack();
+    if (match.id === 'rate' || match.id === 'youtube') {
+      match.run();
       return;
     }
     match.run();
     if (this.mode() === 'command') {
       this.close();
     }
-  }
-
-  private openHelp(): void {
-    void this.router.navigate(['/help']);
-  }
-
-  private openSettings(): void {
-    void this.router.navigate(['/settings']);
-  }
-
-  private openToday(): void {
-    const today = new Date();
-    void this.router.navigate([
-      '/notes',
-      today.getFullYear(),
-      today.getMonth() + 1,
-      today.getDate(),
-    ]);
-  }
-
-  private openTasks(): void {
-    void this.router.navigate(['/tasks']);
-  }
-
-  private openTasksTag(): void {
-    const tag = this.extractTag('tasks');
-    if (!tag) {
-      return;
-    }
-    void this.router.navigate(['/tasks'], { queryParams: { tag } });
-  }
-
-  private openNotesTag(): void {
-    const tag = this.extractTag('notes');
-    if (!tag) {
-      return;
-    }
-    void this.router.navigate(['/notes'], { queryParams: { tag } });
-  }
-
-  private rateCurrentTrack(): void {
-    const rating = this.extractRating();
-    if (rating === null) {
-      return;
-    }
-    this.player.currentTrack$.pipe(take(1)).subscribe((track) => {
-      if (!track?.id) {
-        return;
-      }
-      this.tracksApi.updateTrackRating(track.id, { rating }).subscribe({
-        next: (updated) => {
-          const nextRating = updated.rating ?? rating;
-          this.player.updateTrackInQueue(String(updated.id ?? track.id), { rating: nextRating });
-          this.close();
-        },
-      });
-    });
   }
 
   private matchesCommand(command: ControlCommand, value: string): boolean {
@@ -291,69 +164,6 @@ export class ControlPalette {
       return value.startsWith('youtube ');
     }
     return command.keywords.some((keyword) => keyword.includes(value));
-  }
-
-  private extractTag(prefix: 'notes' | 'tasks'): string | null {
-    const value = this.query().trim();
-    const lower = value.toLowerCase();
-    const target = `${prefix} `;
-    if (!lower.startsWith(target)) {
-      return null;
-    }
-    const tag = value.slice(target.length).trim();
-    return tag.length > 0 ? tag : null;
-  }
-
-  private extractRating(): number | null {
-    const value = this.query().trim();
-    const parts = value.split(/\s+/);
-    if (parts.length < 2 || parts[0].toLowerCase() !== 'rate') {
-      return null;
-    }
-    const rating = Number(parts[1]);
-    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-      return null;
-    }
-    return rating;
-  }
-
-  private createYoutubeEntry(): void {
-    const payload = this.parseYoutubePayload();
-    if (!payload || this.isSaving()) {
-      return;
-    }
-    this.isSaving.set(true);
-    const today = new Date();
-    this.journalsApi
-      .createJournalEntryRaw(today.getFullYear(), today.getMonth() + 1, today.getDate(), {
-        raw: payload,
-      })
-      .pipe(finalize(() => this.isSaving.set(false)))
-      .subscribe({
-        next: () => {
-          this.query.set('');
-          this.close();
-        },
-      });
-  }
-
-  private parseYoutubePayload(): string | null {
-    const raw = this.query().trim();
-    const withoutCommand = raw.replace(/^youtube\s+/i, '');
-    const [tagsPart, urlPart] = withoutCommand.split('|');
-    if (!tagsPart || !urlPart) {
-      return null;
-    }
-    const tags = tagsPart
-      .split(',')
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
-    const url = urlPart.trim();
-    if (!url) {
-      return null;
-    }
-    const tagString = tags.map((tag) => `[[${tag}]]`).join('');
-    return `TODO [[youtube]][[watch-later]]${tagString}[youtube](${url})`;
   }
 
   private enterAddMode(): void {

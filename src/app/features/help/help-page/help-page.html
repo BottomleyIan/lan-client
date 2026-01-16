@@ -35,54 +35,12 @@
     <section class="flex flex-col gap-3">
       <h2 class="text-lg font-semibold text-slate-100">Commands</h2>
       <ul class="grid gap-3 text-sm text-slate-200 sm:grid-cols-2">
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">play</p>
-          <p class="text-slate-300">Start playback.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">pause</p>
-          <p class="text-slate-300">Pause playback.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">next</p>
-          <p class="text-slate-300">Skip to the next track.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">add</p>
-          <p class="text-slate-300">Open the quick note editor.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">today</p>
-          <p class="text-slate-300">Jump to today’s notes page.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">notes &#123;tag&#125;</p>
-          <p class="text-slate-300">Open notes filtered by a tag.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">tasks</p>
-          <p class="text-slate-300">Open the tasks board.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">tasks &#123;tag&#125;</p>
-          <p class="text-slate-300">Open tasks filtered by a tag.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">rate 1-5</p>
-          <p class="text-slate-300">Rate the current track.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">youtube tags|url</p>
-          <p class="text-slate-300">Create a TODO entry with tags and a YouTube link.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">help</p>
-          <p class="text-slate-300">Open this help page.</p>
-        </li>
-        <li class="rounded-lg border border-white/10 bg-white/5 p-3">
-          <p class="font-semibold text-slate-100">settings</p>
-          <p class="text-slate-300">Open the settings page.</p>
-        </li>
+        @for (command of commands; track command.id) {
+          <li class="rounded-lg border border-white/10 bg-white/5 p-3">
+            <p class="font-semibold text-slate-100">{{ command.label }}</p>
+            <p class="text-slate-300">{{ command.help }}</p>
+          </li>
+        }
       </ul>
     </section>
 
