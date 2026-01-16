@@ -83,8 +83,33 @@ export class CalendarPage {
     return byDay;
   });
 
+  protected readonly scheduledEntriesByDay = computed(() => {
+    const year = this.year();
+    const month = this.month();
+    const byDay = new Map<number, JournalEntryWithPriority[]>();
+
+    for (const entry of this.entries()) {
+      if (!isAllowedTaskStatus(entry.status)) {
+        continue;
+      }
+      const date = parseDateParts(entry.scheduled_at);
+      if (!date || date.year !== year || date.month !== month) {
+        continue;
+      }
+      const dayEntries = byDay.get(date.day) ?? [];
+      dayEntries.push(entry);
+      byDay.set(date.day, dayEntries);
+    }
+
+    return byDay;
+  });
+
   protected entriesForDay(day: number): JournalEntryWithPriority[] {
     return this.entriesByDay().get(day) ?? [];
+  }
+
+  protected scheduledEntriesForDay(day: number): JournalEntryWithPriority[] {
+    return this.scheduledEntriesByDay().get(day) ?? [];
   }
 
   protected isToday(day: number): boolean {
@@ -92,16 +117,6 @@ export class CalendarPage {
       this.year() === this.todayYear && this.month() === this.todayMonth && day === this.todayDay
     );
   }
-}
-
-type DateParts = { year: number; month: number; day: number };
-
-function resolveEntryDate(entry: JournalEntryWithPriority): DateParts | null {
-  return (
-    parseDateParts(entry.deadline_at) ??
-    parseDateParts(entry.scheduled_at) ??
-    parseDatePartsFromFields(entry)
-  );
 }
 
 function parseDateParts(raw?: string): DateParts | null {
@@ -115,9 +130,18 @@ function parseDateParts(raw?: string): DateParts | null {
   return { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
 }
 
+function resolveEntryDate(entry: JournalEntryWithPriority): DateParts | null {
+  return (
+    parseDateParts(entry.deadline_at) ??
+    parseDateParts(entry.scheduled_at) ??
+    parseDatePartsFromFields(entry)
+  );
+}
+
 function parseDatePartsFromFields(entry: JournalEntryWithPriority): DateParts | null {
   if (!entry.year || !entry.month || !entry.day) {
     return null;
   }
   return { year: entry.year, month: entry.month, day: entry.day };
 }
+type DateParts = { year: number; month: number; day: number };
