@@ -22,10 +22,16 @@
           class="focus:border-tokyo-accent-cyan w-full rounded-lg border border-white/10 bg-slate-900/80 px-4 py-3 text-sm text-slate-100 outline-none placeholder:text-slate-400"
           type="text"
           placeholder="Type a command…"
+          list="control-palette-commands"
           [value]="query()"
           (input)="handleInput($event)"
           (keydown)="handleKeydown($event)"
         />
+        <datalist id="control-palette-commands">
+          @for (command of commandOptions(); track command) {
+            <option [value]="command"></option>
+          }
+        </datalist>
       } @else {
         <textarea
           #textareaEl

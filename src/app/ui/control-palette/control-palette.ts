@@ -14,7 +14,9 @@ import { DOCUMENT } from '@angular/common';
 import { PlayerService } from '../../core/services/player-service';
 import { Router } from '@angular/router';
 import { JournalsApi } from '../../core/api/journals.api';
+import { TracksApi } from '../../core/api/tracks.api';
 import { finalize } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { NgxFlickeringGridComponent } from '@omnedia/ngx-flickering-grid';
 
 type ControlCommand = {
@@ -35,6 +37,7 @@ export class ControlPalette {
   private readonly destroyRef = inject(DestroyRef);
   private readonly player = inject(PlayerService);
   private readonly journalsApi = inject(JournalsApi);
+  private readonly tracksApi = inject(TracksApi);
   private readonly router = inject(Router);
 
   private readonly inputEl = viewChild<ElementRef<HTMLInputElement>>('inputEl');
@@ -80,10 +83,28 @@ export class ControlPalette {
       run: () => this.openNotesTag(),
     },
     {
+      id: 'notes',
+      label: 'notes',
+      keywords: ['notes'],
+      run: () => this.openToday(),
+    },
+    {
       id: 'help',
       label: 'help',
       keywords: ['help', 'commands'],
       run: () => this.openHelp(),
+    },
+    {
+      id: 'settings',
+      label: 'settings',
+      keywords: ['settings', 'prefs', 'preferences'],
+      run: () => this.openSettings(),
+    },
+    {
+      id: 'rate',
+      label: 'rate 1-5',
+      keywords: ['rate ', 'rating'],
+      run: () => this.rateCurrentTrack(),
     },
   ];
 
@@ -98,6 +119,10 @@ export class ControlPalette {
       );
     }
     return this.commands.filter((command) => this.matchesCommand(command, value));
+  });
+  protected readonly commandOptions = computed(() => {
+    const labels = this.commands.map((command) => command.label);
+    return Array.from(new Set(labels));
   });
 
   constructor() {
@@ -179,6 +204,10 @@ export class ControlPalette {
     if (!match) {
       return;
     }
+    if (match.id === 'rate') {
+      this.rateCurrentTrack();
+      return;
+    }
     match.run();
     if (this.mode() === 'command') {
       this.close();
@@ -187,6 +216,10 @@ export class ControlPalette {
 
   private openHelp(): void {
     void this.router.navigate(['/help']);
+  }
+
+  private openSettings(): void {
+    void this.router.navigate(['/settings']);
   }
 
   private openToday(): void {
@@ -219,12 +252,34 @@ export class ControlPalette {
     void this.router.navigate(['/notes'], { queryParams: { tag } });
   }
 
+  private rateCurrentTrack(): void {
+    const rating = this.extractRating();
+    if (rating === null) {
+      return;
+    }
+    this.player.currentTrack$.pipe(take(1)).subscribe((track) => {
+      if (!track?.id) {
+        return;
+      }
+      this.tracksApi.updateTrackRating(track.id, { rating }).subscribe({
+        next: (updated) => {
+          const nextRating = updated.rating ?? rating;
+          this.player.updateTrackInQueue(String(updated.id ?? track.id), { rating: nextRating });
+          this.close();
+        },
+      });
+    });
+  }
+
   private matchesCommand(command: ControlCommand, value: string): boolean {
     if (command.id === 'notes-tag') {
       return value.startsWith('notes ') && value.length > 'notes '.length;
     }
     if (command.id === 'tasks-tag') {
       return value.startsWith('tasks ') && value.length > 'tasks '.length;
+    }
+    if (command.id === 'rate') {
+      return value.startsWith('rate');
     }
     return command.keywords.some((keyword) => keyword.includes(value));
   }
@@ -238,6 +293,19 @@ export class ControlPalette {
     }
     const tag = value.slice(target.length).trim();
     return tag.length > 0 ? tag : null;
+  }
+
+  private extractRating(): number | null {
+    const value = this.query().trim();
+    const parts = value.split(/\s+/);
+    if (parts.length < 2 || parts[0].toLowerCase() !== 'rate') {
+      return null;
+    }
+    const rating = Number(parts[1]);
+    if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+      return null;
+    }
+    return rating;
   }
 
   private enterAddMode(): void {

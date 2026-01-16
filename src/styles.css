@@ -146,6 +146,13 @@
     margin-left: 0.125rem;
   }
 
+  table {
+    .tag-link::before,
+    .tag-link::after {
+      display: none;
+    }
+  }
+
   .tag-link:hover,
   .tag-link:focus-visible {
     color: var(--color-tokyo-accent-cyan);
