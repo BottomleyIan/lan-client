@@ -60,6 +60,7 @@
                       <button
                         type="button"
                         class="w-full text-left"
+                        (keydown)="handleEntryKeydown($event, entry)"
                         (click)="openEntry(entry); entryDialog.open()"
                       >
                         <app-task-card [entry]="entry" />

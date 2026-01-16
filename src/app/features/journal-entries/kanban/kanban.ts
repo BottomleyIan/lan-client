@@ -122,6 +122,10 @@ export class JournalEntriesKanban {
     return getEntryKey(entry) ?? '';
   }
 
+  protected entryKey(entry: JournalEntryWithPriority): string {
+    return getEntryKey(entry) ?? '';
+  }
+
   protected openEntry(entry: JournalEntryWithPriority): void {
     this.selectedEntry.set(entry);
   }
@@ -144,6 +148,18 @@ export class JournalEntriesKanban {
     this.entries.update((entries) =>
       entries.filter((entryItem) => getEntryKey(entryItem) !== getEntryKey(entry)),
     );
+  }
+
+  protected handleEntryKeydown(event: KeyboardEvent, entry: JournalEntryWithPriority): void {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.moveEntry(entry, -1);
+      return;
+    }
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.moveEntry(entry, 1);
+    }
   }
 
   protected updateScrollState(id: string, element: HTMLElement): void {
@@ -172,6 +188,31 @@ export class JournalEntriesKanban {
     this.entries.update((entries) =>
       entries.map((entry) => (getEntryKey(entry) === entryKey ? updatedEntry : entry)),
     );
+  }
+
+  private moveEntry(entry: JournalEntryWithPriority, offset: -1 | 1): void {
+    const entryKey = getEntryKey(entry);
+    if (!entryKey || !entry.year || !entry.month || !entry.day || entry.position === undefined) {
+      return;
+    }
+    const currentStatus = normalizeStatus(entry.status);
+    const currentIndex = BOARD_COLUMNS.findIndex((column) => column.key === currentStatus);
+    const nextStatus = BOARD_COLUMNS[currentIndex + offset]?.key ?? null;
+    if (!nextStatus || nextStatus === currentStatus) {
+      return;
+    }
+    this.updateEntryStatus(entryKey, nextStatus);
+    this.journalsApi
+      .updateJournalEntryStatus(entry.year, entry.month, entry.day, entry.position, nextStatus)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (updatedEntry) => {
+          this.replaceEntry(entryKey, withEntryPriority(updatedEntry));
+        },
+        error: () => {
+          this.updateEntryStatus(entryKey, currentStatus);
+        },
+      });
   }
 
   private fetchEntries(): void {
