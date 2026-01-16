@@ -106,6 +106,12 @@ export class ControlPalette {
       keywords: ['rate ', 'rating'],
       run: () => this.rateCurrentTrack(),
     },
+    {
+      id: 'youtube',
+      label: 'youtube tags|url',
+      keywords: ['youtube '],
+      run: () => this.createYoutubeEntry(),
+    },
   ];
 
   protected readonly filteredCommands = computed(() => {
@@ -281,6 +287,9 @@ export class ControlPalette {
     if (command.id === 'rate') {
       return value.startsWith('rate');
     }
+    if (command.id === 'youtube') {
+      return value.startsWith('youtube ');
+    }
     return command.keywords.some((keyword) => keyword.includes(value));
   }
 
@@ -306,6 +315,45 @@ export class ControlPalette {
       return null;
     }
     return rating;
+  }
+
+  private createYoutubeEntry(): void {
+    const payload = this.parseYoutubePayload();
+    if (!payload || this.isSaving()) {
+      return;
+    }
+    this.isSaving.set(true);
+    const today = new Date();
+    this.journalsApi
+      .createJournalEntryRaw(today.getFullYear(), today.getMonth() + 1, today.getDate(), {
+        raw: payload,
+      })
+      .pipe(finalize(() => this.isSaving.set(false)))
+      .subscribe({
+        next: () => {
+          this.query.set('');
+          this.close();
+        },
+      });
+  }
+
+  private parseYoutubePayload(): string | null {
+    const raw = this.query().trim();
+    const withoutCommand = raw.replace(/^youtube\s+/i, '');
+    const [tagsPart, urlPart] = withoutCommand.split('|');
+    if (!tagsPart || !urlPart) {
+      return null;
+    }
+    const tags = tagsPart
+      .split(',')
+      .map((tag) => tag.trim())
+      .filter((tag) => tag.length > 0);
+    const url = urlPart.trim();
+    if (!url) {
+      return null;
+    }
+    const tagString = tags.map((tag) => `[[${tag}]]`).join('');
+    return `TODO [[youtube]][[watch-later]]${tagString}[youtube](${url})`;
   }
 
   private enterAddMode(): void {

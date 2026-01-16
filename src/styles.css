@@ -130,6 +130,31 @@
     @apply max-w-full rounded-lg border border-white/10 bg-black/30 object-cover;
   }
 
+  .markdown-youtube {
+    @apply text-tokyo-accent-cyan font-nerd hover:text-tokyo-accent-orange mt-4 block max-w-80 overflow-hidden rounded-lg border border-white/10 bg-black/30;
+    position: relative;
+  }
+
+  .markdown-youtube-image {
+    @apply aspect-video h-auto w-full object-cover;
+  }
+
+  .markdown-youtube::after {
+    content: '\F01D';
+    font-family: inherit;
+    font-size: 3rem;
+    line-height: 1;
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    opacity: 0.9;
+    text-shadow:
+      0 0 12px rgba(125, 211, 252, 0.65),
+      0 0 1px black,
+      0 0 4px black;
+  }
+
   .tag-link::before,
   .tag-link::after {
     color: var(--color-tokyo-text-subtle);

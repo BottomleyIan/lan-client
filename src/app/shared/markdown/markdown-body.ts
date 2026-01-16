@@ -19,6 +19,7 @@ export class MarkdownBody {
 const ASSET_LINK_PATTERN = /!\[([^\]]*)\]\(\.\.\/assets\/([^)]+)\)/g;
 const TAG_LINK_PATTERN = /\[\[([^\]]+)\]\]/g;
 const IMAGE_LINE_PATTERN = /^\s*!\[([^\]]*)\]\(([^)]+)\)\s*$/;
+const YOUTUBE_LINK_PATTERN = /\[youtube\]\(([^)]+)\)/gi;
 
 function formatMarkdownBody(markdown: string): string {
   if (!markdown) {
@@ -27,7 +28,8 @@ function formatMarkdownBody(markdown: string): string {
   const normalized = normalizeSingleLineBreaks(markdown);
   const { bodyText, trailingImages } = splitTrailingImageLines(normalized);
   const withAssets = replaceAssetLinks(bodyText);
-  const withTags = replaceTagLinks(withAssets);
+  const withYoutube = replaceYoutubeLinks(withAssets);
+  const withTags = replaceTagLinks(withYoutube);
   const imageHtml = renderImageGroup(trailingImages);
   if (!imageHtml) {
     return withTags;
@@ -103,6 +105,19 @@ function replaceTagLinks(markdown: string): string {
   });
 }
 
+function replaceYoutubeLinks(markdown: string): string {
+  return markdown.replace(YOUTUBE_LINK_PATTERN, (match, rawUrl) => {
+    const url = rawUrl.trim();
+    const videoId = extractYoutubeId(url);
+    if (!videoId) {
+      return match;
+    }
+    const thumbnail = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    const safeUrl = escapeHtml(url);
+    return `<a class="markdown-youtube" href="${safeUrl}" target="_blank" rel="noreferrer"><img class="markdown-youtube-image" src="${thumbnail}" alt="YouTube video" loading="lazy" /><span class="sr-only">YouTube video</span></a>`;
+  });
+}
+
 function renderImageGroup(lines: string[]): string {
   if (lines.length === 0) {
     return '';
@@ -129,4 +144,29 @@ function escapeHtml(value: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function extractYoutubeId(rawUrl: string): string | null {
+  let url: URL;
+  try {
+    url = new URL(rawUrl);
+  } catch {
+    return null;
+  }
+  const host = url.hostname.replace(/^www\./, '');
+  if (host === 'youtu.be') {
+    const id = url.pathname.split('/').filter(Boolean)[0];
+    return id ?? null;
+  }
+  if (!host.endsWith('youtube.com')) {
+    return null;
+  }
+  if (url.pathname === '/watch') {
+    return url.searchParams.get('v');
+  }
+  const pathParts = url.pathname.split('/').filter(Boolean);
+  if (pathParts[0] === 'embed' || pathParts[0] === 'shorts') {
+    return pathParts[1] ?? null;
+  }
+  return null;
 }
