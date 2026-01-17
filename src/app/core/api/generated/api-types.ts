@@ -183,6 +183,12 @@ export interface HandlersTagGraphDTO {
   tag?: string;
 }
 
+export interface HandlersTempImageDTO {
+  filename?: string;
+  path?: string;
+  size_bytes?: number;
+}
+
 export interface HandlersTrackDTO {
   album?: HandlersAlbumSummaryDTO;
   album_id?: number;

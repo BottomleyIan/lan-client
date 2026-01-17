@@ -110,6 +110,13 @@ export class ControlPaletteCommandsService {
         run: () => this.createYoutubeEntry(opts),
       },
       {
+        id: 'cal',
+        label: 'cal {mmm} {yy}',
+        help: 'Open the calendar month (optionally with month/year).',
+        keywords: ['cal'],
+        run: () => this.openCalendar(opts.getQuery()),
+      },
+      {
         id: 'settings',
         label: 'settings',
         help: 'Open the settings page.',
@@ -178,6 +185,14 @@ export class ControlPaletteCommandsService {
 
   private openSettings(): void {
     void this.router.navigate(['/settings']);
+  }
+
+  private openCalendar(raw: string): void {
+    const target = this.parseCalendarTarget(raw);
+    if (!target) {
+      return;
+    }
+    void this.router.navigate(['/notes', target.year, target.month]);
   }
 
   private rateCurrentTrack(raw: string, closePalette: () => void): void {
@@ -269,4 +284,74 @@ export class ControlPaletteCommandsService {
     const tagString = tags.map((tag) => `[[${tag}]]`).join('');
     return `TODO ${tagString}[youtube](${url})`;
   }
+
+  private parseCalendarTarget(
+    raw: string,
+  ): { year: number; month: number } | null {
+    const trimmed = raw.trim();
+    if (!trimmed.toLowerCase().startsWith('cal')) {
+      return null;
+    }
+    const parts = trimmed.replace(/^cal\s*/i, '').trim().split(/\s+/).filter(Boolean);
+    const today = new Date();
+    const defaultYear = today.getFullYear();
+    const defaultMonth = today.getMonth() + 1;
+    if (parts.length === 0) {
+      return { year: defaultYear, month: defaultMonth };
+    }
+    const month = this.parseMonthToken(parts[0]);
+    if (month === null) {
+      return null;
+    }
+    const year = parts[1] ? this.parseYearToken(parts[1]) : defaultYear;
+    if (year === null) {
+      return null;
+    }
+    return { year, month };
+  }
+
+  private parseMonthToken(raw: string): number | null {
+    const numeric = Number(raw);
+    if (Number.isFinite(numeric)) {
+      if (numeric >= 1 && numeric <= 12) {
+        return Math.floor(numeric);
+      }
+    }
+    const key = raw.toLowerCase().slice(0, 3);
+    const index = MONTH_ABBREVIATIONS.indexOf(key);
+    if (index === -1) {
+      return null;
+    }
+    return index + 1;
+  }
+
+  private parseYearToken(raw: string): number | null {
+    const numeric = Number(raw);
+    if (!Number.isFinite(numeric)) {
+      return null;
+    }
+    const year = Math.floor(numeric);
+    if (year >= 0 && year < 100) {
+      return 2000 + year;
+    }
+    if (year >= 1000 && year <= 9999) {
+      return year;
+    }
+    return null;
+  }
 }
+
+const MONTH_ABBREVIATIONS = [
+  'jan',
+  'feb',
+  'mar',
+  'apr',
+  'may',
+  'jun',
+  'jul',
+  'aug',
+  'sep',
+  'oct',
+  'nov',
+  'dec',
+];

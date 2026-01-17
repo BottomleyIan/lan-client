@@ -80,6 +80,56 @@
       <div class="border-t border-white/10 px-5 py-4">
         <div class="flex flex-col gap-3">
           <div>
+            <h2 class="text-xl font-semibold text-slate-100">Images</h2>
+            <p class="text-sm text-slate-300">Upload and back up calendar and tag images.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <input
+              #tagImageInput
+              type="file"
+              accept="image/*"
+              class="sr-only"
+              tabindex="-1"
+              aria-hidden="true"
+              (change)="handleTagFileSelected($event)"
+            />
+            <input
+              #calendarImageInput
+              type="file"
+              accept="image/*"
+              class="sr-only"
+              tabindex="-1"
+              aria-hidden="true"
+              (change)="handleCalendarFileSelected($event)"
+            />
+            <app-icon-button-primary
+              icon="imageAdd"
+              label="Upload tag image"
+              [disabled]="isUploadingTag()"
+              (pressed)="uploadTagImage()"
+            />
+            <app-icon-button-primary
+              icon="imageAdd"
+              label="Upload calendar image"
+              [disabled]="isUploadingCalendar()"
+              (pressed)="uploadCalendarImage()"
+            />
+            <app-icon-button-primary
+              icon="files"
+              label="Download tag image backup"
+              (pressed)="downloadTagBackup()"
+            />
+            <app-icon-button-primary
+              icon="files"
+              label="Download calendar image backup"
+              (pressed)="downloadCalendarBackup()"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-white/10 px-5 py-4">
+        <div class="flex flex-col gap-3">
+          <div>
             <h2 class="text-xl font-semibold text-slate-100">Color Reference</h2>
             <p class="text-sm text-slate-300">Darcula palette tokens.</p>
           </div>

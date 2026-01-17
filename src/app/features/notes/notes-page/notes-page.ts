@@ -14,6 +14,7 @@ import { NotesCreateRaw } from '../notes-create-raw/notes-create-raw';
 import { RecentTags } from '../recent-tags/recent-tags';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
 import { NotesPageAddNotesLinks } from '../notes-page-add-notes-links/notes-page-add-notes-links';
+import { ImagesApi } from '../../../core/api/images.api';
 
 @Component({
   selector: 'app-notes-page',
@@ -58,12 +59,40 @@ export class NotesPage {
     return value.length > 0 ? value : null;
   });
   protected readonly showDayView = computed(() => this.hasCalendarDate() || !!this.activeTag());
-  protected readonly tagBackgroundImage = computed(() => {
-    const tag = this.tag().trim().toLowerCase();
-    return tag ? `/tag/${encodeURIComponent(tag)}.webp` : null;
-  });
 
   private readonly settingsApi = inject(SettingsApi);
+  private readonly imagesApi = inject(ImagesApi);
+
+  private readonly tagImages = toSignal(this.imagesApi.listImages('tags'), {
+    initialValue: [],
+  });
+  private readonly calendarImages = toSignal(this.imagesApi.listImages('calendar'), {
+    initialValue: [],
+  });
+
+  protected readonly pageBackgroundImage = computed(() => {
+    const tag = this.tag().trim().toLowerCase();
+    if (tag) {
+      const fileName = `${tag}.webp`;
+      if (this.tagImages().includes(fileName)) {
+        return this.imagesApi.imageUrl('tags', fileName);
+      }
+      return null;
+    }
+    const year = this.calendarYear();
+    const month = this.calendarMonth();
+    const day = this.calendarDay();
+    if (!year || !month || !day) {
+      return null;
+    }
+    const monthValue = String(month).padStart(2, '0');
+    const dayValue = String(day).padStart(2, '0');
+    const fileName = `${monthValue}-${dayValue}.webp`;
+    if (this.calendarImages().includes(fileName)) {
+      return this.imagesApi.imageUrl('calendar', fileName);
+    }
+    return null;
+  });
 
   protected setting = this.settingsApi.getSetting('notes-menu-tags');
   protected navItems$ = this.setting.pipe(map((s) => this.navItems(s.value ?? '')));

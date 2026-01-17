@@ -7,6 +7,7 @@ import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-p
 import { CalendarEntry } from '../calendar-entry/calendar-entry';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
+import { ImagesApi } from '../../../core/api/images.api';
 
 @Component({
   selector: 'app-calendar-page',
@@ -17,6 +18,7 @@ import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
 export class CalendarPage {
   private readonly route = inject(ActivatedRoute);
   private readonly journalsApi = inject(JournalsApi);
+  private readonly imagesApi = inject(ImagesApi);
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
@@ -59,6 +61,9 @@ export class CalendarPage {
   });
 
   private readonly entries = toSignal(this.journalsApi.listEntries({ type: 'task' }), {
+    initialValue: [],
+  });
+  private readonly calendarImages = toSignal(this.imagesApi.listImages('calendar'), {
     initialValue: [],
   });
 
@@ -116,6 +121,16 @@ export class CalendarPage {
     return (
       this.year() === this.todayYear && this.month() === this.todayMonth && day === this.todayDay
     );
+  }
+
+  protected dayBackground(day: number): string | null {
+    const month = String(this.month()).padStart(2, '0');
+    const dayValue = String(day).padStart(2, '0');
+    const fileName = `${month}-${dayValue}.webp`;
+    if (!this.calendarImages().includes(fileName)) {
+      return null;
+    }
+    return this.imagesApi.imageUrl('calendar', fileName);
   }
 }
 

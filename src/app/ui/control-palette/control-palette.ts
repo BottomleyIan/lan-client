@@ -163,6 +163,9 @@ export class ControlPalette {
     if (command.id === 'youtube') {
       return value.startsWith('youtube ');
     }
+    if (command.id === 'cal') {
+      return value.startsWith('cal');
+    }
     return command.keywords.some((keyword) => keyword.includes(value));
   }
 

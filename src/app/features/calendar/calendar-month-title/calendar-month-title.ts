@@ -9,47 +9,7 @@ import { filter, map, startWith } from 'rxjs';
 @Component({
   selector: 'app-calendar-month-title',
   imports: [CommonModule, RouterLink, Icon],
-  template: `
-    <div class="flex items-center gap-2">
-      @if (prevLink(); as prev) {
-        <a
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 text-slate-200 transition hover:border-white/30 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
-          [routerLink]="prev"
-          aria-label="Previous month"
-        >
-          <app-icon name="chevronLeft" />
-        </a>
-      } @else {
-        <span
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 text-slate-200 opacity-50"
-          aria-hidden="true"
-        >
-          <app-icon name="chevronLeft" />
-        </span>
-      }
-      <div
-        class="font-vt323 font-black tracking-[0.14em] uppercase drop-shadow-[0_0_12px_rgba(34,211,238,0.25)]"
-      >
-        {{ title() }}
-      </div>
-      @if (nextLink(); as next) {
-        <a
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 text-slate-200 transition hover:border-white/30 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
-          [routerLink]="next"
-          aria-label="Next month"
-        >
-          <app-icon name="chevronRight" />
-        </a>
-      } @else {
-        <span
-          class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-white/10 text-slate-200 opacity-50"
-          aria-hidden="true"
-        >
-          <app-icon name="chevronRight" />
-        </span>
-      }
-    </div>
-  `,
+  templateUrl: './calendar-month-title.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarMonthTitle {

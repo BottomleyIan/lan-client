@@ -26,6 +26,7 @@ import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
 import { map } from 'rxjs';
 import { NgxElectricBorderComponent } from '@omnedia/ngx-electric-border';
+import { ImagesApi } from '../../../core/api/images.api';
 
 @Component({
   selector: 'app-journal-entries-kanban',
@@ -51,6 +52,7 @@ export class JournalEntriesKanban {
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly imagesApi = inject(ImagesApi);
 
   protected readonly isLoading = signal(true);
   protected readonly entries = signal<JournalEntryWithPriority[]>([]);
@@ -73,6 +75,21 @@ export class JournalEntriesKanban {
   );
   protected readonly scrollStates = signal<Record<string, ScrollState>>({});
   protected readonly activeDropListId = signal<string | null>(null);
+  private readonly tagImages = toSignal(this.imagesApi.listImages('tags'), {
+    initialValue: [],
+  });
+  protected readonly tagBackgroundImage = computed(() => {
+    const tag = this.tag().trim().toLowerCase();
+    if (!tag) {
+      return null;
+    }
+    const fileName = `${tag}.webp`;
+    const matches = this.tagImages().some((name) => name.toLowerCase() === fileName);
+    if (!matches) {
+      return null;
+    }
+    return this.imagesApi.imageUrl('tags', fileName);
+  });
 
   constructor() {
     this.route.queryParamMap

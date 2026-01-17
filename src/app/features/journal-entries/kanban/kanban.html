@@ -1,9 +1,10 @@
 <div class="flex h-full flex-col gap-4">
   <section
     uiContainerDiv
-    class="flex-1 overflow-y-hidden"
+    class="flex-1 overflow-y-hidden bg-cover bg-no-repeat bg-top"
     label=""
     [class.no-tasks-background]="!isLoading() && !hasVisibleEntries()"
+    [style.backgroundImage]="tagBackgroundImage() ? 'url(' + tagBackgroundImage() + ')' : null"
   >
     <div class="flex h-full min-h-0 flex-col gap-4 p-4">
       @if (isLoading()) {

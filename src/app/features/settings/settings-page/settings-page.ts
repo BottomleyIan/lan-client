@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { finalize, map, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 import type { HandlersFolderDTO } from '../../../core/api/generated/api-types';
@@ -11,6 +11,7 @@ import { AddFolderForm } from '../add-folder-form/add-folder-form';
 import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { SettingsList } from '../settings-list/settings-list';
+import { ImagesApi } from '../../../core/api/images.api';
 
 type FolderRow = {
   readonly id: string;
@@ -62,9 +63,14 @@ const COLOR_SAMPLES: readonly ColorSample[] = [
 })
 export class SettingsPage {
   private readonly foldersApi = inject(FoldersApi);
+  private readonly imagesApi = inject(ImagesApi);
   private readonly refreshFolders$ = new Subject<void>();
   private readonly deletingIds = signal<Set<string>>(new Set());
   private readonly scanningIds = signal<Set<string>>(new Set());
+  private readonly tagImageInput = viewChild<ElementRef<HTMLInputElement>>('tagImageInput');
+  private readonly calendarImageInput = viewChild<ElementRef<HTMLInputElement>>('calendarImageInput');
+  protected readonly isUploadingTag = signal(false);
+  protected readonly isUploadingCalendar = signal(false);
 
   protected readonly folders$: Observable<FolderRow[]> = this.refreshFolders$.pipe(
     startWith(void 0),
@@ -143,4 +149,67 @@ export class SettingsPage {
   }
 
   protected readonly colorSamples = COLOR_SAMPLES;
+
+  protected uploadTagImage(): void {
+    this.tagImageInput()?.nativeElement.click();
+  }
+
+  protected uploadCalendarImage(): void {
+    this.calendarImageInput()?.nativeElement.click();
+  }
+
+  protected handleTagFileSelected(event: Event): void {
+    const file = this.extractFile(event);
+    if (!file || this.isUploadingTag()) {
+      return;
+    }
+    this.isUploadingTag.set(true);
+    this.imagesApi
+      .uploadImage('tags', file)
+      .pipe(finalize(() => this.isUploadingTag.set(false)))
+      .subscribe({
+        complete: () => {
+          this.resetFileInput(this.tagImageInput());
+        },
+      });
+  }
+
+  protected handleCalendarFileSelected(event: Event): void {
+    const file = this.extractFile(event);
+    if (!file || this.isUploadingCalendar()) {
+      return;
+    }
+    this.isUploadingCalendar.set(true);
+    this.imagesApi
+      .uploadImage('calendar', file)
+      .pipe(finalize(() => this.isUploadingCalendar.set(false)))
+      .subscribe({
+        complete: () => {
+          this.resetFileInput(this.calendarImageInput());
+        },
+      });
+  }
+
+  protected downloadTagBackup(): void {
+    window.open(this.imagesApi.downloadBackupUrl('tags'), '_blank');
+  }
+
+  protected downloadCalendarBackup(): void {
+    window.open(this.imagesApi.downloadBackupUrl('calendar'), '_blank');
+  }
+
+  private extractFile(event: Event): File | null {
+    const target = event.target;
+    if (!(target instanceof HTMLInputElement)) {
+      return null;
+    }
+    return target.files?.item(0) ?? null;
+  }
+
+  private resetFileInput(inputRef: ElementRef<HTMLInputElement> | undefined): void {
+    const input = inputRef?.nativeElement;
+    if (input) {
+      input.value = '';
+    }
+  }
 }
