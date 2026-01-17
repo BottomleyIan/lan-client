@@ -63,7 +63,16 @@ export class JournalEntriesKanban {
   protected readonly filteredEntries = computed(() =>
     filterEntriesByPriority(this.entries(), this.priority()),
   );
-  protected readonly columns = computed(() => buildColumns(this.filteredEntries()));
+  private readonly kanbanImages = toSignal(this.imagesApi.listImages('kanban'), {
+    initialValue: [],
+  });
+  protected readonly columns = computed(() =>
+    buildColumns(this.filteredEntries(), {
+      tag: this.tag(),
+      images: this.kanbanImages(),
+      imageUrl: (name) => this.imagesApi.imageUrl('kanban', name),
+    }),
+  );
   protected readonly hasVisibleEntries = computed(() =>
     this.columns().some((column) => column.entries.length > 0),
   );
@@ -277,6 +286,7 @@ type KanbanColumn = {
   key: BoardStatusKey;
   label: string;
   imageSrc: string;
+  backgroundImage: string | null;
   entries: JournalEntryWithPriority[];
 };
 
@@ -296,7 +306,14 @@ const BOARD_COLUMNS: Array<{ key: BoardStatusKey; label: string; imageSrc: strin
 const RECENT_STATUS_KEYS = new Set<BoardStatusKey>(['DONE', 'CANCELLED']);
 const RECENT_WINDOW_DAYS = 7;
 
-function buildColumns(entries: JournalEntryWithPriority[]): KanbanColumn[] {
+function buildColumns(
+  entries: JournalEntryWithPriority[],
+  config: {
+    tag: string;
+    images: string[];
+    imageUrl: (name: string) => string;
+  },
+): KanbanColumn[] {
   const buckets = new Map<BoardStatusKey, JournalEntryWithPriority[]>();
   BOARD_COLUMNS.forEach((column) => buckets.set(column.key, []));
 
@@ -311,13 +328,18 @@ function buildColumns(entries: JournalEntryWithPriority[]): KanbanColumn[] {
     }
   });
 
-  return BOARD_COLUMNS.map((column) => ({
-    id: `task-column-${column.key.toLowerCase()}`,
-    key: column.key,
-    label: column.label,
-    imageSrc: column.imageSrc,
-    entries: buckets.get(column.key) ?? [],
-  }));
+  return BOARD_COLUMNS.map((column) => {
+    const imageSrc = resolveKanbanTitleImage(config, column) ?? column.imageSrc;
+    const backgroundImage = resolveKanbanBackgroundImage(config, column);
+    return {
+      id: `task-column-${column.key.toLowerCase()}`,
+      key: column.key,
+      label: column.label,
+      imageSrc,
+      backgroundImage,
+      entries: buckets.get(column.key) ?? [],
+    };
+  });
 }
 
 function normalizeStatus(status?: string): BoardStatusKey {
@@ -326,6 +348,40 @@ function normalizeStatus(status?: string): BoardStatusKey {
   }
   const key = status.trim().toUpperCase();
   return BOARD_COLUMNS.some((column) => column.key === key) ? (key as BoardStatusKey) : 'TODO';
+}
+
+function resolveKanbanTitleImage(
+  config: { tag: string; images: string[]; imageUrl: (name: string) => string },
+  column: { key: BoardStatusKey },
+): string | null {
+  const tag = config.tag.trim().toLowerCase();
+  if (!tag) {
+    return null;
+  }
+  const status = column.key.toLowerCase();
+  const fileName = `${tag}-${status}.title.webp`;
+  const matches = config.images.some((name) => name.toLowerCase() === fileName);
+  if (!matches) {
+    return null;
+  }
+  return config.imageUrl(fileName);
+}
+
+function resolveKanbanBackgroundImage(
+  config: { tag: string; images: string[]; imageUrl: (name: string) => string },
+  column: { key: BoardStatusKey },
+): string | null {
+  const tag = config.tag.trim().toLowerCase();
+  if (!tag) {
+    return null;
+  }
+  const status = column.key.toLowerCase();
+  const fileName = `${tag}-${status}.webp`;
+  const matches = config.images.some((name) => name.toLowerCase() === fileName);
+  if (!matches) {
+    return null;
+  }
+  return config.imageUrl(fileName);
 }
 
 function getEntryKey(entry: JournalEntryWithPriority): string | null {

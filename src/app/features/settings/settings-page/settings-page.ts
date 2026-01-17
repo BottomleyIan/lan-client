@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { finalize, map, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 import type { HandlersFolderDTO } from '../../../core/api/generated/api-types';
@@ -68,9 +75,12 @@ export class SettingsPage {
   private readonly deletingIds = signal<Set<string>>(new Set());
   private readonly scanningIds = signal<Set<string>>(new Set());
   private readonly tagImageInput = viewChild<ElementRef<HTMLInputElement>>('tagImageInput');
-  private readonly calendarImageInput = viewChild<ElementRef<HTMLInputElement>>('calendarImageInput');
+  private readonly calendarImageInput =
+    viewChild<ElementRef<HTMLInputElement>>('calendarImageInput');
+  private readonly kanbanImageInput = viewChild<ElementRef<HTMLInputElement>>('kanbanImageInput');
   protected readonly isUploadingTag = signal(false);
   protected readonly isUploadingCalendar = signal(false);
+  protected readonly isUploadingKanban = signal(false);
 
   protected readonly folders$: Observable<FolderRow[]> = this.refreshFolders$.pipe(
     startWith(void 0),
@@ -158,6 +168,10 @@ export class SettingsPage {
     this.calendarImageInput()?.nativeElement.click();
   }
 
+  protected uploadKanbanImage(): void {
+    this.kanbanImageInput()?.nativeElement.click();
+  }
+
   protected handleTagFileSelected(event: Event): void {
     const file = this.extractFile(event);
     if (!file || this.isUploadingTag()) {
@@ -190,12 +204,32 @@ export class SettingsPage {
       });
   }
 
+  protected handleKanbanFileSelected(event: Event): void {
+    const file = this.extractFile(event);
+    if (!file || this.isUploadingKanban()) {
+      return;
+    }
+    this.isUploadingKanban.set(true);
+    this.imagesApi
+      .uploadImage('kanban', file)
+      .pipe(finalize(() => this.isUploadingKanban.set(false)))
+      .subscribe({
+        complete: () => {
+          this.resetFileInput(this.kanbanImageInput());
+        },
+      });
+  }
+
   protected downloadTagBackup(): void {
     window.open(this.imagesApi.downloadBackupUrl('tags'), '_blank');
   }
 
   protected downloadCalendarBackup(): void {
     window.open(this.imagesApi.downloadBackupUrl('calendar'), '_blank');
+  }
+
+  protected downloadKanbanBackup(): void {
+    window.open(this.imagesApi.downloadBackupUrl('kanban'), '_blank');
   }
 
   private extractFile(event: Event): File | null {

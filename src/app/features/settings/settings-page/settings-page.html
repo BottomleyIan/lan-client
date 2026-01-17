@@ -102,6 +102,15 @@
               aria-hidden="true"
               (change)="handleCalendarFileSelected($event)"
             />
+            <input
+              #kanbanImageInput
+              type="file"
+              accept="image/*"
+              class="sr-only"
+              tabindex="-1"
+              aria-hidden="true"
+              (change)="handleKanbanFileSelected($event)"
+            />
             <app-icon-button-primary
               icon="imageAdd"
               label="Upload tag image"
@@ -115,6 +124,12 @@
               (pressed)="uploadCalendarImage()"
             />
             <app-icon-button-primary
+              icon="imageAdd"
+              label="Upload kanban image"
+              [disabled]="isUploadingKanban()"
+              (pressed)="uploadKanbanImage()"
+            />
+            <app-icon-button-primary
               icon="files"
               label="Download tag image backup"
               (pressed)="downloadTagBackup()"
@@ -123,6 +138,11 @@
               icon="files"
               label="Download calendar image backup"
               (pressed)="downloadCalendarBackup()"
+            />
+            <app-icon-button-primary
+              icon="files"
+              label="Download kanban image backup"
+              (pressed)="downloadKanbanBackup()"
             />
           </div>
         </div>

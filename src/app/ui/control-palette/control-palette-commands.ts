@@ -285,14 +285,16 @@ export class ControlPaletteCommandsService {
     return `TODO ${tagString}[youtube](${url})`;
   }
 
-  private parseCalendarTarget(
-    raw: string,
-  ): { year: number; month: number } | null {
+  private parseCalendarTarget(raw: string): { year: number; month: number } | null {
     const trimmed = raw.trim();
     if (!trimmed.toLowerCase().startsWith('cal')) {
       return null;
     }
-    const parts = trimmed.replace(/^cal\s*/i, '').trim().split(/\s+/).filter(Boolean);
+    const parts = trimmed
+      .replace(/^cal\s*/i, '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
     const today = new Date();
     const defaultYear = today.getFullYear();
     const defaultMonth = today.getMonth() + 1;

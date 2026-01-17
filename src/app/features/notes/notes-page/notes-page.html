@@ -20,7 +20,9 @@
       <section
         uiContainerDiv
         class="flex min-h-0 flex-col gap-3 overflow-y-auto bg-cover bg-top bg-no-repeat p-3"
-        [style.backgroundImage]="pageBackgroundImage() ? 'url(' + pageBackgroundImage() + ')' : null"
+        [style.backgroundImage]="
+          pageBackgroundImage() ? 'url(' + pageBackgroundImage() + ')' : null
+        "
       >
         @if (showDayView()) {
           <app-day-view
