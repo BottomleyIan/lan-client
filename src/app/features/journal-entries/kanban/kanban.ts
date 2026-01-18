@@ -84,20 +84,18 @@ export class JournalEntriesKanban {
   );
   protected readonly scrollStates = signal<Record<string, ScrollState>>({});
   protected readonly activeDropListId = signal<string | null>(null);
-  private readonly tagImages = toSignal(this.imagesApi.listImages('tags'), {
-    initialValue: [],
-  });
+
   protected readonly tagBackgroundImage = computed(() => {
     const tag = this.tag().trim().toLowerCase();
     if (!tag) {
       return null;
     }
     const fileName = `${tag}.webp`;
-    const matches = this.tagImages().some((name) => name.toLowerCase() === fileName);
+    const matches = this.kanbanImages().some((name) => name.toLowerCase() === fileName);
     if (!matches) {
       return null;
     }
-    return this.imagesApi.imageUrl('tags', fileName);
+    return this.imagesApi.imageUrl('kanban', fileName);
   });
 
   constructor() {

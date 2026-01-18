@@ -126,11 +126,17 @@ export class CalendarPage {
   protected dayBackground(day: number): string | null {
     const month = String(this.month()).padStart(2, '0');
     const dayValue = String(day).padStart(2, '0');
-    const fileName = `${month}-${dayValue}.webp`;
-    if (!this.calendarImages().includes(fileName)) {
-      return null;
+    const yearValue = String(this.year());
+    const yearSpecific = `${month}-${dayValue}.${yearValue}.webp`;
+    const fallback = `${month}-${dayValue}.webp`;
+    const images = this.calendarImages().map((name) => name.toLowerCase());
+    if (images.includes(yearSpecific.toLowerCase())) {
+      return this.imagesApi.imageUrl('calendar', yearSpecific);
     }
-    return this.imagesApi.imageUrl('calendar', fileName);
+    if (images.includes(fallback.toLowerCase())) {
+      return this.imagesApi.imageUrl('calendar', fallback);
+    }
+    return null;
   }
 }
 

@@ -1,22 +1,19 @@
-<section class="relative min-h-full">
+<div class="relative flex h-full flex-col gap-4 overflow-hidden">
   <div
-    class="pointer-events-none absolute inset-0 bg-[url('/settings.webp')] bg-cover bg-fixed bg-top bg-no-repeat"
-    aria-hidden="true"
-  ></div>
-  <div class="relative z-10">
-    <app-panel label="Settings">
-      <div class="flex flex-col gap-4 px-5 py-4">
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-xl font-semibold text-slate-100">Music Folders</h2>
-          @if (folders$ | async; as folders) {
-            <span class="text-xs font-semibold tracking-[0.12em] text-slate-400 uppercase">
-              {{ folders.length }} folders
-            </span>
-          }
-        </div>
-
-        <app-add-folder-form (folderCreated)="refreshFolders()" />
-
+    uiContainerDiv
+    class="flex min-h-0 flex-col gap-3 overflow-y-auto bg-[url('/settings.webp')] bg-cover bg-top bg-no-repeat p-3"
+  >
+    <section class="flex flex-col gap-4 rounded-lg bg-black/50 p-4 backdrop-blur-md">
+      <div class="flex items-center justify-between gap-3">
+        <h2 class="text-tokyo-text-1 text-xl font-semibold">Music Folders</h2>
+        @if (folders$ | async; as folders) {
+          <span class="text-xs font-semibold tracking-[0.12em] text-slate-400 uppercase">
+            {{ folders.length }} folders
+          </span>
+        }
+      </div>
+      <app-add-folder-form (folderCreated)="refreshFolders()" />
+      <div class="flex flex-col gap-4">
         @if (folders$ | async; as folders) {
           @if (folders.length === 0) {
             <p class="text-sm text-slate-300">No folders added yet.</p>
@@ -74,6 +71,8 @@
           <p class="text-sm text-slate-400" aria-live="polite">Loading folders…</p>
         }
       </div>
+    </section>
+    <div label="Settings" class="background-blur-md rounded-lg bg-black/50">
       <div class="border-t border-white/10 px-5 py-4">
         <app-settings-list />
       </div>
@@ -83,67 +82,90 @@
             <h2 class="text-xl font-semibold text-slate-100">Images</h2>
             <p class="text-sm text-slate-300">Upload and back up calendar and tag images.</p>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <input
-              #tagImageInput
-              type="file"
-              accept="image/*"
-              class="sr-only"
-              tabindex="-1"
-              aria-hidden="true"
-              (change)="handleTagFileSelected($event)"
-            />
-            <input
-              #calendarImageInput
-              type="file"
-              accept="image/*"
-              class="sr-only"
-              tabindex="-1"
-              aria-hidden="true"
-              (change)="handleCalendarFileSelected($event)"
-            />
-            <input
-              #kanbanImageInput
-              type="file"
-              accept="image/*"
-              class="sr-only"
-              tabindex="-1"
-              aria-hidden="true"
-              (change)="handleKanbanFileSelected($event)"
-            />
-            <app-icon-button-primary
-              icon="imageAdd"
-              label="Upload tag image"
-              [disabled]="isUploadingTag()"
-              (pressed)="uploadTagImage()"
-            />
-            <app-icon-button-primary
-              icon="imageAdd"
-              label="Upload calendar image"
-              [disabled]="isUploadingCalendar()"
-              (pressed)="uploadCalendarImage()"
-            />
-            <app-icon-button-primary
-              icon="imageAdd"
-              label="Upload kanban image"
-              [disabled]="isUploadingKanban()"
-              (pressed)="uploadKanbanImage()"
-            />
-            <app-icon-button-primary
-              icon="files"
-              label="Download tag image backup"
-              (pressed)="downloadTagBackup()"
-            />
-            <app-icon-button-primary
-              icon="files"
-              label="Download calendar image backup"
-              (pressed)="downloadCalendarBackup()"
-            />
-            <app-icon-button-primary
-              icon="files"
-              label="Download kanban image backup"
-              (pressed)="downloadKanbanBackup()"
-            />
+          <div class="flex flex-col gap-2">
+            <h3>Calendar</h3>
+            <div class="grid grid-cols-[auto_1fr]">
+              <input
+                #tagImageInput
+                type="file"
+                accept="image/*"
+                class="sr-only"
+                tabindex="-1"
+                aria-hidden="true"
+                (change)="handleTagFileSelected($event)"
+              />
+              <input
+                #calendarImageInput
+                type="file"
+                accept="image/*"
+                class="sr-only"
+                tabindex="-1"
+                aria-hidden="true"
+                (change)="handleCalendarFileSelected($event)"
+              />
+              <input
+                #kanbanImageInput
+                type="file"
+                accept="image/*"
+                class="sr-only"
+                tabindex="-1"
+                aria-hidden="true"
+                (change)="handleKanbanFileSelected($event)"
+              />
+              <app-icon-button-primary
+                icon="imageAdd"
+                label="Upload tag image"
+                id="tagImageAddButton"
+                [disabled]="isUploadingTag()"
+                (pressed)="uploadTagImage()"
+              />
+              <label for="tagImageAddButton">
+                Upload an image for notes/tasks tags. Filename: <code>tag.webp</code> (tag in
+                lowercase).
+              </label>
+              <app-icon-button-primary
+                icon="imageAdd"
+                label="Upload calendar image"
+                id="calendarImageAddButton"
+                [disabled]="isUploadingCalendar()"
+                (pressed)="uploadCalendarImage()"
+              />
+              <label for="calendarImageAddButton">
+                Upload a calendar background. Filenames:
+                <code>mm-dd.webp</code> or <code>mm-dd.yyyy.webp</code> for year overrides.
+              </label>
+              <app-icon-button-primary
+                icon="imageAdd"
+                label="Upload kanban image"
+                id="kanbanImageAddButton"
+                [disabled]="isUploadingKanban()"
+                (pressed)="uploadKanbanImage()"
+              />
+              <label for="kanbanImageAddButton">
+                Upload a kanban column image. Filenames:
+                <code>tag-status.webp</code> for column background or
+                <code>tag-status.title.webp</code> for column header (status =
+                todo/doing/later/done/cancelled).
+              </label>
+              <app-icon-button-primary
+                icon="files"
+                label="Download tag image backup"
+                (pressed)="downloadTagBackup()"
+              />
+              <label>Download a zip of tag images.</label>
+              <app-icon-button-primary
+                icon="files"
+                label="Download calendar image backup"
+                (pressed)="downloadCalendarBackup()"
+              />
+              <label>Download a zip of calendar images.</label>
+              <app-icon-button-primary
+                icon="files"
+                label="Download kanban image backup"
+                (pressed)="downloadKanbanBackup()"
+              />
+              <label>Download a zip of kanban images.</label>
+            </div>
           </div>
         </div>
       </div>
@@ -166,6 +188,6 @@
           </div>
         </div>
       </div>
-    </app-panel>
+    </div>
   </div>
-</section>
+</div>

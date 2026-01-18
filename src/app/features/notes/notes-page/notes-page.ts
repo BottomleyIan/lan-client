@@ -87,9 +87,15 @@ export class NotesPage {
     }
     const monthValue = String(month).padStart(2, '0');
     const dayValue = String(day).padStart(2, '0');
-    const fileName = `${monthValue}-${dayValue}.webp`;
-    if (this.calendarImages().includes(fileName)) {
-      return this.imagesApi.imageUrl('calendar', fileName);
+    const yearValue = String(year);
+    const yearSpecific = `${monthValue}-${dayValue}.${yearValue}.webp`;
+    const fallback = `${monthValue}-${dayValue}.webp`;
+    const images = this.calendarImages().map((name) => name.toLowerCase());
+    if (images.includes(yearSpecific.toLowerCase())) {
+      return this.imagesApi.imageUrl('calendar', yearSpecific);
+    }
+    if (images.includes(fallback.toLowerCase())) {
+      return this.imagesApi.imageUrl('calendar', fallback);
     }
     return null;
   });

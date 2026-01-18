@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,6 +20,7 @@ import { IconButtonDanger } from '../../../ui/icon-button/icon-button-danger';
 import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { SettingsList } from '../settings-list/settings-list';
 import { ImagesApi } from '../../../core/api/images.api';
+import { ContainerDivDirective } from '../../../ui/directives/container-div';
 
 type FolderRow = {
   readonly id: string;
@@ -64,6 +66,7 @@ const COLOR_SAMPLES: readonly ColorSample[] = [
     TableHeadDirective,
     AddFolderForm,
     SettingsList,
+    ContainerDivDirective,
   ],
   templateUrl: './settings-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

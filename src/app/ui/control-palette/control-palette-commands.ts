@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { PlayerService } from '../../core/services/player-service';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { JournalsApi } from '../../core/api/journals.api';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { TracksApi } from '../../core/api/tracks.api';
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { take } from 'rxjs/operators';
