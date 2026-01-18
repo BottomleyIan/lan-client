@@ -6,8 +6,8 @@ export type NotesNewFieldConfig = {
 };
 
 export type NotesNewTypeConfig = {
-  tags?: string[];
-  fields?: Record<string, NotesNewFieldConfig>;
+  tags: string[];
+  fields: Record<string, NotesNewFieldConfig>;
 };
 
 export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {

@@ -9,6 +9,7 @@ import { TracksApi } from '../../core/api/tracks.api';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { NOTES_NEW_CONFIG } from '../../features/notes/notes-new-page/notes-new-config';
 
 export type ControlCommand = {
   id: string;
@@ -28,7 +29,7 @@ export class ControlPaletteCommandsService {
   ) {}
 
   getCommands(opts: {
-    openAdd: () => void;
+    openAdd: (value: string) => void;
     closePalette: () => void;
     getQuery: () => string;
     setQuery: (value: string) => void;
@@ -62,7 +63,33 @@ export class ControlPaletteCommandsService {
         label: 'add',
         help: 'Open the quick note editor.',
         keywords: ['add', 'new note', 'note'],
-        run: () => opts.openAdd(),
+        run: () => opts.openAdd(''),
+      },
+      {
+        id: 'add-type',
+        label: 'add {type}',
+        help: 'Open the quick note editor for a specific type.',
+        keywords: ['add', 'new note', 'note', 'type'],
+        run: () => {
+          const text = this.makeAddType(opts.getQuery());
+          console.log(text);
+          text && opts.openAdd(text);
+        },
+      },
+      {
+        id: 'todo',
+        label: 'todo',
+        help: 'Open the quick note editor for todo.',
+        keywords: ['todo', 'new todo'],
+        run: () => opts.openAdd('TODO [[\npriority:: medium'),
+      },
+      {
+        id: 'todo-tag',
+        label: 'todo {tag}',
+        help: 'Open the quick note editor for todo.',
+        keywords: ['todo', 'new todo'],
+        run: () =>
+          opts.openAdd(`TODO [[${this.extractTag(opts.getQuery(), 'todo')}]] \npriority:: medium`),
       },
       {
         id: 'today',
@@ -150,7 +177,10 @@ export class ControlPaletteCommandsService {
   }
 
   getOptions(): string[] {
-    return this.getHelpCommands().map((command) => command.label);
+    return [
+      ...this.getHelpCommands().map((command) => command.label),
+      ...Object.keys(NOTES_NEW_CONFIG).map((key) => `add ${key}`),
+    ];
   }
 
   private openToday(): void {
@@ -167,6 +197,17 @@ export class ControlPaletteCommandsService {
     void this.router.navigate(['/tasks']);
   }
 
+  private makeAddType(raw: string): string | undefined {
+    const type = this.extractTag(raw, 'add');
+    if (!type) return;
+
+    const configType = NOTES_NEW_CONFIG[type];
+    if (!configType) return;
+
+    return `${configType.tags.map((t) => `[[${t}]]`).join('')}\n${Object.entries(configType.fields)
+      .map(([key]) => `  ${key}::`)
+      .join('\n')}`;
+  }
   private openTasksTag(raw: string): void {
     const tag = this.extractTag(raw, 'tasks');
     if (!tag) {
@@ -247,7 +288,7 @@ export class ControlPaletteCommandsService {
       });
   }
 
-  private extractTag(raw: string, prefix: 'notes' | 'tasks'): string | null {
+  private extractTag(raw: string, prefix: 'notes' | 'tasks' | 'todo' | 'add'): string | null {
     const value = raw.trim();
     const lower = value.toLowerCase();
     const target = `${prefix} `;

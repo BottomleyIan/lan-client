@@ -37,7 +37,7 @@ export class ControlPalette {
   protected readonly query = signal('');
 
   private readonly commands: ControlCommand[] = this.commandsService.getCommands({
-    openAdd: () => this.enterAddMode(),
+    openAdd: (value: string) => this.enterAddMode(value),
     closePalette: () => this.close(),
     getQuery: () => this.query(),
     setQuery: (value) => this.query.set(value),
@@ -52,7 +52,11 @@ export class ControlPalette {
     const value = this.query().trim().toLowerCase();
     if (!value) {
       return this.commands.filter(
-        (command) => command.id !== 'tasks-tag' && command.id !== 'notes-tag',
+        (command) =>
+          command.id !== 'tasks-tag' &&
+          command.id !== 'notes-tag' &&
+          command.id !== 'todo-tag' &&
+          command.id !== 'add-type',
       );
     }
     return this.commands.filter((command) => this.matchesCommand(command, value));
@@ -154,6 +158,12 @@ export class ControlPalette {
     if (command.id === 'notes-tag') {
       return value.startsWith('notes ') && value.length > 'notes '.length;
     }
+    if (command.id === 'add-type') {
+      return value.startsWith('add ') && value.length > 'add '.length;
+    }
+    if (command.id === 'todo-tag') {
+      return value.startsWith('todo ') && value.length > 'todo '.length;
+    }
     if (command.id === 'tasks-tag') {
       return value.startsWith('tasks ') && value.length > 'tasks '.length;
     }
@@ -169,13 +179,17 @@ export class ControlPalette {
     return command.keywords.some((keyword) => keyword.includes(value));
   }
 
-  private enterAddMode(): void {
-    this.query.set('');
+  private enterAddMode(value: string): void {
+    this.query.set(value);
     this.mode.set('add');
     window.setTimeout(() => {
       const textarea = this.textareaEl();
       if (textarea) {
-        textarea.nativeElement.focus();
+        const element = textarea.nativeElement;
+        element.focus();
+        const firstLineEnd = value.indexOf('\n');
+        const cursorPosition = firstLineEnd === -1 ? value.length : firstLineEnd;
+        element.setSelectionRange(cursorPosition, cursorPosition);
       }
     }, 0);
   }

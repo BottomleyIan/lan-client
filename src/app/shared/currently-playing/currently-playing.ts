@@ -24,6 +24,7 @@ import { TracksApi } from '../../core/api/tracks.api';
 import { PlaybackSeek } from '../playback-seek/playback-seek';
 import { NgxWordMorphComponent } from '@omnedia/ngx-word-morph';
 import { NgxRetroGridComponent } from '@omnedia/ngx-retro-grid';
+import { IconButtonHighlight } from '../../ui/icon-button/icon-button-highlight';
 
 @Component({
   selector: 'app-currently-playing',
@@ -39,13 +40,14 @@ import { NgxRetroGridComponent } from '@omnedia/ngx-retro-grid';
     PlaybackSeek,
     NgxWordMorphComponent,
     NgxRetroGridComponent,
+    IconButtonHighlight,
   ],
   templateUrl: './currently-playing.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CurrentlyPlaying {
   readonly imageFailed = signal(false);
-  readonly expanded = signal(true);
+  readonly expanded = signal(false);
 
   onImageError(): void {
     this.imageFailed.set(true);
@@ -54,7 +56,7 @@ export class CurrentlyPlaying {
   readonly player = inject(PlayerService);
   private readonly tracksApi = inject(TracksApi);
   readonly current$: Observable<PlayerServiceTrack | null> = this.player.currentTrack$;
-  private readonly isPlaying: Signal<boolean> = toSignal(this.player.isPlaying$, {
+  protected readonly isPlaying: Signal<boolean> = toSignal(this.player.isPlaying$, {
     initialValue: false,
   });
   readonly isShuffle: Signal<boolean> = toSignal(this.player.shuffle$, { initialValue: false });
@@ -73,6 +75,7 @@ export class CurrentlyPlaying {
   }
 
   readonly playIcon = computed(() => (this.isPlaying() ? 'pause' : 'play'));
+  readonly pauseDisabled = computed(() => !this.isPlaying());
 
   readonly playLabel = computed(() => (this.isPlaying() ? 'Pause playback' : 'Play track'));
   readonly shuffleLabel = computed(() => (this.isShuffle() ? 'Disable shuffle' : 'Enable shuffle'));

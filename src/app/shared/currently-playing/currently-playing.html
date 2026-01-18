@@ -58,13 +58,25 @@
             label="Previous track"
             (pressed)="player.previous()"
           />
+          @if (isPlaying()) {
+            <app-icon-button-highlight icon="play" label="play" />
+          } @else {
+            <app-icon-button-primary icon="play" label="play" (pressed)="this.player.play()" />
+          }
           <app-icon-button-primary
-            [icon]="playIcon()"
-            [label]="playLabel()"
+            icon="pause"
+            [disabled]="pauseDisabled()"
+            label="pause"
             (pressed)="togglePlayback()"
           />
-          <app-icon-button-primary icon="stop" label="Stop playback" (pressed)="player.pause()" />
+          <app-icon-button-primary
+            icon="stop"
+            label="Stop playback"
+            (pressed)="player.pause()"
+            [disabled]="pauseDisabled()"
+          />
           <app-icon-button-primary icon="next" label="Next track" (pressed)="player.next()" />
+
           <app-icon-button-primary
             [icon]="expandIcon()"
             [label]="expandLabel()"
