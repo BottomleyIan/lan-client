@@ -131,10 +131,10 @@ export class CalendarPage {
     const fallback = `${month}-${dayValue}.webp`;
     const images = this.calendarImages().map((name) => name.toLowerCase());
     if (images.includes(yearSpecific.toLowerCase())) {
-      return this.imagesApi.imageUrl('calendar', yearSpecific);
+      return withImageParams(this.imagesApi.imageUrl('calendar', yearSpecific), { h: 300 });
     }
     if (images.includes(fallback.toLowerCase())) {
-      return this.imagesApi.imageUrl('calendar', fallback);
+      return withImageParams(this.imagesApi.imageUrl('calendar', fallback), { h: 300 });
     }
     return null;
   }
@@ -164,5 +164,18 @@ function parseDatePartsFromFields(entry: JournalEntryWithPriority): DateParts | 
     return null;
   }
   return { year: entry.year, month: entry.month, day: entry.day };
+}
+
+function withImageParams(baseUrl: string, params: Record<string, string | number>): string {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    search.set(key, String(value));
+  }
+  const query = search.toString();
+  if (!query) {
+    return baseUrl;
+  }
+  const separator = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${separator}${query}`;
 }
 type DateParts = { year: number; month: number; day: number };

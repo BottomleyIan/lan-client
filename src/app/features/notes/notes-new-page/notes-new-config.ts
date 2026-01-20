@@ -65,4 +65,12 @@ export const NOTES_NEW_CONFIG: Record<string, NotesNewTypeConfig> = {
       year: { type: 'single-tag' },
     },
   },
+  today: {
+    tags: ['today'],
+    fields: {
+      'would-be-good-if': {},
+      'what-went-well': {},
+      'what-went-bad': {},
+    },
+  },
 };

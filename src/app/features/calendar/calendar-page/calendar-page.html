@@ -12,21 +12,22 @@
       @for (day of days(); track $index) {
         @if (day) {
           <a
-            class="group min-h-[96px] overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/0 bg-cover bg-center bg-no-repeat text-sm text-slate-100 transition hover:border-white/30 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
+            class="group min-h-[96px] overflow-hidden rounded-xl border border-white/10 bg-gradient-to-b from-white/5 to-white/0 bg-cover bg-top bg-no-repeat text-sm text-slate-100 transition hover:border-white/30 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
             [class.border-white/10]="!isToday(day)"
             [class.border-tokyo-accent-orange]="isToday(day)"
-            [style.backgroundImage]="dayBackground(day) ? 'url(' + dayBackground(day) + ')' : null"
+            [style.backgroundImage]="
+              dayBackground(day)
+                ? 'radial-gradient(circle at 5% 5%,rgb(0 0 0 / 1),rgb(0 0 0 / 0.1) 30%),url(' +
+                  dayBackground(day) +
+                  ')'
+                : null
+            "
             [routerLink]="['/notes', year(), month(), day]"
           >
-            <div class="flex w-full flex-row justify-between bg-black/40 px-2 py-1">
-              @if (entriesForDay(day).length > 0) {
-                <div class="text-xs font-semibold text-slate-300">
-                  +{{ entriesForDay(day).length }} entries
-                </div>
-              }
-              <div class="text-right text-xs font-semibold text-slate-300">{{ day }}</div>
+            <div class="flex w-full flex-row justify-between px-2 py-1">
+              <div class="text-right text-lg font-semibold text-slate-300">{{ day }}</div>
             </div>
-            @if (scheduledEntriesForDay(day).length > 0) {
+            @if (scheduledEntriesForDay(day).length > 0 && !dayBackground(day)) {
               <div class="mt-2 flex flex-col">
                 @for (entry of scheduledEntriesForDay(day); track entry.id) {
                   <app-calendar-entry

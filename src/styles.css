@@ -122,6 +122,12 @@
     text-shadow: 0 0 12px var(--color-tokyo-accent-orange);
   }
 
+  markdown {
+    a {
+      @apply text-tokyo-accent-cyan hover:text-tokyo-accent-orange underline;
+    }
+  }
+
   .markdown-image-grid {
     @apply mt-4 flex flex-wrap gap-3;
   }
