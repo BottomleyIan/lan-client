@@ -6,12 +6,13 @@ import type { JournalEntryWithPriority } from '../../core/api/journal-entry-prio
 import { JournalsApi } from '../../core/api/journals.api';
 import { JournalEntry } from '../../features/journal-entries/journal-entry/journal-entry';
 import { DayViewTable } from './day-view-table';
+import { IconButton } from '../../ui/icon-button/icon-button';
 
 type DayParams = { year: number; month: number; day: number };
 
 @Component({
   selector: 'app-day-view',
-  imports: [CommonModule, JournalEntry, DayViewTable],
+  imports: [CommonModule, JournalEntry, DayViewTable, IconButton],
   templateUrl: './day-view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {

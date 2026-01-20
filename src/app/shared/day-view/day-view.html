@@ -5,15 +5,22 @@
 }
 @if (sortedDates$ | async; as dates) {
   @for (group of dates; track group.key) {
-    <section class="flex flex-col gap-4 rounded-lg bg-black/80 p-4 backdrop-blur-md">
-      <h3 class="font-vt323 text-center text-2xl">
-        <a class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange" [href]="group.link">
+    <details open class="flex flex-col gap-4 rounded-lg bg-black/80 p-4 backdrop-blur-md">
+      <summary class="text-tokyo-accent-cyan hover:text-tokyo-accent-orange hover:cursor-pointer">
+        <h3 class="inline-block">
           {{ group.label }}
-        </a>
-      </h3>
+          <a [href]="group.link">
+            <app-icon-button
+              icon="link"
+              [label]="group.label"
+              iconClass="text-tokyo-accent-orange hover:text-tokyo-accent-cyan hover:cursor-pointer"
+            />
+          </a>
+        </h3>
+      </summary>
       @for (entry of group.entries; track trackEntryId($index, entry)) {
         <app-journal-entry [entry]="entry" (deleted)="handleEntryDeleted()" />
       }
-    </section>
+    </details>
   }
 }

@@ -13,6 +13,7 @@ export class PlayerEngineService {
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
   private sourceNode: MediaElementAudioSourceNode | null = null;
+  private currentTrackId: string | null = null;
 
   constructor() {
     this.audio.crossOrigin = 'anonymous';
@@ -23,13 +24,14 @@ export class PlayerEngineService {
         if (!track) {
           this.audio.pause();
           this.audio.src = '';
+          this.currentTrackId = null;
           this.player.updatePositionFromEngine(0);
           return;
         }
 
-        const url = trackUrl(track.id);
-        if (this.audio.src !== url) {
-          this.audio.src = url;
+        if (this.currentTrackId !== track.id) {
+          this.currentTrackId = track.id;
+          this.audio.src = trackUrl(track.id);
           this.audio.load();
         }
 
