@@ -1,0 +1,46 @@
+<div
+  class="group relative h-full min-h-[96px] w-full overflow-hidden rounded-sm border border-white/50 bg-gradient-to-b from-white/5 to-white/0 bg-cover bg-top bg-no-repeat text-sm text-slate-100 transition hover:border-white/30 hover:bg-white/5"
+  [class.border-white/50]="!isToday()"
+  [class.border-tokyo-accent-orange]="isToday()"
+  [style.backgroundImage]="backgroundImage()"
+>
+  <a
+    class="relative z-10 block h-full w-full focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
+    [attr.data-calendar-day]="day()"
+    [routerLink]="['/notes', year(), month(), day()]"
+  >
+    <div class="flex w-full flex-row justify-between px-2 py-1">
+      <div class="text-right text-lg font-semibold text-slate-300">{{ day() }}</div>
+    </div>
+    @if (showScheduledEntries()) {
+      <div class="flex flex-col px-2 pt-2">
+        @for (entry of scheduledEntries(); track entry.id) {
+          <app-calendar-entry [entry]="entry" [showLabel]="scheduledEntries().length === 1" />
+        }
+      </div>
+    }
+  </a>
+  @if (hasMultipleImages()) {
+    <div class="absolute inset-x-1 bottom-1 z-20 flex items-center justify-center gap-3">
+      @for (image of displayImages(); track image.url) {
+        <button
+          type="button"
+          class="group relative aspect-square w-12 shrink-0 overflow-hidden border border-2 text-left focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
+          [class.border-tokyo-accent-orange]="isSelected($index)"
+          [class.border-white/60]="!isSelected($index)"
+          (click)="selectImage($index)"
+          [attr.aria-pressed]="isSelected($index)"
+          [attr.aria-label]="image.alt ? 'Show image: ' + image.alt : 'Show calendar image'"
+          [title]="image.alt || 'Calendar image'"
+        >
+          <img
+            class="h-full w-full object-cover"
+            [src]="image.url"
+            [alt]="image.alt || 'Calendar image'"
+            loading="lazy"
+          />
+        </button>
+      }
+    </div>
+  }
+</div>

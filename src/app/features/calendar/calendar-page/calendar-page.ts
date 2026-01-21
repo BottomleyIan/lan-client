@@ -1,17 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, computed, inject } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { combineLatest, distinctUntilChanged, switchMap } from 'rxjs';
 import { JournalsApi } from '../../../core/api/journals.api';
 import type { JournalEntryWithPriority } from '../../../core/api/journal-entry-priority';
-import { CalendarEntry } from '../calendar-entry/calendar-entry';
+import type { CalendarDayImage } from '../calendar-day-cell/calendar-day-cell';
+import { CalendarDayCell } from '../calendar-day-cell/calendar-day-cell';
 import { isAllowedTaskStatus } from '../../../shared/tasks/task-status';
 import { MONTH_NAMES, DAY_NAMES } from '../calendar-constants';
-import { ImagesApi } from '../../../core/api/images.api';
+import { CalendarApi } from '../../../core/api/calendar.api';
+import type { HandlersCalendarImageDTO } from '../../../core/api/generated/api-types';
+import { apiUrl } from '../../../core/api/api-url';
 
 @Component({
   selector: 'app-calendar-page',
-  imports: [CommonModule, RouterLink, CalendarEntry],
+  imports: [CommonModule, CalendarDayCell],
   templateUrl: './calendar-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -19,7 +23,7 @@ export class CalendarPage {
   private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly route = inject(ActivatedRoute);
   private readonly journalsApi = inject(JournalsApi);
-  private readonly imagesApi = inject(ImagesApi);
+  private readonly calendarApi = inject(CalendarApi);
   private readonly params = toSignal(this.route.paramMap, {
     initialValue: this.route.snapshot.paramMap,
   });
@@ -64,8 +68,36 @@ export class CalendarPage {
   private readonly entries = toSignal(this.journalsApi.listEntries({ type: 'task' }), {
     initialValue: [],
   });
-  private readonly calendarImages = toSignal(this.imagesApi.listImages('calendar'), {
-    initialValue: [],
+  private readonly calendarImages = toSignal(
+    combineLatest([toObservable(this.year), toObservable(this.month)]).pipe(
+      distinctUntilChanged(
+        ([prevYear, prevMonth], [nextYear, nextMonth]) =>
+          prevYear === nextYear && prevMonth === nextMonth,
+      ),
+      switchMap(([year, month]) => this.calendarApi.listCalendarImages(year, month)),
+    ),
+    { initialValue: [] as HandlersCalendarImageDTO[] },
+  );
+  private readonly calendarImagesByDay = computed(() => {
+    const byDay = new Map<number, HandlersCalendarImageDTO[]>();
+    for (const image of this.calendarImages()) {
+      const day = parseCalendarImageDay(image.day);
+      if (day === null) {
+        continue;
+      }
+      const existing = byDay.get(day) ?? [];
+      existing.push(image);
+      byDay.set(day, existing);
+    }
+    return byDay;
+  });
+  private readonly calendarDayImagesByDay = computed(() => {
+    const byDay = new Map<number, CalendarDayImage[]>();
+    const year = String(this.year());
+    for (const [day, images] of this.calendarImagesByDay().entries()) {
+      byDay.set(day, prioritizeCalendarImages(images, year));
+    }
+    return byDay;
   });
 
   protected readonly entriesByDay = computed(() => {
@@ -124,30 +156,13 @@ export class CalendarPage {
     );
   }
 
-  protected dayBackground(day: number): string | null {
-    const month = String(this.month()).padStart(2, '0');
-    const dayValue = String(day).padStart(2, '0');
-    const yearValue = String(this.year());
-    const yearSpecific = `${month}-${dayValue}.${yearValue}.webp`;
-    const fallback = `${month}-${dayValue}.webp`;
-    const images = this.calendarImages().map((name) => name.toLowerCase());
-    if (images.includes(yearSpecific.toLowerCase())) {
-      return withImageParams(this.imagesApi.imageUrl('calendar', yearSpecific), { h: 300 });
-    }
-    if (images.includes(fallback.toLowerCase())) {
-      return withImageParams(this.imagesApi.imageUrl('calendar', fallback), { h: 300 });
-    }
-    return null;
+  protected calendarImagesForDay(day: number): CalendarDayImage[] {
+    return this.calendarDayImagesByDay().get(day) ?? [];
   }
 
   protected onKeydown(event: KeyboardEvent): void {
     const key = event.key;
-    if (
-      key !== 'ArrowRight' &&
-      key !== 'ArrowLeft' &&
-      key !== 'ArrowDown' &&
-      key !== 'ArrowUp'
-    ) {
+    if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'ArrowDown' && key !== 'ArrowUp') {
       return;
     }
     event.preventDefault();
@@ -197,6 +212,47 @@ function parseDatePartsFromFields(entry: JournalEntryWithPriority): DateParts | 
     return null;
   }
   return { year: entry.year, month: entry.month, day: entry.day };
+}
+
+function parseCalendarImageDay(raw?: string): number | null {
+  if (!raw) {
+    return null;
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
+}
+
+function prioritizeCalendarImages(
+  images: HandlersCalendarImageDTO[],
+  year: string,
+): CalendarDayImage[] {
+  const mapped = images
+    .map((image) => ({ image, url: resolveCalendarImageUrl(image.path) }))
+    .filter((item): item is { image: HandlersCalendarImageDTO; url: string } => !!item.url)
+    .map((item) => ({
+      url: withImageParams(item.url, { h: 300 }),
+      alt: item.image.alt ?? '',
+      isYearSpecific: isYearSpecificImage(item.image, year),
+    }));
+
+  const yearSpecific = mapped.filter((image) => image.isYearSpecific);
+  const repeating = mapped.filter((image) => !image.isYearSpecific);
+  return [...yearSpecific, ...repeating];
+}
+
+function isYearSpecificImage(image: HandlersCalendarImageDTO, year: string): boolean {
+  const path = image.path ?? '';
+  return path.includes(year);
+}
+
+function resolveCalendarImageUrl(path?: string): string | null {
+  if (!path) {
+    return null;
+  }
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+  return apiUrl(path);
 }
 
 function parseDay(target: HTMLElement): number | null {

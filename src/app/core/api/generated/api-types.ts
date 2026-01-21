@@ -41,6 +41,12 @@ export interface HandlersArtistSummaryDTO {
   name?: string;
 }
 
+export interface HandlersCalendarImageDTO {
+  alt?: string;
+  day?: string;
+  path?: string;
+}
+
 export interface HandlersDayViewDTO {
   day?: number;
   entries?: HandlersJournalEntryDTO[];
