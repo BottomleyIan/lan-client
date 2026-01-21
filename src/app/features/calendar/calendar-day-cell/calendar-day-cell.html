@@ -2,8 +2,23 @@
   class="group relative h-full min-h-[96px] w-full overflow-hidden rounded-sm border border-white/50 bg-gradient-to-b from-white/5 to-white/0 bg-cover bg-top bg-no-repeat text-sm text-slate-100 transition hover:border-white/30 hover:bg-white/5"
   [class.border-white/50]="!isToday()"
   [class.border-tokyo-accent-orange]="isToday()"
-  [style.backgroundImage]="backgroundImage()"
 >
+  @if (activeImageUrl()) {
+    <div
+      class="absolute inset-0 bg-cover bg-top"
+      [style.backgroundImage]="'url(' + activeImageUrl() + ')'"
+    ></div>
+  }
+  @if (previousImageUrl()) {
+    <div
+      class="absolute inset-0 bg-cover bg-top transition-opacity duration-500"
+      [class.opacity-0]="fadeOutPrevious()"
+      [style.backgroundImage]="'url(' + previousImageUrl() + ')'"
+    ></div>
+  }
+  @if (activeImageUrl() || previousImageUrl()) {
+    <div class="absolute inset-0" [style.backgroundImage]="gradientOverlay"></div>
+  }
   <a
     class="relative z-10 block h-full w-full focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
     [attr.data-calendar-day]="day()"

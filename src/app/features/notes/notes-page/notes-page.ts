@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { map, of, switchMap } from 'rxjs';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DayView } from '../../../shared/day-view/day-view';
 import { NotesTagGraph } from '../notes-tag-graph/notes-tag-graph';
 import { SettingsApi } from '../../../core/api/settings.api';
@@ -15,6 +15,9 @@ import { RecentTags } from '../recent-tags/recent-tags';
 import { ContainerDivDirective } from '../../../ui/directives/container-div';
 import { NotesPageAddNotesLinks } from '../notes-page-add-notes-links/notes-page-add-notes-links';
 import { ImagesApi } from '../../../core/api/images.api';
+import { CalendarApi } from '../../../core/api/calendar.api';
+import type { HandlersCalendarImageDTO } from '../../../core/api/generated/api-types';
+import { apiUrl } from '../../../core/api/api-url';
 
 @Component({
   selector: 'app-notes-page',
@@ -62,13 +65,19 @@ export class NotesPage {
 
   private readonly settingsApi = inject(SettingsApi);
   private readonly imagesApi = inject(ImagesApi);
+  private readonly calendarApi = inject(CalendarApi);
 
   private readonly tagImages = toSignal(this.imagesApi.listImages('tags'), {
     initialValue: [],
   });
-  private readonly calendarImages = toSignal(this.imagesApi.listImages('calendar'), {
-    initialValue: [],
-  });
+  private readonly calendarImages = toSignal(
+    toObservable(this.calendarParams).pipe(
+      switchMap((params) =>
+        params ? this.calendarApi.listCalendarImages(params.year, params.month) : of([]),
+      ),
+    ),
+    { initialValue: [] as HandlersCalendarImageDTO[] },
+  );
 
   protected readonly pageBackgroundImage = computed(() => {
     const tag = this.tag().trim().toLowerCase();
@@ -85,19 +94,12 @@ export class NotesPage {
     if (!year || !month || !day) {
       return null;
     }
-    const monthValue = String(month).padStart(2, '0');
-    const dayValue = String(day).padStart(2, '0');
     const yearValue = String(year);
-    const yearSpecific = `${monthValue}-${dayValue}.${yearValue}.webp`;
-    const fallback = `${monthValue}-${dayValue}.webp`;
-    const images = this.calendarImages().map((name) => name.toLowerCase());
-    if (images.includes(yearSpecific.toLowerCase())) {
-      return this.imagesApi.imageUrl('calendar', yearSpecific);
-    }
-    if (images.includes(fallback.toLowerCase())) {
-      return this.imagesApi.imageUrl('calendar', fallback);
-    }
-    return null;
+    const images = this.calendarImages().filter(
+      (image) => parseCalendarImageDay(image.day) === day,
+    );
+    const url = pickCalendarImageUrl(images, yearValue);
+    return url;
   });
 
   protected setting = this.settingsApi.getSetting('notes-menu-tags');
@@ -163,4 +165,38 @@ function toNumber(raw: string | null): number | null {
   }
   const value = Number(raw);
   return Number.isFinite(value) ? value : null;
+}
+
+function parseCalendarImageDay(raw?: string): number | null {
+  if (!raw) {
+    return null;
+  }
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
+}
+
+function pickCalendarImageUrl(images: HandlersCalendarImageDTO[], year: string): string | null {
+  const resolved = images
+    .map((image) => ({ image, url: resolveCalendarImageUrl(image.path) }))
+    .filter((item): item is { image: HandlersCalendarImageDTO; url: string } => !!item.url);
+  if (!resolved.length) {
+    return null;
+  }
+  const yearSpecific = resolved.find((item) => isYearSpecificImage(item.image, year));
+  return yearSpecific?.url ?? resolved[0]?.url ?? null;
+}
+
+function isYearSpecificImage(image: HandlersCalendarImageDTO, year: string): boolean {
+  const path = image.path ?? '';
+  return path.includes(year);
+}
+
+function resolveCalendarImageUrl(path?: string): string | null {
+  if (!path) {
+    return null;
+  }
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+  return apiUrl(path);
 }
