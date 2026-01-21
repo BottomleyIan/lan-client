@@ -11,7 +11,6 @@ import {
 import { finalize, map, shareReplay, startWith, Subject, switchMap } from 'rxjs';
 import type { Observable } from 'rxjs';
 import type { HandlersFolderDTO } from '../../../core/api/generated/api-types';
-import { Panel } from '../../../ui/panel/panel';
 import { FoldersApi } from '../../../core/api/folders.api';
 import { TableDirective } from '../../../ui/directives/table';
 import { TableHeadDirective } from '../../../ui/directives/thead';
@@ -59,7 +58,6 @@ const COLOR_SAMPLES: readonly ColorSample[] = [
   selector: 'app-settings-page',
   imports: [
     CommonModule,
-    Panel,
     IconButtonDanger,
     IconButtonPrimary,
     TableDirective,

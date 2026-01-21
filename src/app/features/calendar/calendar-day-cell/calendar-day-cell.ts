@@ -45,7 +45,7 @@ export class CalendarDayCell {
   protected readonly displayImages = computed(() => this.images().slice(0, 3));
   protected readonly hasMultipleImages = computed(() => this.displayImages().length > 1);
   protected readonly gradientOverlay =
-    'repeating-linear-gradient(180deg, rgb(0 0 0 / 0.2) 0px, rgb(0 0 0 / 0.3) 1px, rgb(0 0 0 / 0.2) 3px, rgb(0 0 0 /0.3) 6px),radial-gradient(circle at 5% 5%,rgb(0 0 0 / 1),rgb(0 0 0 / 0.1) 30%)';
+    'repeating-linear-gradient(180deg, rgb(0 0 0 / 0.2) 0px, rgb(0 0 0 / 0.3) 1px, rgb(0 0 0 / 0.2) 3px, rgb(0 0 0 /0.3) 6px),radial-gradient(circle at 0 0 ,rgb(0 0 0 / 0.7),rgb(0 0 0 / 0.1) 25%,rgb(0 0 0 / 0) 30%';
 
   protected readonly showScheduledEntries = computed(
     () => this.scheduledEntries().length > 0 && this.images().length === 0,

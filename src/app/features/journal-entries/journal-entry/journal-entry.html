@@ -63,6 +63,12 @@
       [disabled]="isSaving()"
       (pressed)="triggerAssetUpload()"
     />
+    <app-icon-button-primary
+      icon="imageAdd"
+      [label]="'Add calendar image to ' + label()"
+      [disabled]="isSaving()"
+      (pressed)="openCalendarImageDialog()"
+    />
     <app-icon-button-danger
       icon="trash"
       [label]="'Delete entry ' + label()"
@@ -71,3 +77,65 @@
     />
   }
 </div>
+
+<app-dialog
+  #calendarImageDialog
+  [labelledById]="calendarDialogTitleId()"
+  [describedById]="calendarDialogDescriptionId()"
+>
+  <form [formGroup]="calendarAltForm" (ngSubmit)="saveCalendarImage()">
+    <h2 class="text-lg font-semibold" [id]="calendarDialogTitleId()">Add calendar image</h2>
+    <p class="text-sm text-slate-400" [id]="calendarDialogDescriptionId()">
+      Upload a .webp image and add it to the end of this note.
+    </p>
+
+    <div class="mt-4 flex flex-col gap-2">
+      <label class="text-sm font-semibold text-slate-100" [for]="calendarFileId()">
+        WebP image
+      </label>
+      <input
+        [id]="calendarFileId()"
+        type="file"
+        accept="image/webp"
+        [disabled]="isSaving()"
+        (change)="handleCalendarFileSelected($event)"
+      />
+      @if (calendarFileError()) {
+        <p class="text-xs font-semibold text-rose-200">{{ calendarFileError() }}</p>
+      }
+    </div>
+
+    <div class="mt-4 flex flex-col gap-2">
+      <label class="text-sm font-semibold text-slate-100" [for]="calendarAltId()"> Alt text </label>
+      <input
+        uiInput
+        [id]="calendarAltId()"
+        type="text"
+        placeholder="Describe the image"
+        formControlName="alt"
+        [attr.aria-invalid]="
+          calendarAltForm.controls.alt.invalid && calendarAltForm.controls.alt.touched ? true : null
+        "
+        [disabled]="isSaving()"
+      />
+      @if (calendarAltForm.controls.alt.invalid && calendarAltForm.controls.alt.touched) {
+        <p class="text-xs font-semibold text-rose-200">Alt text is required.</p>
+      }
+    </div>
+
+    <div class="mt-6 flex justify-end gap-2">
+      <app-icon-button-danger
+        icon="x"
+        label="Cancel"
+        [disabled]="isSaving()"
+        (pressed)="closeCalendarImageDialog()"
+      />
+      <app-icon-button-primary
+        icon="check"
+        label="Add image"
+        [disabled]="calendarAltForm.invalid || !hasCalendarFile() || isSaving()"
+        type="submit"
+      />
+    </div>
+  </form>
+</app-dialog>
