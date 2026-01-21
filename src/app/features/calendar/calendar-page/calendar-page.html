@@ -1,5 +1,10 @@
 <div class="relative flex h-full flex-col gap-4">
-  <div class="grid h-full flex-1 grid-rows-[auto_1fr] gap-2">
+  <div
+    class="grid h-full flex-1 grid-rows-[auto_1fr] gap-2"
+    tabindex="0"
+    aria-label="Calendar days"
+    (keydown)="onKeydown($event)"
+  >
     <div
       class="grid grid-cols-7 gap-2 text-center text-xs tracking-[0.18em] text-slate-400 uppercase"
     >
@@ -15,6 +20,7 @@
             class="group min-h-[96px] overflow-hidden rounded-sm border border-white/50 bg-gradient-to-b from-white/5 to-white/0 bg-cover bg-top bg-no-repeat text-sm text-slate-100 transition hover:border-white/30 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-cyan-400/70 focus-visible:outline-none"
             [class.border-white/50]="!isToday(day)"
             [class.border-tokyo-accent-orange]="isToday(day)"
+            [attr.data-calendar-day]="day"
             [style.backgroundImage]="
               dayBackground(day)
                 ? 'repeating-linear-gradient(180deg, rgb(0 0 0 / 0.2) 0px, rgb(0 0 0 / 0.3) 1px, rgb(0 0 0 / 0.2) 3px, rgb(0 0 0 /0.3) 6px),radial-gradient(circle at 5% 5%,rgb(0 0 0 / 1),rgb(0 0 0 / 0.1) 30%),url(' +

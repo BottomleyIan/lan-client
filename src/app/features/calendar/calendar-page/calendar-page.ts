@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { JournalsApi } from '../../../core/api/journals.api';
@@ -16,6 +16,7 @@ import { ImagesApi } from '../../../core/api/images.api';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CalendarPage {
+  private readonly elementRef = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly route = inject(ActivatedRoute);
   private readonly journalsApi = inject(JournalsApi);
   private readonly imagesApi = inject(ImagesApi);
@@ -138,6 +139,38 @@ export class CalendarPage {
     }
     return null;
   }
+
+  protected onKeydown(event: KeyboardEvent): void {
+    const key = event.key;
+    if (
+      key !== 'ArrowRight' &&
+      key !== 'ArrowLeft' &&
+      key !== 'ArrowDown' &&
+      key !== 'ArrowUp'
+    ) {
+      return;
+    }
+    event.preventDefault();
+
+    const host = this.elementRef.nativeElement;
+    const active = host.ownerDocument.activeElement;
+    const activeDay = active instanceof HTMLElement ? parseDay(active) : null;
+    const totalDays = new Date(this.year(), this.month(), 0).getDate();
+    const nextDay =
+      activeDay === null
+        ? 1
+        : key === 'ArrowDown'
+          ? activeDay + 7
+          : key === 'ArrowUp'
+            ? activeDay - 7
+            : activeDay + (key === 'ArrowRight' ? 1 : -1);
+    if (nextDay < 1 || nextDay > totalDays) {
+      return;
+    }
+
+    const target = host.querySelector<HTMLElement>(`[data-calendar-day="${nextDay}"]`);
+    target?.focus();
+  }
 }
 
 function parseDateParts(raw?: string): DateParts | null {
@@ -164,6 +197,15 @@ function parseDatePartsFromFields(entry: JournalEntryWithPriority): DateParts | 
     return null;
   }
   return { year: entry.year, month: entry.month, day: entry.day };
+}
+
+function parseDay(target: HTMLElement): number | null {
+  const el = target.closest<HTMLElement>('[data-calendar-day]');
+  if (!el) {
+    return null;
+  }
+  const value = Number(el.dataset['calendarDay']);
+  return Number.isFinite(value) ? value : null;
 }
 
 function withImageParams(baseUrl: string, params: Record<string, string | number>): string {
