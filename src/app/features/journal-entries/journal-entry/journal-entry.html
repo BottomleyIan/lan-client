@@ -84,8 +84,10 @@
   [describedById]="calendarDialogDescriptionId()"
 >
   <form [formGroup]="calendarAltForm" (ngSubmit)="saveCalendarImage()">
-    <h2 class="text-lg font-semibold" [id]="calendarDialogTitleId()">Add calendar image</h2>
-    <p class="text-sm text-slate-400" [id]="calendarDialogDescriptionId()">
+    <h2 class="text-tokyo-text font-vt323 text-2xl font-semibold" [id]="calendarDialogTitleId()">
+      Add calendar image
+    </h2>
+    <p class="sr-only text-sm text-slate-400" [id]="calendarDialogDescriptionId()">
       Upload a .webp image and add it to the end of this note.
     </p>
 

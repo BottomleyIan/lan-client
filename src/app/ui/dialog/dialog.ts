@@ -7,10 +7,12 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
+import { NgxFlickeringGridComponent } from '@omnedia/ngx-flickering-grid';
 
 @Component({
   selector: 'app-dialog',
   templateUrl: './dialog.html',
+  imports: [NgxFlickeringGridComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppDialog {
@@ -24,13 +26,11 @@ export class AppDialog {
 
   protected readonly isOpen = signal(false);
   protected readonly backdropState = signal<'closed' | 'opening' | 'open' | 'closing'>('closed');
-  protected readonly backdropImage = signal('/bd-1.webp');
 
   open(): void {
     if (this.isOpen()) return;
     this.isOpen.set(true);
     this.backdropState.set('opening');
-    this.backdropImage.set(pickBackdropImage());
     this.dialogEl().nativeElement.showModal();
     requestAnimationFrame(() => {
       if (!this.isOpen()) return;
@@ -67,10 +67,4 @@ export class AppDialog {
   }
 }
 
-const BACKDROP_IMAGES = ['/bd-1.webp', '/bd-2.webp', '/bd-3.webp'] as const;
 const DIALOG_CLOSE_MS = 300;
-
-function pickBackdropImage(): string {
-  const index = Math.floor(Math.random() * BACKDROP_IMAGES.length);
-  return BACKDROP_IMAGES[index] ?? BACKDROP_IMAGES[0];
-}

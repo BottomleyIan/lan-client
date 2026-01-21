@@ -88,8 +88,8 @@
   (cancelled)="closeEntry()"
 >
   @if (selectedEntry(); as entry) {
-    <div class="flex items-start justify-between gap-4 px-5 pt-5">
-      <h2 class="text-tokyo-text text-lg font-semibold" id="kanban-entry-title">
+    <div class="p4 flex items-start justify-between gap-4">
+      <h2 class="text-tokyo-text font-vt323 text-2xl font-semibold" id="kanban-entry-title">
         {{ entry.title || 'Task' }}
       </h2>
       <app-icon-button-danger icon="x" label="Close dialog" (pressed)="entryDialog.close()" />
