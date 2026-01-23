@@ -3,11 +3,8 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { MarkdownBody } from '../markdown/markdown-body';
 import { TableDirective } from '../../ui/directives/table';
 import { TableHeadDirective } from '../../ui/directives/thead';
-
-type DayViewTableData = {
-  rows: Array<Record<string, string>>;
-  columnsSet: Set<string>;
-};
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { DayViewTableData } from './DayViewTableData';
 
 @Component({
   selector: 'app-day-view-table',

@@ -7,6 +7,7 @@ import { JournalsApi } from '../../core/api/journals.api';
 import { JournalEntry } from '../../features/journal-entries/journal-entry/journal-entry';
 import { DayViewTable } from './day-view-table';
 import { IconButton } from '../../ui/icon-button/icon-button';
+import { entriesToDayViewTables } from './DayViewTableData';
 
 type DayParams = { year: number; month: number; day: number };
 
@@ -73,52 +74,12 @@ export class DayView {
   protected handleEntryDeleted(): void {
     this.refresh$.next();
   }
-  readonly table$ = this.entries$.pipe(
-    map((entries) => {
-      const rows: Array<Record<string, string>> = [];
-      const columnsSet = new Set<string>();
-      for (const entry of entries) {
-        const row = entryToRow(entry);
-        if (!row) {
-          continue;
-        }
-        rows.push(row);
-        Object.keys(row).forEach((key) => columnsSet.add(key));
-      }
-      return {
-        rows,
-        columnsSet,
-      };
-    }),
-  );
+
+  readonly table$ = this.entries$.pipe(map(entriesToDayViewTables));
 
   refresh(): void {
     this.refresh$.next();
   }
-}
-
-function entryToRow(entry: JournalEntryWithPriority): Record<string, string> | null {
-  const resp: Record<string, string> = {};
-  const separateLines = entry.body?.match(/[^\r\n]+/g);
-  if (separateLines?.length) {
-    for (const line of separateLines) {
-      const parts = line.split('::');
-      if (parts.length < 2) {
-        continue;
-      }
-      const key = parts[0]?.trim();
-      const value = parts
-        .slice(1)
-        .join('::')
-        .trim()
-        .replaceAll(']] [[', ']]<br />[[')
-        .replaceAll(']][[', ']]<br />[[');
-      if (key) {
-        resp[key] = value;
-      }
-    }
-  }
-  return Object.keys(resp).length > 1 ? resp : null;
 }
 
 function toDayParams(
