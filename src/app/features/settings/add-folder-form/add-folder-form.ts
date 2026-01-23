@@ -4,8 +4,8 @@ import { finalize } from 'rxjs';
 import { FoldersApi } from '../../../core/api/folders.api';
 import { FormDirective } from '../../../ui/directives/form';
 import { InputDirective } from '../../../ui/directives/input';
-import { ConfirmButtonDirective } from '../../../ui/directives/confirm-button';
 import { CancelButtonDirective } from '../../../ui/directives/cancel-button';
+import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 
 @Component({
   selector: 'app-add-folder-form',
@@ -13,8 +13,8 @@ import { CancelButtonDirective } from '../../../ui/directives/cancel-button';
     ReactiveFormsModule,
     FormDirective,
     InputDirective,
-    ConfirmButtonDirective,
     CancelButtonDirective,
+    IconButtonPrimary,
   ],
   template: `
     <form uiForm (ngSubmit)="addFolder()" [formGroup]="createForm">
@@ -33,9 +33,12 @@ import { CancelButtonDirective } from '../../../ui/directives/cancel-button';
             [disabled]="isCreating()"
           />
           <div class="flex flex-col gap-2 @sm:flex-row @sm:items-center">
-            <button uiConfirmButton type="submit" [disabled]="createForm.invalid || isCreating()">
-              Add folder
-            </button>
+            <app-icon-button-primary
+              icon="check"
+              label="Add folder"
+              type="submit"
+              [disabled]="createForm.invalid || isCreating()"
+            />
             <button
               uiCancelButton
               type="button"

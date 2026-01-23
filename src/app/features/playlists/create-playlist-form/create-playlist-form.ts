@@ -4,9 +4,9 @@ import { finalize } from 'rxjs';
 import { PlaylistsApi } from '../../../core/api/playlists.api';
 import type { HandlersPlaylistDTO } from '../../../core/api/generated/api-types';
 import { CancelButtonDirective } from '../../../ui/directives/cancel-button';
-import { ConfirmButtonDirective } from '../../../ui/directives/confirm-button';
 import { FormDirective } from '../../../ui/directives/form';
 import { InputDirective } from '../../../ui/directives/input';
+import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 
 @Component({
   selector: 'app-create-playlist-form',
@@ -14,8 +14,8 @@ import { InputDirective } from '../../../ui/directives/input';
     ReactiveFormsModule,
     FormDirective,
     InputDirective,
-    ConfirmButtonDirective,
     CancelButtonDirective,
+    IconButtonPrimary,
   ],
   templateUrl: './create-playlist-form.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

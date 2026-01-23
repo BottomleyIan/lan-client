@@ -5,18 +5,12 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { FormDirective } from '../../../ui/directives/form';
 import { InputDirective } from '../../../ui/directives/input';
-import { ConfirmButtonDirective } from '../../../ui/directives/confirm-button';
+import { IconButtonPrimary } from '../../../ui/icon-button/icon-button-primary';
 import { JournalsApi } from '../../../core/api/journals.api';
 
 @Component({
   selector: 'app-notes-create-raw',
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormDirective,
-    InputDirective,
-    ConfirmButtonDirective,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, FormDirective, InputDirective, IconButtonPrimary],
   templateUrl: './notes-create-raw.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
