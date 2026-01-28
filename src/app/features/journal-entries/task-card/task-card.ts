@@ -8,10 +8,11 @@ import { resolveEntryPriority } from '../../../core/api/journal-entry-priority';
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { IconName } from '../../../ui/icon/icons';
 import { Icon } from '../../../ui/icon/icon';
+import { MarkdownBody } from '../../../shared/markdown/markdown-body';
 
 @Component({
   selector: 'app-task-card',
-  imports: [CommonModule, Icon],
+  imports: [CommonModule, Icon, MarkdownBody],
   templateUrl: './task-card.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
