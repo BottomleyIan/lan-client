@@ -8,9 +8,6 @@
         <app-icon [name]="priority().icon" [colorVar]="priority().color" />
         <span class="sr-only">Priority: {{ priority().label }}</span>
       </div>
-      <span class="text-tokyo-text-muted text-[10px] font-semibold tracking-[0.12em] uppercase">
-        {{ statusLabel() }}
-      </span>
     </div>
   </div>
   @if (tags().length > 0) {

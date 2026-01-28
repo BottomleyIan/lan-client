@@ -7,7 +7,7 @@ import { AppTasksButton } from './tasks-button/tasks-button';
 import { KanbanFilters } from '../../features/journal-entries/kanban/kanban-filters';
 import { NotesTagFilter } from '../../features/notes/notes-tag-filter/notes-tag-filter';
 import { AppSettingsButton } from './settings-button/settings-button';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router, NavigationEnd, RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 
@@ -15,6 +15,7 @@ import { filter, map } from 'rxjs';
   selector: 'app-navbar',
   templateUrl: './navbar.html',
   imports: [
+    RouterLink,
     NavLink,
     JournalEntryAddButton,
     CalendarMonthTitle,

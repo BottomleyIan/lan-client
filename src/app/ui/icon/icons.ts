@@ -13,6 +13,7 @@ const icons = {
   chevronLeft: { glyph: '\udb80\udd41', label: 'Chevron Left' }, // 󰅁
   chevronRight: { glyph: '\udb80\udd42', label: 'Chevron ' }, // 󰅂
   files: { glyph: '\udb80\ude56', label: 'Files' }, // 󰉖
+  home: { glyph: '\udb80\ude56', label: 'Home' }, // 
   imageAdd: { glyph: '\udb82\udc7c', label: 'Add Image' }, // 󰡼
   link: { glyph: '\udb80\udf39', label: 'Link' }, // 󰌹
   musicFilter: { glyph: '\uf001', label: 'Music Filter' }, // 󰝚

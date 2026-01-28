@@ -2,6 +2,12 @@ import type { Routes } from '@angular/router';
 
 export const routes: Routes = [
   {
+    path: '',
+    loadComponent: () =>
+      import('./features/home/home-page/home-page').then((c) => c.HomePage),
+    data: { navTitle: 'Home' },
+  },
+  {
     path: 'notes/new',
     loadComponent: () =>
       import('./features/notes/notes-new-page/notes-new-page').then((c) => c.NotesNewPage),
@@ -18,7 +24,6 @@ export const routes: Routes = [
       import('./features/calendar/calendar-page/calendar-page').then((c) => c.CalendarPage),
     data: { navTitleMode: 'calendar-month' },
   },
-  { path: '', pathMatch: 'full', redirectTo: 'playlists' },
   {
     path: 'playlists',
     loadComponent: () =>
