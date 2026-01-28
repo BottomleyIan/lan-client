@@ -39,31 +39,42 @@ function formatMarkdownBody(markdown: string): string {
 
 function normalizeSingleLineBreaks(markdown: string): string {
   const text = markdown.replace(/\r\n/g, '\n');
-  let result = '';
-  let newlineCount = 0;
+  const lines = text.split('\n');
+  const output: string[] = [];
+  let inFence = false;
 
-  for (const char of text) {
-    if (char === '\n') {
-      newlineCount += 1;
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index] ?? '';
+    const isFence = /^\s*```/.test(line);
+
+    if (isFence) {
+      output.push(line);
+      inFence = !inFence;
       continue;
     }
 
-    if (newlineCount === 1) {
-      result += '\n\n';
-    } else if (newlineCount > 1) {
-      result += '\n'.repeat(newlineCount);
+    output.push(line);
+
+    if (inFence) {
+      continue;
     }
-    newlineCount = 0;
-    result += char;
+
+    const nextLine = lines[index + 1];
+    if (nextLine === undefined) {
+      continue;
+    }
+
+    const nextIsFence = /^\s*```/.test(nextLine);
+    if (nextIsFence) {
+      continue;
+    }
+
+    if (line.length > 0 && nextLine.length > 0) {
+      output.push('');
+    }
   }
 
-  if (newlineCount === 1) {
-    result += '\n\n';
-  } else if (newlineCount > 1) {
-    result += '\n'.repeat(newlineCount);
-  }
-
-  return result;
+  return output.join('\n');
 }
 
 function splitTrailingImageLines(markdown: string): {
